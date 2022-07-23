@@ -30,12 +30,18 @@ export function Person({ state, updateState }: Props) {
         return age
     }
 
+    /** divide bio by sentence for easy reading */
     let bioSplitter = (bio: string) => {
+
+        // add newline every period
         bio = bio.replaceAll('\.\ ', '\.\n')
-        bio = bio.replaceAll('Dr\.\n', 'Dr\.\ ')
-        bio = bio.replaceAll('Mr\.\n', 'Mr\.\ ')
-        bio = bio.replaceAll('Ms\.\n', 'Ms\.\ ')
-        bio = bio.replaceAll('Mrs\.\n', 'Mrs\.\ ')
+
+        // remove newline where inappropriate
+
+        let prefixes = ['Dr', 'Mr', 'Ms', 'Mrs', 'Lt', 'Vol']
+        prefixes.forEach((prefix) => {
+            bio = bio.replaceAll(`${prefix}\.\n`, `${prefix}\.\ `)
+        })
 
         return <>
             {bio.split('\n').map((x, i) =>
