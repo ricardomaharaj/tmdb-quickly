@@ -157,7 +157,7 @@ export function Show({ state, updateState }: Props) {
                                         )
                                     }
                                 >
-                                    {`ID: ${show.external_ids.imdb_id}`}
+                                    {` ID: ${show.external_ids.imdb_id}`}
                                 </span>
                             </div>
                         )}
@@ -170,7 +170,7 @@ export function Show({ state, updateState }: Props) {
                             >
                                 TMDB
                             </a>
-                            <span>{`ID: ${id}`}</span>
+                            <span>{` ID: ${id}`}</span>
                         </div>
                     </div>
                     <div className='btn-row'>
