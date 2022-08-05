@@ -107,11 +107,16 @@ export function Season({ state, updateState }: Props) {
                                             {` | ${toDateString(x.air_date)}`}
                                         </span>
                                     )}
-                                    <span>
-                                        {` | ${
-                                            x.runtime && runtimeCalc(x.runtime)
-                                        }`}
-                                    </span>
+                                    {x.runtime
+                                        ? x.runtime > 60 && (
+                                              <span>
+                                                  {` | ${
+                                                      x.runtime &&
+                                                      runtimeCalc(x.runtime)
+                                                  }`}
+                                              </span>
+                                          )
+                                        : null}
                                 </div>
                                 {x.overview && (
                                     <div className='subtext'>{x.overview}</div>
