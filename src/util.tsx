@@ -9,8 +9,8 @@ export function runtimeCalc(runtime: number) {
     if (runtime === 60) {
         return '1h'
     } else if (runtime > 60) {
-        let hours = (runtime / 60).toPrecision(1)
         let minutes = runtime % 60
+        let hours = (runtime - minutes) / 60
         return `${hours}h${minutes}m`
     } else {
         return `${runtime % 60}m`
