@@ -7,7 +7,6 @@ import { FULLIMGURL, IMGURL, Props } from './consts'
 export function Season({ state, updateState }: Props) {
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
-    let [posterFilter, setPosterFilter] = useState('en')
 
     let { id, season_number } = useParams()
     let [res] = useSeasonQuery({ id, season_number })
@@ -15,16 +14,11 @@ export function Season({ state, updateState }: Props) {
     let season = data?.season
 
     let crewFilterOpts: string[] = []
-    let posterLangOpts: string[] = []
     let videoFilterOpts: string[] = []
 
     season?.credits?.crew?.forEach(({ job }) => {
         if (crewFilterOpts.findIndex((x) => x === job) === -1)
             crewFilterOpts.push(job!)
-    })
-    season?.images?.posters?.forEach(({ iso_639_1 }) => {
-        if (posterLangOpts.findIndex((x) => x === iso_639_1) === -1)
-            posterLangOpts.push(iso_639_1!)
     })
     season?.videos?.results?.forEach(({ type }) => {
         if (videoFilterOpts.findIndex((x) => x === type) === -1)
@@ -195,34 +189,22 @@ export function Season({ state, updateState }: Props) {
                 </>
             )}
             {state.seasonTab === 'IMAGES' && (
-                <>
-                    <div className='single-row'>
-                        <select
-                            defaultValue={posterFilter}
-                            onChange={(e) => setPosterFilter(e.target.value)}
-                        >
-                            {posterLangOpts.map((x, i) => (
-                                <option value={x} key={i}>
-                                    {x}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className='grid234'>
-                        {season?.images?.posters
-                            ?.filter((x) => x.iso_639_1 === posterFilter)
-                            ?.map((x, i) => (
-                                <a
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    href={FULLIMGURL + x.file_path}
-                                    key={i}
-                                >
-                                    <img src={IMGURL + x.file_path} alt='' />
-                                </a>
-                            ))}
-                    </div>
-                </>
+                <div className='grid234'>
+                    {season?.images?.posters
+                        ?.filter(
+                            ({ iso_639_1 }) => iso_639_1 === 'en' || !iso_639_1
+                        )
+                        ?.map((x, i) => (
+                            <a
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                href={FULLIMGURL + x.file_path}
+                                key={i}
+                            >
+                                <img src={IMGURL + x.file_path} alt='' />
+                            </a>
+                        ))}
+                </div>
             )}
             {state.seasonTab === 'VIDEOS' && (
                 <>

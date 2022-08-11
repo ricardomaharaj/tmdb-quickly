@@ -17,8 +17,6 @@ const RELEASE_TYPES = [
 
 export function Movie({ state, updateState }: Props) {
     let [imageTab, setImageTab] = useState('POSTERS')
-    let [posterFilter, setPosterFilter] = useState('en')
-    let [backdropFilter, setBackdropFilter] = useState('en')
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
 
@@ -34,21 +32,11 @@ export function Movie({ state, updateState }: Props) {
     )[0]?.release_dates
 
     let crewFilterOpts: string[] = []
-    let posterLangOpts: string[] = []
-    let backdropLangOpts: string[] = []
     let videoFilterOpts: string[] = []
 
     movie?.credits?.crew?.forEach(({ job }) => {
         if (crewFilterOpts.findIndex((x) => x === job) === -1)
             crewFilterOpts.push(job!)
-    })
-    movie?.images?.posters?.forEach(({ iso_639_1 }) => {
-        if (posterLangOpts.findIndex((x) => x === iso_639_1) === -1)
-            posterLangOpts.push(iso_639_1!)
-    })
-    movie?.images?.backdrops?.forEach(({ iso_639_1 }) => {
-        if (backdropLangOpts.findIndex((x) => x === iso_639_1) === -1)
-            backdropLangOpts.push(iso_639_1!)
     })
     movie?.videos?.results?.forEach(({ type }) => {
         if (videoFilterOpts.findIndex((x) => x === type) === -1)
@@ -307,39 +295,14 @@ export function Movie({ state, updateState }: Props) {
                                 {x}
                             </div>
                         ))}
-                        {imageTab === 'POSTERS' && (
-                            <select
-                                defaultValue={posterFilter}
-                                onChange={(e) =>
-                                    setPosterFilter(e.target.value)
-                                }
-                            >
-                                {posterLangOpts.map((x, i) => (
-                                    <option value={x} key={i}>
-                                        {x}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-                        {imageTab === 'BACKDROPS' && (
-                            <select
-                                defaultValue={backdropFilter}
-                                onChange={(e) =>
-                                    setBackdropFilter(e.target.value)
-                                }
-                            >
-                                {backdropLangOpts.map((x, i) => (
-                                    <option value={x} key={i}>
-                                        {x}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
                     </div>
                     {imageTab === 'POSTERS' && (
                         <div className='grid234'>
                             {movie?.images?.posters
-                                ?.filter((x) => x.iso_639_1 === posterFilter)
+                                ?.filter(
+                                    ({ iso_639_1 }) =>
+                                        iso_639_1 === 'en' || !iso_639_1
+                                )
                                 ?.map((x, i) => (
                                     <a
                                         target='_blank'
@@ -358,7 +321,10 @@ export function Movie({ state, updateState }: Props) {
                     {imageTab === 'BACKDROPS' && (
                         <div className='grid123'>
                             {movie?.images?.backdrops
-                                ?.filter((x) => x.iso_639_1 === backdropFilter)
+                                ?.filter(
+                                    ({ iso_639_1 }) =>
+                                        iso_639_1 === 'en' || !iso_639_1
+                                )
                                 ?.map((x, i) => (
                                     <a
                                         target='_blank'

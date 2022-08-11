@@ -9,8 +9,6 @@ export function Show({ state, updateState }: Props) {
     let [imageTab, setImageTab] = useState('POSTERS')
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
-    let [posterFilter, setPosterFilter] = useState('en')
-    let [backdropFilter, setBackdropFilter] = useState('en')
 
     let { id } = useParams()
     let [res] = useShowQuery({ id })
@@ -20,21 +18,11 @@ export function Show({ state, updateState }: Props) {
     document.title = `${show?.name} | TMDB Quickly`
 
     let crewFilterOpts: string[] = []
-    let posterLangOpts: string[] = []
-    let backdropsLangOpts: string[] = []
     let videoFilterOpts: string[] = []
 
     show?.credits?.crew?.forEach(({ job }) => {
         if (crewFilterOpts.findIndex((x) => x === job) === -1)
             crewFilterOpts.push(job!)
-    })
-    show?.images?.posters?.forEach(({ iso_639_1 }) => {
-        if (posterLangOpts.findIndex((x) => x === iso_639_1) === -1)
-            posterLangOpts.push(iso_639_1!)
-    })
-    show?.images?.backdrops?.forEach(({ iso_639_1 }) => {
-        if (backdropsLangOpts.findIndex((x) => x === iso_639_1) === -1)
-            backdropsLangOpts.push(iso_639_1!)
     })
     show?.videos?.results?.forEach(({ type }) => {
         if (videoFilterOpts.findIndex((x) => x === type) === -1)
@@ -304,39 +292,14 @@ export function Show({ state, updateState }: Props) {
                                 {x}
                             </div>
                         ))}
-                        {imageTab === 'POSTERS' && (
-                            <select
-                                defaultValue={posterFilter}
-                                onChange={(e) =>
-                                    setPosterFilter(e.target.value)
-                                }
-                            >
-                                {posterLangOpts.map((x, i) => (
-                                    <option value={x} key={i}>
-                                        {x}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-                        {imageTab === 'BACKDROPS' && (
-                            <select
-                                defaultValue={backdropFilter}
-                                onChange={(e) =>
-                                    setBackdropFilter(e.target.value)
-                                }
-                            >
-                                {backdropsLangOpts.map((x, i) => (
-                                    <option value={x} key={i}>
-                                        {x}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
                     </div>
                     {imageTab === 'POSTERS' && (
                         <div className='grid234'>
                             {show?.images?.posters
-                                ?.filter((x) => x.iso_639_1 === posterFilter)
+                                ?.filter(
+                                    ({ iso_639_1 }) =>
+                                        iso_639_1 === 'en' || !iso_639_1
+                                )
                                 ?.map((x, i) => (
                                     <a
                                         target='_blank'
@@ -355,7 +318,10 @@ export function Show({ state, updateState }: Props) {
                     {imageTab === 'BACKDROPS' && (
                         <div className='grid123'>
                             {show?.images?.backdrops
-                                ?.filter((x) => x.iso_639_1 === backdropFilter)
+                                ?.filter(
+                                    ({ iso_639_1 }) =>
+                                        iso_639_1 === 'en' || !iso_639_1
+                                )
                                 ?.map((x, i) => (
                                     <a
                                         target='_blank'
