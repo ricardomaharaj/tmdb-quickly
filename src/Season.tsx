@@ -108,7 +108,7 @@ export function Season({ state, updateState }: Props) {
                                         </span>
                                     )}
                                     {x.runtime
-                                        ? x.runtime > 60 && (
+                                        ? x.runtime > 0 && (
                                               <span>
                                                   {` | ${
                                                       x.runtime &&
