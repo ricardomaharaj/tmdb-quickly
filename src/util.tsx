@@ -8,11 +8,11 @@ export function toDateString(date: string) {
 export function runtimeCalc(runtime: number) {
     if (runtime === 60) {
         return '1h'
-    } else if (runtime > 60) {
+    }
+    if (runtime > 60) {
         let minutes = runtime % 60
         let hours = (runtime - minutes) / 60
         return `${hours}h${minutes}m`
-    } else {
-        return `${runtime % 60}m`
     }
+    return `${runtime}m`
 }
