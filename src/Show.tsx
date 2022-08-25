@@ -162,6 +162,13 @@ export function Show({ state, updateState }: Props) {
                         </div>
                     </div>
                     <div className='btn-row'>
+                        {show?.genres?.map((x, i) => (
+                            <div className='bubble' key={i}>
+                                {x.name}
+                            </div>
+                        ))}
+                    </div>
+                    <div className='btn-row'>
                         {show?.networks?.map((x, i) => (
                             <div className='bubble' key={i}>
                                 {x.name}
