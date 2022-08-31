@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
-import { IMGURL, Props } from './consts'
+import { Props } from './consts'
 import { Stars } from './Stars'
+import { Fragment } from 'react'
 
 export function Home({ state, updateState }: Props) {
     let clearQuery = () => {
@@ -70,7 +71,27 @@ function SearchResults({ state, updateState }: Props) {
     let results = data?.search?.results
     let maxPages = data?.search?.total_pages
 
-    if (fetching) return <div className='spinner' />
+    const MAX_OVERVIEW_LENGTH = state.query ? 100 : 120
+
+    const load_silhouette = (
+        <div className='row bg2 p-2 rounded-xl'>
+            <div className='bg3 rounded-xl w-[94px] h-[141px]'></div>
+            <div className='col space-y-1 pl-2'>
+                <div className='row bg3 p-2 w-[150px] rounded-full' />
+                <div className='row bg3 p-2 w-[100px] rounded-full' />
+                <div className='row bg3 p-2 w-[50px] rounded-full' />
+            </div>
+        </div>
+    )
+
+    if (fetching)
+        return (
+            <div className='grid123'>
+                {new Array(9).fill(load_silhouette).map((x, i) => (
+                    <Fragment key={i}>{x}</Fragment>
+                ))}
+            </div>
+        )
     if (error) return <div className='err'>{error.message}</div>
     return (
         <>
@@ -80,20 +101,21 @@ function SearchResults({ state, updateState }: Props) {
                     .map((x, i) => (
                         <Link
                             to={`${x.media_type}/${x.id}`}
-                            className='card'
+                            className='row bg2 p-2 rounded-xl'
                             key={i}
                         >
                             {(x.poster_path || x.profile_path) && (
                                 <img
-                                    src={
-                                        IMGURL +
-                                        (x.poster_path || x.profile_path)
-                                    }
+                                    src={`https://www.themoviedb.org/t/p/w94_and_h141_bestv2${
+                                        x.poster_path || x.profile_path
+                                    }`}
+                                    width='94'
+                                    height='141'
                                     alt=''
-                                    className='card-img'
+                                    className='rounded-xl'
                                 />
                             )}
-                            <div className='card-text'>
+                            <div className='space-y-1 pl-2'>
                                 {state.query &&
                                     (x.release_date || x.first_air_date) && (
                                         <div>
@@ -110,11 +132,17 @@ function SearchResults({ state, updateState }: Props) {
                                     <Stars average={x.vote_average} />
                                 )}
                                 {x.overview && (
-                                    <div className='subtext'>
-                                        {x.overview.length > 100
+                                    <div className='text-md text-slate-400'>
+                                        {x.overview.length > MAX_OVERVIEW_LENGTH
                                             ? x.overview
-                                                  .substring(0, 97)
-                                                  .padEnd(100, '.')
+                                                  .substring(
+                                                      0,
+                                                      MAX_OVERVIEW_LENGTH - 3
+                                                  )
+                                                  .padEnd(
+                                                      MAX_OVERVIEW_LENGTH,
+                                                      '.'
+                                                  )
                                             : x.overview}
                                     </div>
                                 )}
