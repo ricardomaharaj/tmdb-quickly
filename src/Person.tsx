@@ -170,8 +170,10 @@ export function Person({ state, updateState }: Props) {
                                     {x.poster_path && (
                                         <img
                                             src={`${IMG_URLs.W94H141}${x.poster_path}`}
-                                            className='card-img'
+                                            className='card-img w94-h141'
                                             loading='lazy'
+                                            width='94'
+                                            height='141'
                                             alt=''
                                         />
                                     )}

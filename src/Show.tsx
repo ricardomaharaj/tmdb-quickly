@@ -76,7 +76,7 @@ export function Show({ state, updateState }: Props) {
                     {show?.poster_path && (
                         <img
                             src={`${IMG_URLs.W150H225}${show.poster_path}`}
-                            className='dark-card-img'
+                            className='dark-card-img w150-h225'
                             width='150'
                             height='225'
                             alt=''

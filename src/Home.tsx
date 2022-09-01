@@ -109,7 +109,7 @@ function SearchResults({ state, updateState }: Props) {
                                     src={`${IMG_URLs.W94H141}${
                                         x.poster_path || x.profile_path
                                     }`}
-                                    className='card-img'
+                                    className='card-img w94-h141'
                                     width='94'
                                     height='141'
                                     loading='lazy'
