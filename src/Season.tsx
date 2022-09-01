@@ -141,11 +141,6 @@ export function Season({ state, updateState }: Props) {
                                                 ? ' | ' + runtimeCalc(x.runtime)
                                                 : ''
                                         }
-                                        ${
-                                            x.vote_average
-                                                ? ' | ' + x.vote_average
-                                                : ''
-                                        }
                                         `}</span>
                                         {x.overview && (
                                             <div className='subtext mt-1'>

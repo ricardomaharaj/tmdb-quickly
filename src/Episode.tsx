@@ -73,15 +73,6 @@ export function Episode({ state, updateState }: Props) {
                             ? toDateString(episode?.air_date)
                             : ''}
                     </div>
-                    <div>
-                        {episode?.vote_average
-                            ? `${episode?.vote_average} / 10 ${
-                                  episode?.vote_count
-                                      ? `(${episode?.vote_count})`
-                                      : ''
-                              }`
-                            : ''}
-                    </div>
                 </div>
             </div>
             <div className='scroll-row'>
