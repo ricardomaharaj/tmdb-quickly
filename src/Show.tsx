@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props } from './consts'
+import { IMG_URLs, Props } from './consts'
 import { Stars } from './Stars'
 
 export function Show({ state, updateState }: Props) {
@@ -35,25 +35,54 @@ export function Show({ state, updateState }: Props) {
     crewFilterOpts.splice(0, 0, 'ALL')
     videoFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <div className='spinner' />
+    const load_silhouette = (
+        <>
+            <div className='row bg2 rounded-xl xl:p-8'>
+                <div className='bg3 rounded-xl w-[150px] h-[225px] m-2'></div>
+                <div className='col space-y-2 ml-1 mt-2'>
+                    <div className='bg3 w-[150px] p-2 rounded-xl' />
+                    <div className='bg3 w-[100px] p-2 rounded-xl' />
+                    <div className='bg3 w-[50px]  p-2 rounded-xl' />
+                </div>
+            </div>
+            <div className='scroll-row'>
+                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
+                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
+                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
+                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
+                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
+            </div>
+            <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
+            <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
+            <div className='scroll-row'>
+                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
+                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
+                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
+            </div>
+        </>
+    )
+
+    if (fetching) return load_silhouette
     if (error) return <div className='err'>{error.message}</div>
     return (
         <>
             <div
-                className='img-bg'
+                className='bg-img'
                 style={{
-                    backgroundImage: `url(${IMGURL + show?.backdrop_path})`
+                    backgroundImage: `url(${IMG_URLs.W500}${show?.backdrop_path})`
                 }}
             >
                 <div className='dark-card'>
                     {show?.poster_path && (
                         <img
-                            className='card-img'
-                            src={IMGURL + show.poster_path}
+                            src={`${IMG_URLs.W150H225}${show.poster_path}`}
+                            className='dark-card-img'
+                            width='150'
+                            height='225'
                             alt=''
                         />
                     )}
-                    <div className='card-text'>
+                    <div className='dark-card-text'>
                         {show?.first_air_date && (
                             <div>{toDateString(show.first_air_date)}</div>
                         )}
@@ -84,7 +113,7 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </div>
             </div>
-            <div className='btn-row'>
+            <div className='scroll-row'>
                 {['INFO', 'CAST', 'CREW', 'SEASONS', 'IMAGES', 'VIDEOS'].map(
                     (x, i) => (
                         <div
@@ -131,10 +160,10 @@ export function Show({ state, updateState }: Props) {
                         {show?.external_ids?.imdb_id && (
                             <div>
                                 <a
-                                    className='underline'
+                                    href={`https://www.imdb.com/title/${show.external_ids.imdb_id}`}
                                     target='_blank'
                                     rel='noopener noreferrer'
-                                    href={`https://www.imdb.com/title/${show.external_ids.imdb_id}`}
+                                    className='underline'
                                 >
                                     IMDB
                                 </a>
@@ -151,31 +180,31 @@ export function Show({ state, updateState }: Props) {
                         )}
                         <div>
                             <a
-                                className='underline'
+                                href={`https://www.themoviedb.org/tv/${show?.id}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                href={`https://www.themoviedb.org/tv/${show?.id}`}
+                                className='underline'
                             >
                                 TMDB
                             </a>
                             <span>{` ID: ${id}`}</span>
                         </div>
                     </div>
-                    <div className='btn-row'>
+                    <div className='scroll-row'>
                         {show?.genres?.map((x, i) => (
-                            <div className='bubble' key={i}>
+                            <div className='meta-bubble' key={i}>
                                 {x.name}
                             </div>
                         ))}
                     </div>
-                    <div className='btn-row'>
+                    <div className='scroll-row'>
                         {show?.networks?.map((x, i) => (
-                            <div className='bubble' key={i}>
+                            <div className='meta-bubble' key={i}>
                                 {x.name}
                             </div>
                         ))}
                         {show?.production_companies?.map((x, i) => (
-                            <div className='bubble' key={i}>
+                            <div className='meta-bubble text-sm' key={i}>
                                 {x.name}
                             </div>
                         ))}
@@ -188,8 +217,11 @@ export function Show({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className='card' key={i}>
                             {x.profile_path && (
                                 <img
-                                    className='card-img'
-                                    src={IMGURL + x.profile_path}
+                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                    className='card-img w94-h141'
+                                    loading='lazy'
+                                    width='94'
+                                    height='141'
                                     alt=''
                                 />
                             )}
@@ -205,7 +237,7 @@ export function Show({ state, updateState }: Props) {
             )}
             {state.showTab === 'CREW' && (
                 <>
-                    <div className='single-row'>
+                    <div className='row'>
                         <select
                             defaultValue={crewFilter}
                             onChange={(e) => setCrewFilter(e.target.value)}
@@ -232,8 +264,11 @@ export function Show({ state, updateState }: Props) {
                                 >
                                     {x.profile_path && (
                                         <img
-                                            className='card-img'
-                                            src={IMGURL + x.profile_path}
+                                            src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                            className='card-img w94-h141'
+                                            loading='lazy'
+                                            width='94'
+                                            height='141'
                                             alt=''
                                         />
                                     )}
@@ -262,8 +297,11 @@ export function Show({ state, updateState }: Props) {
                                 >
                                     {x.poster_path && (
                                         <img
-                                            className='card-img'
-                                            src={IMGURL + x.poster_path}
+                                            src={`${IMG_URLs.W94H141}${x.poster_path}`}
+                                            className='card-img w94-h141'
+                                            loading='lazy'
+                                            width='94'
+                                            height='141'
                                             alt=''
                                         />
                                     )}
@@ -309,13 +347,14 @@ export function Show({ state, updateState }: Props) {
                                 )
                                 ?.map((x, i) => (
                                     <a
+                                        href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
-                                        href={FULLIMGURL + x.file_path}
                                         key={i}
                                     >
                                         <img
-                                            src={IMGURL + x.file_path}
+                                            src={`${IMG_URLs.W500}${x.file_path}`}
+                                            loading='lazy'
                                             alt=''
                                         />
                                     </a>
@@ -331,13 +370,14 @@ export function Show({ state, updateState }: Props) {
                                 )
                                 ?.map((x, i) => (
                                     <a
+                                        href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
-                                        href={FULLIMGURL + x.file_path}
                                         key={i}
                                     >
                                         <img
-                                            src={IMGURL + x.file_path}
+                                            src={`${IMG_URLs.W500}${x.file_path}`}
+                                            loading='lazy'
                                             alt=''
                                         />
                                     </a>
@@ -348,7 +388,7 @@ export function Show({ state, updateState }: Props) {
             )}
             {state.showTab === 'VIDEOS' && (
                 <>
-                    <div className='single-row'>
+                    <div className='row'>
                         <select
                             defaultValue={videoFilter}
                             onChange={(e) => setVideoFilter(e.target.value)}
@@ -374,19 +414,20 @@ export function Show({ state, updateState }: Props) {
                                     : 1
                             )
                             ?.map((x, i) => (
-                                <div className='video-card' key={i}>
+                                <div className='vid-card' key={i}>
                                     <a
+                                        href={`https://www.youtube.com/watch?v=${x.key}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
-                                        href={`https://www.youtube.com/watch?v=${x.key}`}
                                     >
                                         <img
-                                            className='video-card-img'
                                             src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
+                                            className='vid-card-img'
+                                            loading='lazy'
                                             alt=''
                                         />
                                     </a>
-                                    <div className='video-card-text'>
+                                    <div className='vid-card-text'>
                                         <span>{x.name}</span>
                                         {x.published_at && (
                                             <span className='subtext'>

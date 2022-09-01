@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { toDateString } from './util'
-import { IMGURL, Props } from './consts'
+import { IMG_URLs, Props } from './consts'
 import { Stars } from './Stars'
 
 export function Person({ state, updateState }: Props) {
@@ -38,7 +38,6 @@ export function Person({ state, updateState }: Props) {
         bio = bio.replaceAll('. ', '.\n')
 
         // remove newline where inappropriate
-
         let prefixes = ['Dr', 'Mr', 'Ms', 'Mrs', 'Lt', 'Vol']
         prefixes.forEach((prefix) => {
             bio = bio.replaceAll(`${prefix}\.\n`, `${prefix}\.\ `)
@@ -53,15 +52,38 @@ export function Person({ state, updateState }: Props) {
         )
     }
 
-    if (fetching) return <div className='spinner' />
+    const load_silhouette = (
+        <>
+            <div className='bg2 row w-full p-1 rounded-xl'>
+                <div className='bg3 w-[150px] h-[225px] m-1 rounded-xl'></div>
+                <div className='col m-1 space-y-2'>
+                    <div className='bg3 rounded-xl p-2 w-[150px]'></div>
+                    <div className='bg3 rounded-xl p-2 w-[100px]'></div>
+                    <div className='bg3 rounded-xl p-2 w-[50px]'></div>
+                </div>
+            </div>
+            <div className='scroll-row'>
+                <div className='bg2 btn w-[80px] h-[32px]'></div>
+                <div className='bg2 btn w-[80px] h-[32px]'></div>
+                <div className='bg2 btn w-[80px] h-[32px]'></div>
+                <div className='bg2 btn w-[80px] h-[32px]'></div>
+                <div className='bg2 btn w-[80px] h-[32px]'></div>
+            </div>
+            <div className='bubble w-full h-[200px] '></div>
+        </>
+    )
+
+    if (fetching) return load_silhouette
     if (error) return <div className='err'>{error.message}</div>
     return (
         <>
             <div className='card'>
                 {person?.profile_path && (
                     <img
-                        className='card-img'
-                        src={IMGURL + person?.profile_path}
+                        src={`${IMG_URLs.W150H225}${person?.profile_path}`}
+                        className='card-img w150-h225'
+                        width='150'
+                        height='225'
                         alt=''
                     />
                 )}
@@ -86,7 +108,7 @@ export function Person({ state, updateState }: Props) {
                         )}
                 </div>
             </div>
-            <div className='btn-row'>
+            <div className='scroll-row'>
                 {['BIO', 'CAST', 'CREW', 'IMAGES'].map((x, i) => (
                     <div
                         className={`btn ${
@@ -142,13 +164,14 @@ export function Person({ state, updateState }: Props) {
                             ?.map((x, i) => (
                                 <Link
                                     to={`/${x.media_type}/${x.id}`}
-                                    key={i}
                                     className='card'
+                                    key={i}
                                 >
                                     {x.poster_path && (
                                         <img
+                                            src={`${IMG_URLs.W94H141}${x.poster_path}`}
                                             className='card-img'
-                                            src={IMGURL + x.poster_path}
+                                            loading='lazy'
                                             alt=''
                                         />
                                     )}
@@ -220,8 +243,11 @@ export function Person({ state, updateState }: Props) {
                                 >
                                     {x.poster_path && (
                                         <img
-                                            className='card-img'
-                                            src={IMGURL + x.poster_path}
+                                            src={`${IMG_URLs.W94H141}${x.poster_path}`}
+                                            className='card-img w94-h141'
+                                            loading='lazy'
+                                            width='94'
+                                            height='141'
                                             alt=''
                                         />
                                     )}
@@ -260,7 +286,18 @@ export function Person({ state, updateState }: Props) {
                 <>
                     <div className='grid234'>
                         {person?.images?.profiles?.map((x, i) => (
-                            <img src={IMGURL + x.file_path} alt='' key={i} />
+                            <a
+                                href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                key={i}
+                            >
+                                <img
+                                    src={`${IMG_URLs.W500}${x.file_path}`}
+                                    loading='lazy'
+                                    alt=''
+                                />
+                            </a>
                         ))}
                     </div>
                 </>

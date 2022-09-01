@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props } from './consts'
+import { IMG_URLs, Props } from './consts'
 
 export function Season({ state, updateState }: Props) {
     let [crewFilter, setCrewFilter] = useState('ALL')
@@ -31,25 +31,52 @@ export function Season({ state, updateState }: Props) {
     crewFilterOpts.splice(0, 0, 'ALL')
     videoFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <div className='spinner' />
+    const load_silhouette = (
+        <>
+            <div className='row bg2 p-1 w-full rounded-xl'>
+                <div className='bg3 w-[150px] m-1 h-[225px] rounded-xl' />
+                <div className='col m-1 space-y-2'>
+                    <div className='bg3 p-2 rounded-xl w-[150px]' />
+                    <div className='bg3 p-2 rounded-xl w-[100px]' />
+                    <div className='bg3 p-2 rounded-xl w-[50px]' />
+                </div>
+            </div>
+            <div className='scroll-row'>
+                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
+                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
+                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
+                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
+                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
+            </div>
+            <div className='col space-y-2'>
+                <div className='bubble w-full h-[150px]' />
+                <div className='bubble w-full h-[150px]' />
+                <div className='bubble w-full h-[150px]' />
+            </div>
+        </>
+    )
+
+    if (fetching) return load_silhouette
     if (error) return <div className='err'>{error.message}</div>
     return (
         <>
             <div
-                className='img-bg'
+                className='bg-img'
                 style={{
-                    backgroundImage: `url(${IMGURL + season?.poster_path})`
+                    backgroundImage: `url(${IMG_URLs.W500}${season?.poster_path})`
                 }}
             >
                 <div className='dark-card'>
                     {season?.poster_path && (
                         <img
-                            className='card-img'
-                            src={IMGURL + season.poster_path}
+                            src={`${IMG_URLs.W150H225}${season.poster_path}`}
+                            className='dark-card-img'
+                            width='150'
+                            height='225'
                             alt=''
                         />
                     )}
-                    <div className='card-text'>
+                    <div className='dark-card-text'>
                         {season?.name && <div>{season.name}</div>}
                         {season?.episodes?.length && (
                             <div>{`${season.episodes.length} Episodes`}</div>
@@ -60,7 +87,7 @@ export function Season({ state, updateState }: Props) {
                     </div>
                 </div>
             </div>
-            <div className='btn-row'>
+            <div className='scroll-row'>
                 {['EPISODES', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map(
                     (x, i) => (
                         <div
@@ -77,44 +104,56 @@ export function Season({ state, updateState }: Props) {
             </div>
             {state.seasonTab === 'EPISODES' && (
                 <>
-                    <div className='grid123'>
+                    <div className='col space-y-2'>
                         {season?.episodes?.map((x, i) => (
                             <Link
-                                className='bubble'
-                                key={i}
                                 to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
+                                className='card'
+                                key={i}
                             >
-                                {x.still_path && (
-                                    <img
-                                        className='rounded-xl mb-2'
-                                        src={IMGURL + x.still_path}
-                                        alt=''
-                                    />
-                                )}
-                                <div>
-                                    {x.episode_number && (
-                                        <span>{x.episode_number}</span>
+                                <div className='col md:flex-row'>
+                                    {x.still_path && (
+                                        <img
+                                            src={`${IMG_URLs.W227H127}${x.still_path}`}
+                                            className='card-img w227-h127'
+                                            loading='lazy'
+                                            width='227'
+                                            height='127'
+                                            alt=''
+                                        />
                                     )}
-                                    {x.name && <span>{` | ${x.name}`}</span>}
-                                    {x.air_date && (
-                                        <span>
-                                            {` | ${toDateString(x.air_date)}`}
-                                        </span>
-                                    )}
-                                    {x.runtime
-                                        ? x.runtime > 0 && (
-                                              <span>
-                                                  {` | ${
-                                                      x.runtime &&
-                                                      runtimeCalc(x.runtime)
-                                                  }`}
-                                              </span>
-                                          )
-                                        : null}
+                                    <div className='col m-1'>
+                                        <span>{`
+                                        ${
+                                            x.episode_number
+                                                ? x.episode_number
+                                                : ''
+                                        }
+                                        ${x.name ? ' | ' + x.name : ''}
+                                        ${
+                                            x.air_date
+                                                ? ' | ' +
+                                                  toDateString(x.air_date)
+                                                : ''
+                                        }
+                                        ${
+                                            x.runtime
+                                                ? ' | ' + runtimeCalc(x.runtime)
+                                                : ''
+                                        }
+                                        ${
+                                            x.vote_average
+                                                ? ' | ' + x.vote_average
+                                                : ''
+                                        }
+                                        `}</span>
+                                        {x.overview && (
+                                            <div className='subtext mt-1'>
+                                                {x.overview}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                                {x.overview && (
-                                    <div className='subtext'>{x.overview}</div>
-                                )}
                             </Link>
                         ))}
                     </div>
@@ -126,8 +165,11 @@ export function Season({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className='card' key={i}>
                             {x.profile_path && (
                                 <img
-                                    className='card-img'
-                                    src={IMGURL + x.profile_path}
+                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                    className='card-img w94-h141'
+                                    loading='lazy'
+                                    width='94'
+                                    height='141'
                                     alt=''
                                 />
                             )}
@@ -143,7 +185,7 @@ export function Season({ state, updateState }: Props) {
             )}
             {state.seasonTab === 'CREW' && (
                 <>
-                    <div className='single-row'>
+                    <div className='row'>
                         <select
                             defaultValue={crewFilter}
                             onChange={(e) => setCrewFilter(e.target.value)}
@@ -170,8 +212,11 @@ export function Season({ state, updateState }: Props) {
                                 >
                                     {x.profile_path && (
                                         <img
-                                            className='card-img'
-                                            src={IMGURL + x.profile_path}
+                                            src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                            className='card-img w94-h141'
+                                            loading='lazy'
+                                            width='94'
+                                            height='141'
                                             alt=''
                                         />
                                     )}
@@ -196,12 +241,16 @@ export function Season({ state, updateState }: Props) {
                         )
                         ?.map((x, i) => (
                             <a
+                                href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                href={FULLIMGURL + x.file_path}
                                 key={i}
                             >
-                                <img src={IMGURL + x.file_path} alt='' />
+                                <img
+                                    src={`${IMG_URLs.W500}${x.file_path}`}
+                                    loading='lazy'
+                                    alt=''
+                                />
                             </a>
                         ))}
                 </div>
@@ -234,27 +283,26 @@ export function Season({ state, updateState }: Props) {
                                     : 1
                             )
                             ?.map((x, i) => (
-                                <div className='video-card' key={i}>
+                                <div className='vid-card' key={i}>
                                     <a
                                         target='_blank'
                                         rel='noopener noreferrer'
                                         href={`https://www.youtube.com/watch?v=${x.key}`}
                                     >
                                         <img
-                                            className='video-card-img'
                                             src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
+                                            className='vid-card-img'
+                                            loading='lazy'
                                             alt=''
                                         />
                                     </a>
-                                    <div className='video-card-text'>
-                                        <span>{x.name}</span>
-                                        {x.published_at && (
-                                            <span className='subtext'>
-                                                {` | ${toDateString(
-                                                    x.published_at
-                                                )}`}
-                                            </span>
-                                        )}
+                                    <div className='vid-card-text'>
+                                        {`${x.name ? x.name + ' | ' : ''}${
+                                            x.published_at
+                                                ? toDateString(x.published_at) +
+                                                  ' | '
+                                                : ''
+                                        }`}
                                     </div>
                                 </div>
                             ))}

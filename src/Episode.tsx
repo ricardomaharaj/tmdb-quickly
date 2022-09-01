@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props } from './consts'
-import { Stars } from './Stars'
+import { IMG_URLs, Props } from './consts'
 
 export function Episode({ state, updateState }: Props) {
     let [crewFilter, setCrewFilter] = useState('ALL')
@@ -22,41 +21,70 @@ export function Episode({ state, updateState }: Props) {
     })
     crewFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <div className='spinner' />
+    const load_silhouette = (
+        <>
+            <div className='row bg2 rounded-xl w-full h-[150px]'>
+                <div className='col m-2 space-y-2'>
+                    <div className='bg3 rounded-xl p-2 w-[150px]'></div>
+                    <div className='bg3 rounded-xl p-2 w-[100px]'></div>
+                    <div className='bg3 rounded-xl p-2 w-[50px]'></div>
+                </div>
+            </div>
+            <div className='scroll-row'>
+                <div className='bg2 btn w-[60px] h-[32px]'></div>
+                <div className='bg2 btn w-[60px] h-[32px]'></div>
+                <div className='bg2 btn w-[60px] h-[32px]'></div>
+                <div className='bg2 btn w-[60px] h-[32px]'></div>
+                <div className='bg2 btn w-[60px] h-[32px]'></div>
+            </div>
+            <div className='bubble w-full h-[100px]'></div>
+        </>
+    )
+
+    if (fetching) return load_silhouette
     if (error) return <div className='err'>{error.message}</div>
     return (
         <>
             <div
-                className='img-bg'
+                className='bg-img'
                 style={{
-                    backgroundImage: `url(${IMGURL + episode?.still_path})`
+                    backgroundImage: `url(${IMG_URLs.W500}${episode?.still_path})`
                 }}
             >
-                <div className='col bg-black bg-opacity-50 rounded-xl p-10 xl:p-20 space-y-2'>
+                <div className='col bg-black bg-opacity-50 space-y-2 rounded-xl p-10 xl:p-20'>
                     <div>
-                        <span>
-                            {`S${episode?.season_number
-                                ?.toString()
-                                .padStart(2, '0')}`}
-                        </span>
-                        <span>
-                            {`E${episode?.episode_number
-                                ?.toString()
-                                .padStart(2, '0')}`}
-                        </span>
+                        {`
+                    ${
+                        episode?.season_number
+                            ? 'S' + `${episode?.season_number}`.padStart(2, '0')
+                            : ''
+                    }
+                    ${
+                        episode?.episode_number
+                            ? 'E' +
+                              `${episode?.episode_number}`.padStart(2, '0')
+                            : ''
+                    }
+                    `}
                     </div>
-                    <div>{episode?.name}</div>
-                    {episode?.air_date && (
-                        <div>{toDateString(episode.air_date)}</div>
-                    )}
-                    {episode?.vote_average
-                        ? episode.vote_average > 0 && (
-                              <Stars average={episode.vote_average} />
-                          )
-                        : null}
+                    <div>{episode?.name ? episode?.name : ''}</div>
+                    <div>
+                        {episode?.air_date
+                            ? toDateString(episode?.air_date)
+                            : ''}
+                    </div>
+                    <div>
+                        {episode?.vote_average
+                            ? `${episode?.vote_average} / 10 ${
+                                  episode?.vote_count
+                                      ? `(${episode?.vote_count})`
+                                      : ''
+                              }`
+                            : ''}
+                    </div>
                 </div>
             </div>
-            <div className='btn-row'>
+            <div className='scroll-row'>
                 {['INFO', 'GUESTS', 'CREW', 'IMAGES'].map((x, i) => (
                     <div
                         className={`btn ${
@@ -76,9 +104,33 @@ export function Episode({ state, updateState }: Props) {
                     )}
                 </>
             )}
+            {state.episodeTab === 'GUESTS' && (
+                <div className='grid123'>
+                    {episode?.guest_stars?.map((x, i) => (
+                        <Link to={`/person/${x.id}`} className='card' key={i}>
+                            {x.profile_path && (
+                                <img
+                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                    className='card-img w94-h141'
+                                    loading='lazy'
+                                    width='94'
+                                    height='141'
+                                    alt=''
+                                />
+                            )}
+                            <div className='card-text'>
+                                {x.name && <div>{x.name}</div>}
+                                {x.character && (
+                                    <div className='subtext'>{x.character}</div>
+                                )}
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            )}
             {state.episodeTab === 'CREW' && (
                 <>
-                    <div className='single-row'>
+                    <div className='row'>
                         <select
                             defaultValue={crewFilter}
                             onChange={(e) => setCrewFilter(e.target.value)}
@@ -105,8 +157,11 @@ export function Episode({ state, updateState }: Props) {
                                 >
                                     {x.profile_path && (
                                         <img
-                                            className='card-img'
-                                            src={IMGURL + x.profile_path}
+                                            src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                            className='card-img w94-h141'
+                                            loading='lazy'
+                                            width='94'
+                                            height='141'
                                             alt=''
                                         />
                                     )}
@@ -123,46 +178,21 @@ export function Episode({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.episodeTab === 'GUESTS' && (
-                <>
-                    <div className='grid123'>
-                        {episode?.guest_stars?.map((x, i) => (
-                            <Link
-                                to={`/person/${x.id}`}
-                                className='card'
-                                key={i}
-                            >
-                                {x.profile_path && (
-                                    <img
-                                        className='card-img'
-                                        src={IMGURL + x.profile_path}
-                                        alt=''
-                                    />
-                                )}
-                                <div className='card-text'>
-                                    {x.name && <div>{x.name}</div>}
-                                    {x.character && (
-                                        <div className='subtext'>
-                                            {x.character}
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </>
-            )}
             {state.episodeTab === 'IMAGES' && (
                 <>
                     <div className='grid123'>
                         {episode?.images?.stills?.map((x, i) => (
                             <a
+                                href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                href={FULLIMGURL + x.file_path}
                                 key={i}
                             >
-                                <img src={IMGURL + x.file_path} alt='' />
+                                <img
+                                    src={`${IMG_URLs.W500}${x.file_path}`}
+                                    loading='lazy'
+                                    alt=''
+                                />
                             </a>
                         ))}
                     </div>

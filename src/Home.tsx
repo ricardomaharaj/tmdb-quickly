@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
-import { Props } from './consts'
+import { IMG_URLs, Props } from './consts'
 import { Stars } from './Stars'
 import { Fragment } from 'react'
 
@@ -71,7 +71,7 @@ function SearchResults({ state, updateState }: Props) {
     let results = data?.search?.results
     let maxPages = data?.search?.total_pages
 
-    const MAX_OVERVIEW_LENGTH = state.query ? 100 : 120
+    const MAX_OVERVIEW_LENGTH = 100
 
     const load_silhouette = (
         <div className='row bg2 p-2 rounded-xl'>
@@ -101,21 +101,22 @@ function SearchResults({ state, updateState }: Props) {
                     .map((x, i) => (
                         <Link
                             to={`${x.media_type}/${x.id}`}
-                            className='row bg2 p-2 rounded-xl'
+                            className='card'
                             key={i}
                         >
                             {(x.poster_path || x.profile_path) && (
                                 <img
-                                    src={`https://www.themoviedb.org/t/p/w94_and_h141_bestv2${
+                                    src={`${IMG_URLs.W94H141}${
                                         x.poster_path || x.profile_path
                                     }`}
+                                    className='card-img'
                                     width='94'
                                     height='141'
+                                    loading='lazy'
                                     alt=''
-                                    className='rounded-xl'
                                 />
                             )}
-                            <div className='space-y-1 pl-2'>
+                            <div className='card-text'>
                                 {state.query &&
                                     (x.release_date || x.first_air_date) && (
                                         <div>
@@ -132,7 +133,7 @@ function SearchResults({ state, updateState }: Props) {
                                     <Stars average={x.vote_average} />
                                 )}
                                 {x.overview && (
-                                    <div className='text-md text-slate-400'>
+                                    <div className='subtext'>
                                         {x.overview.length > MAX_OVERVIEW_LENGTH
                                             ? x.overview
                                                   .substring(
