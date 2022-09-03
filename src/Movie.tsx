@@ -90,7 +90,7 @@ export function Movie({ state, updateState }: Props) {
                 <div className='dark-card'>
                     <img
                         src={`${IMG_URLs.W150H225}/${movie?.poster_path}`}
-                        className='dark-card-img'
+                        className='dark-card-img w150-h225'
                         width='150'
                         height='225'
                         alt=''
