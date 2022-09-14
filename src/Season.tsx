@@ -1,12 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs } from './consts'
 
-export function Season({ state, updateState }: Props) {
+export function Season() {
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
+
+    let [tab, setTab] = useState(
+        localStorage.getItem('seasonTab') || 'EPISODES'
+    )
+
+    useEffect(() => {
+        localStorage.setItem('seasonTab', tab)
+    }, [tab])
 
     let { id, season_number } = useParams()
     let [res] = useSeasonQuery({ id, season_number })
@@ -91,10 +99,8 @@ export function Season({ state, updateState }: Props) {
                 {['EPISODES', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map(
                     (x, i) => (
                         <div
-                            className={`btn ${
-                                state.seasonTab === x ? 'bg3' : 'bg2'
-                            }`}
-                            onClick={() => updateState({ seasonTab: x })}
+                            className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
+                            onClick={() => setTab(x)}
                             key={i}
                         >
                             {x}
@@ -102,7 +108,7 @@ export function Season({ state, updateState }: Props) {
                     )
                 )}
             </div>
-            {state.seasonTab === 'EPISODES' && (
+            {tab === 'EPISODES' && (
                 <>
                     <div className='col space-y-2'>
                         {season?.episodes?.map((x, i) => (
@@ -154,7 +160,7 @@ export function Season({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.seasonTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <div className='grid123'>
                     {season?.credits?.cast?.map((x, i) => (
                         <Link to={`/person/${x.id}`} className='card' key={i}>
@@ -178,7 +184,7 @@ export function Season({ state, updateState }: Props) {
                     ))}
                 </div>
             )}
-            {state.seasonTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <div className='row'>
                         <select
@@ -228,7 +234,7 @@ export function Season({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.seasonTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <div className='grid234'>
                     {season?.images?.posters
                         ?.filter(
@@ -250,7 +256,7 @@ export function Season({ state, updateState }: Props) {
                         ))}
                 </div>
             )}
-            {state.seasonTab === 'VIDEOS' && (
+            {tab === 'VIDEOS' && (
                 <>
                     <div className='single-row'>
                         <select

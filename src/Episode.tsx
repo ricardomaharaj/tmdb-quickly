@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs } from './consts'
 
-export function Episode({ state, updateState }: Props) {
+export function Episode() {
     let [crewFilter, setCrewFilter] = useState('ALL')
+
+    let [tab, setTab] = useState(localStorage.getItem('episodeTab') || 'INFO')
+
+    useEffect(() => {
+        localStorage.setItem('episodeTab', tab)
+    }, [tab])
 
     let { id, season_number, episode_number } = useParams()
     let [res] = useEpisodeQuery({ id, season_number, episode_number })
@@ -78,24 +84,22 @@ export function Episode({ state, updateState }: Props) {
             <div className='scroll-row'>
                 {['INFO', 'GUESTS', 'CREW', 'IMAGES'].map((x, i) => (
                     <div
-                        className={`btn ${
-                            state.episodeTab === x ? 'bg3' : 'bg2'
-                        }`}
-                        onClick={() => updateState({ episodeTab: x })}
+                        className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
+                        onClick={() => setTab(x)}
                         key={i}
                     >
                         {x}
                     </div>
                 ))}
             </div>
-            {state.episodeTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {episode?.overview && (
                         <div className='bubble'>{episode.overview}</div>
                     )}
                 </>
             )}
-            {state.episodeTab === 'GUESTS' && (
+            {tab === 'GUESTS' && (
                 <div className='grid123'>
                     {episode?.guest_stars?.map((x, i) => (
                         <Link to={`/person/${x.id}`} className='card' key={i}>
@@ -119,7 +123,7 @@ export function Episode({ state, updateState }: Props) {
                     ))}
                 </div>
             )}
-            {state.episodeTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <div className='row'>
                         <select
@@ -169,7 +173,7 @@ export function Episode({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.episodeTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <>
                     <div className='grid123'>
                         {episode?.images?.stills?.map((x, i) => (

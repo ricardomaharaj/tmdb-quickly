@@ -10,11 +10,6 @@ export interface State {
     query: string
     page: number
     homeTab: string
-    movieTab: string
-    showTab: string
-    seasonTab: string
-    episodeTab: string
-    personTab: string
 }
 
 export interface Props {

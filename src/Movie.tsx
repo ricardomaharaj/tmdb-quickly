@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 
 const RELEASE_TYPES = [
@@ -15,10 +15,16 @@ const RELEASE_TYPES = [
     'TV'
 ]
 
-export function Movie({ state, updateState }: Props) {
+export function Movie() {
     let [imageTab, setImageTab] = useState('POSTERS')
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
+
+    let [tab, setTab] = useState(localStorage.getItem('movieTab') || 'INFO')
+
+    useEffect(() => {
+        localStorage.setItem('movieTab', tab)
+    }, [tab])
 
     let { id } = useParams()
     let [res] = useMovieQuery({ id })
@@ -126,17 +132,15 @@ export function Movie({ state, updateState }: Props) {
             <div className='scroll-row'>
                 {['INFO', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) => (
                     <div
-                        className={`btn ${
-                            state.movieTab === x ? 'bg3' : 'bg2'
-                        }`}
-                        onClick={() => updateState({ movieTab: x })}
+                        className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
+                        onClick={() => setTab(x)}
                         key={i}
                     >
                         {x}
                     </div>
                 ))}
             </div>
-            {state.movieTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {movie?.overview && (
                         <div className='bubble'>{movie.overview}</div>
@@ -241,7 +245,7 @@ export function Movie({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.movieTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <div className='grid123'>
                     {movie?.credits?.cast?.map((x, i) => (
                         <Link to={`/person/${x.id}`} className='card' key={i}>
@@ -265,7 +269,7 @@ export function Movie({ state, updateState }: Props) {
                     ))}
                 </div>
             )}
-            {state.movieTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <div className='row'>
                         <select
@@ -315,7 +319,7 @@ export function Movie({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.movieTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <>
                     <div className='btn-row'>
                         {['POSTERS', 'BACKDROPS'].map((x, i) => (
@@ -378,7 +382,7 @@ export function Movie({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.movieTab === 'VIDEOS' && (
+            {tab === 'VIDEOS' && (
                 <>
                     <div className='row'>
                         <select

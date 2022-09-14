@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 
-export function Person({ state, updateState }: Props) {
+export function Person() {
     let [castFilter, setCastFilter] = useState('movie')
     let [crewFilter, setCrewFilter] = useState('ALL')
+
+    let [tab, setTab] = useState(localStorage.getItem('personTab') || 'BIO')
+
+    useEffect(() => {
+        localStorage.setItem('personTab', tab)
+    }, [tab])
 
     let { id } = useParams()
     let [res] = usePersonQuery({ id })
@@ -111,17 +117,15 @@ export function Person({ state, updateState }: Props) {
             <div className='scroll-row'>
                 {['BIO', 'CAST', 'CREW', 'IMAGES'].map((x, i) => (
                     <div
-                        className={`btn ${
-                            state.personTab === x ? 'bg3' : 'bg2'
-                        }`}
-                        onClick={() => updateState({ personTab: x })}
+                        className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
+                        onClick={() => setTab(x)}
                         key={i}
                     >
                         {x}
                     </div>
                 ))}
             </div>
-            {state.personTab === 'BIO' && (
+            {tab === 'BIO' && (
                 <>
                     {person?.biography && (
                         <div className='bubble space-y-2'>
@@ -130,7 +134,7 @@ export function Person({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.personTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <>
                     <div className='btn-row'>
                         {[
@@ -208,7 +212,7 @@ export function Person({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.personTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <div className='single-row'>
                         <select
@@ -284,7 +288,7 @@ export function Person({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.personTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <>
                     <div className='grid234'>
                         {person?.images?.profiles?.map((x, i) => (

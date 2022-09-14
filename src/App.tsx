@@ -20,12 +20,7 @@ export function App() {
     let [state, setState] = useState<State>({
         query: '',
         page: 1,
-        homeTab: 'movie',
-        movieTab: 'INFO',
-        showTab: 'INFO',
-        seasonTab: 'EPISODES',
-        episodeTab: 'INFO',
-        personTab: 'BIO'
+        homeTab: 'movie'
     })
 
     let updateState = (update: Partial<State>) =>
@@ -54,50 +49,19 @@ export function App() {
                                         />
                                     }
                                 />
-                                <Route
-                                    path='/movie/:id'
-                                    element={
-                                        <Movie
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path='/tv/:id'
-                                    element={
-                                        <Show
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
-                                />
+                                <Route path='/movie/:id' element={<Movie />} />
+                                <Route path='/tv/:id' element={<Show />} />
                                 <Route
                                     path='/tv/:id/season/:season_number'
-                                    element={
-                                        <Season
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
+                                    element={<Season />}
                                 />
                                 <Route
                                     path='/tv/:id/season/:season_number/episode/:episode_number'
-                                    element={
-                                        <Episode
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
+                                    element={<Episode />}
                                 />
                                 <Route
                                     path='/person/:id'
-                                    element={
-                                        <Person
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
+                                    element={<Person />}
                                 />
                                 <Route
                                     path='*'

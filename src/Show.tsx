@@ -1,14 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 
-export function Show({ state, updateState }: Props) {
+export function Show() {
     let [imageTab, setImageTab] = useState('POSTERS')
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
+
+    let [tab, setTab] = useState(localStorage.getItem('showTab') || 'INFO')
+
+    useEffect(() => {
+        localStorage.setItem('showTab', tab)
+    }, [tab])
 
     let { id } = useParams()
     let [res] = useShowQuery({ id })
@@ -117,10 +123,8 @@ export function Show({ state, updateState }: Props) {
                 {['INFO', 'CAST', 'CREW', 'SEASONS', 'IMAGES', 'VIDEOS'].map(
                     (x, i) => (
                         <div
-                            className={`btn ${
-                                state.showTab === x ? 'bg3' : 'bg2'
-                            }`}
-                            onClick={() => updateState({ showTab: x })}
+                            className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
+                            onClick={() => setTab(x)}
                             key={i}
                         >
                             {x}
@@ -128,7 +132,7 @@ export function Show({ state, updateState }: Props) {
                     )
                 )}
             </div>
-            {state.showTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {show?.overview && (
                         <div className='bubble'>{show?.overview}</div>
@@ -211,7 +215,7 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <div className='grid123'>
                     {show?.credits?.cast?.map((x, i) => (
                         <Link to={`/person/${x.id}`} className='card' key={i}>
@@ -235,7 +239,7 @@ export function Show({ state, updateState }: Props) {
                     ))}
                 </div>
             )}
-            {state.showTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <div className='row'>
                         <select
@@ -285,7 +289,7 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'SEASONS' && (
+            {tab === 'SEASONS' && (
                 <>
                     <div className='grid123'>
                         {show?.seasons &&
@@ -323,7 +327,7 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <>
                     <div className='btn-row'>
                         {['POSTERS', 'BACKDROPS'].map((x, i) => (
@@ -386,7 +390,7 @@ export function Show({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.showTab === 'VIDEOS' && (
+            {tab === 'VIDEOS' && (
                 <>
                     <div className='row'>
                         <select
