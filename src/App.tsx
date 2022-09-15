@@ -6,8 +6,6 @@ import { Show } from './Show'
 import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
-import { useState } from 'react'
-import { State } from './consts'
 
 let url =
     process.env.NODE_ENV === 'production'
@@ -17,15 +15,6 @@ let url =
 let urqlClient = createClient({ url })
 
 export function App() {
-    let [state, setState] = useState<State>({
-        query: '',
-        page: 1,
-        homeTab: 'movie'
-    })
-
-    let updateState = (update: Partial<State>) =>
-        setState({ ...state, ...update })
-
     return (
         <>
             <BrowserRouter>
@@ -40,15 +29,7 @@ export function App() {
                                 />
                             </Link>
                             <Routes>
-                                <Route
-                                    path='/'
-                                    element={
-                                        <Home
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
-                                />
+                                <Route path='/' element={<Home />} />
                                 <Route path='/movie/:id' element={<Movie />} />
                                 <Route path='/tv/:id' element={<Show />} />
                                 <Route
@@ -63,15 +44,7 @@ export function App() {
                                     path='/person/:id'
                                     element={<Person />}
                                 />
-                                <Route
-                                    path='*'
-                                    element={
-                                        <Home
-                                            state={state}
-                                            updateState={updateState}
-                                        />
-                                    }
-                                />
+                                <Route path='*' element={<Home />} />
                             </Routes>
                         </div>
                     </div>

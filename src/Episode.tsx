@@ -1,17 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
-import { toDateString } from './util'
+import { toDateString, useSyncState } from './util'
 import { IMG_URLs } from './consts'
 
 export function Episode() {
     let [crewFilter, setCrewFilter] = useState('ALL')
 
-    let [tab, setTab] = useState(localStorage.getItem('episodeTab') || 'INFO')
-
-    useEffect(() => {
-        localStorage.setItem('episodeTab', tab)
-    }, [tab])
+    let [tab, setTab] = useSyncState({ key: 'episodeTab', initVal: 'INFO' })
 
     let { id, season_number, episode_number } = useParams()
     let [res] = useEpisodeQuery({ id, season_number, episode_number })

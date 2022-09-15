@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
-import { runtimeCalc, toDateString } from './util'
+import { runtimeCalc, toDateString, useSyncState } from './util'
 import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 
@@ -10,11 +10,7 @@ export function Show() {
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
 
-    let [tab, setTab] = useState(localStorage.getItem('showTab') || 'INFO')
-
-    useEffect(() => {
-        localStorage.setItem('showTab', tab)
-    }, [tab])
+    let [tab, setTab] = useSyncState({ key: 'showTab', initVal: 'INFO' })
 
     let { id } = useParams()
     let [res] = useShowQuery({ id })

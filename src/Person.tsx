@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
-import { toDateString } from './util'
+import { toDateString, useSyncState } from './util'
 import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 
@@ -9,11 +9,7 @@ export function Person() {
     let [castFilter, setCastFilter] = useState('movie')
     let [crewFilter, setCrewFilter] = useState('ALL')
 
-    let [tab, setTab] = useState(localStorage.getItem('personTab') || 'BIO')
-
-    useEffect(() => {
-        localStorage.setItem('personTab', tab)
-    }, [tab])
+    let [tab, setTab] = useSyncState({ key: 'personTab', initVal: 'BIO' })
 
     let { id } = useParams()
     let [res] = usePersonQuery({ id })

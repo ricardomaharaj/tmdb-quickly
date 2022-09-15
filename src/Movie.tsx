@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
-import { runtimeCalc, toDateString } from './util'
+import { runtimeCalc, toDateString, useSyncState } from './util'
 import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 
@@ -20,11 +20,7 @@ export function Movie() {
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
 
-    let [tab, setTab] = useState(localStorage.getItem('movieTab') || 'INFO')
-
-    useEffect(() => {
-        localStorage.setItem('movieTab', tab)
-    }, [tab])
+    let [tab, setTab] = useSyncState({ key: 'movieTab', initVal: 'INFO' })
 
     let { id } = useParams()
     let [res] = useMovieQuery({ id })
