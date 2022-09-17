@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
 import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
-import { Fragment } from 'react'
 import { useSyncState } from './util'
 
 export function Home() {
@@ -23,16 +22,18 @@ export function Home() {
 
     const MAX_OVERVIEW_LENGTH = 100
 
-    const load_silhouette_card = (
-        <div className='row bg2 p-2 rounded-xl'>
+    const load_silhouette = (
+        <>
             <div className='bg3 rounded-xl w-[94px] h-[141px]'></div>
             <div className='col space-y-1 pl-2'>
                 <div className='row bg3 p-2 w-[150px] rounded-full' />
                 <div className='row bg3 p-2 w-[100px] rounded-full' />
                 <div className='row bg3 p-2 w-[50px] rounded-full' />
             </div>
-        </div>
+        </>
     )
+
+    const load_array: Array<JSX.Element> = new Array(9).fill(load_silhouette)
 
     if (error) return <div className='err'>{error.message}</div>
 
@@ -63,13 +64,16 @@ export function Home() {
                     </div>
                 ))}
             </div>
+            {}
             <div className='grid123'>
                 {fetching ? (
-                    <div className='grid123'>
-                        {new Array(9).fill(load_silhouette_card).map((x, i) => (
-                            <Fragment key={i}>{x}</Fragment>
+                    <>
+                        {load_array.map((x, i) => (
+                            <div className='row bg2 p-2 rounded-xl' key={i}>
+                                {x}
+                            </div>
                         ))}
-                    </div>
+                    </>
                 ) : (
                     <>
                         {results
