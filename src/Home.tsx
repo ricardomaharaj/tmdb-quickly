@@ -3,6 +3,7 @@ import { useSearchQuery } from './gql'
 import { IMG_URLs } from './consts'
 import { Stars } from './Stars'
 import { useSyncState } from './util'
+import { useEffect } from 'react'
 
 export function Home() {
     document.title = 'TMDB Quickly'
@@ -10,6 +11,8 @@ export function Home() {
     let [query, setQuery] = useSyncState({ key: 'query', initVal: '' })
     let [page, setPage] = useSyncState({ key: 'page', initVal: '1' })
     let [tab, setTab] = useSyncState({ key: 'homeTab', initVal: 'movie' })
+
+    useEffect(() => setPage('1'), [query])
 
     let nextPage = () => setPage((parseInt(page) + 1).toString())
     let lastPage = () => setPage((parseInt(page) - 1).toString())
