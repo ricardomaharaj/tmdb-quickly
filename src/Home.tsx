@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
-import { IMG_URLs } from './consts'
+import {
+    ADVANCED_SEARCH_ICON,
+    IMG_URLs,
+    LOADER__SEARCH_CARD_ARRAY,
+    MAX_OVERVIEW_LENGTH
+} from './consts'
 import { Stars } from './Stars'
 import { useSyncState } from './util'
 import { useEffect } from 'react'
@@ -8,7 +13,7 @@ import { useEffect } from 'react'
 export function Home() {
     document.title = 'TMDB Quickly'
 
-    let [query, setQuery] = useSyncState({ key: 'query', initVal: '' })
+    let [query, setQuery] = useSyncState({ key: 'query' })
     let [page, setPage] = useSyncState({ key: 'page', initVal: '1' })
     let [tab, setTab] = useSyncState({ key: 'homeTab', initVal: 'movie' })
 
@@ -22,21 +27,6 @@ export function Home() {
 
     let results = data?.search?.results
     let maxPages = data?.search?.total_pages
-
-    const MAX_OVERVIEW_LENGTH = 100
-
-    const load_silhouette = (
-        <>
-            <div className='bg3 rounded-xl w-[94px] h-[141px]'></div>
-            <div className='col space-y-1 pl-2'>
-                <div className='row bg3 p-2 w-[150px] rounded-full' />
-                <div className='row bg3 p-2 w-[100px] rounded-full' />
-                <div className='row bg3 p-2 w-[50px] rounded-full' />
-            </div>
-        </>
-    )
-
-    const load_array: Array<JSX.Element> = new Array(9).fill(load_silhouette)
 
     if (error) return <div className='err'>{error.message}</div>
 
@@ -66,12 +56,19 @@ export function Home() {
                         {x.name}
                     </div>
                 ))}
+                {query && (
+                    <Link
+                        to='/advancedSearch'
+                        className='bg2 px-3 py-2 rounded-xl'
+                    >
+                        {ADVANCED_SEARCH_ICON}
+                    </Link>
+                )}
             </div>
-            {}
             <div className='grid123'>
                 {fetching ? (
                     <>
-                        {load_array.map((x, i) => (
+                        {LOADER__SEARCH_CARD_ARRAY.map((x, i) => (
                             <div className='row bg2 p-2 rounded-xl' key={i}>
                                 {x}
                             </div>
@@ -83,7 +80,7 @@ export function Home() {
                             ?.filter((x) => x.media_type === tab)
                             .map((x, i) => (
                                 <Link
-                                    to={`${x.media_type}/${x.id}`}
+                                    to={`/${x.media_type}/${x.id}`}
                                     className='card'
                                     key={i}
                                 >
@@ -142,7 +139,9 @@ export function Home() {
             {query && (
                 <div className='btn-row'>
                     <button
-                        className='btn bg2'
+                        className={`btn ${
+                            parseInt(page) <= 1 ? 'disabled' : 'bg2'
+                        }`}
                         disabled={parseInt(page) <= 1}
                         onClick={lastPage}
                     >
@@ -150,7 +149,9 @@ export function Home() {
                     </button>
                     <div className='btn bg2'>{page}</div>
                     <button
-                        className='btn bg2'
+                        className={`btn ${
+                            parseInt(page) >= maxPages! ? 'disabled' : 'bg2'
+                        }`}
                         disabled={parseInt(page) >= maxPages!}
                         onClick={nextPage}
                     >
