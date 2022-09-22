@@ -21,7 +21,7 @@ export function runtimeCalc(runtime: number) {
 
 type SyncState = {
     key: string
-    initVal: string
+    initVal?: string
 }
 /* 
     string states that are synced with localstorage
@@ -32,7 +32,7 @@ export function useSyncState({
     initVal
 }: SyncState): [string, React.Dispatch<React.SetStateAction<string>>] {
     let [state, setState] = React.useState<string>(
-        localStorage.getItem(key) || initVal
+        localStorage.getItem(key) || initVal || ''
     )
     React.useEffect(() => {
         localStorage.setItem(key, state)
