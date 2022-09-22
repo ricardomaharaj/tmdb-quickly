@@ -6,6 +6,7 @@ import { Show } from './Show'
 import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
+import { AdvancedSearch } from './AdvancedSearch'
 
 let url =
     process.env.NODE_ENV === 'production'
@@ -29,6 +30,10 @@ export function App() {
                         </Link>
                         <Routes>
                             <Route path='/' element={<Home />} />
+                            <Route
+                                path='/advancedSearch'
+                                element={<AdvancedSearch />}
+                            />
                             <Route path='/movie/:id' element={<Movie />} />
                             <Route path='/tv/:id' element={<Show />} />
                             <Route
