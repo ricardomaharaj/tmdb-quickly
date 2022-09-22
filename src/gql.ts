@@ -691,30 +691,21 @@ export function useFindQuery(variables: { imdb: string }) {
     })
 }
 
-export function useAdvancedMovieQuery(variables: {
+export function useyearQuery(variables: {
     query: string
     page: string
     year: string
+    type: string
 }) {
-    return useQuery<{ advancedMovie: SearchResults }>({
+    return useQuery<{ year: SearchResults }>({
         query: gql`
-            query ($query: String, $page: String, $year: String) {
-                advancedMovie(query: $query, page: $page, year: $year)
-            }
-        `,
-        variables
-    })
-}
-
-export function useAdvancedShowQuery(variables: {
-    query: string
-    page: string
-    year: string
-}) {
-    return useQuery<{ advancedShow: SearchResults }>({
-        query: gql`
-            query ($query: String, $page: String, $year: String) {
-                advancedShow(query: $query, page: $page, year: $year)
+            query (
+                $query: String
+                $page: String
+                $year: String
+                $type: String
+            ) {
+                year(query: $query, page: $page, year: $year, type: $type)
             }
         `,
         variables
