@@ -8,7 +8,7 @@ import {
 } from './consts'
 import { Stars } from './Stars'
 import { useSyncState } from './util'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function Home() {
     document.title = 'TMDB Quickly'
@@ -16,6 +16,18 @@ export function Home() {
     let [query, setQuery] = useSyncState({ key: 'query' })
     let [page, setPage] = useSyncState({ key: 'page', initVal: '1' })
     let [tab, setTab] = useSyncState({ key: 'homeTab', initVal: 'movie' })
+
+    let [timeoutRef, setTimeoutRef] = useState<NodeJS.Timeout>()
+
+    let updateQuery = () => {
+        if (timeoutRef) {
+            clearTimeout(timeoutRef)
+        }
+        let to_ref = setTimeout(() => {
+            setQuery(document.querySelector<HTMLInputElement>('#query')!.value)
+        }, 1000)
+        setTimeoutRef(to_ref)
+    }
 
     useEffect(() => setPage('1'), [query])
 
@@ -38,9 +50,7 @@ export function Home() {
                 placeholder='SEARCH'
                 defaultValue={query}
                 className='bg2 p-3 text-xl text-center rounded-xl outline-none'
-                onKeyDown={(e) =>
-                    e.key === 'Enter' ? setQuery(e.currentTarget.value) : null
-                }
+                onChange={() => updateQuery()}
             />
             <div className='btn-row'>
                 {[

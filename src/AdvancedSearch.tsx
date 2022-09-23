@@ -1,7 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-    ADVANCED_SEARCH_ICON,
     IMG_URLs,
     LOADER__SEARCH_CARD_ARRAY,
     MAX_OVERVIEW_LENGTH
@@ -15,6 +14,22 @@ export function AdvancedSearch() {
     let [query, setQuery] = useSyncState({ key: 'query' })
     let [year, setYear] = useSyncState({ key: 'year' })
     let [imdb, setIMDB] = useSyncState({ key: 'imdb' })
+    let [timeoutRef, setTimeoutRef] = useState<NodeJS.Timeout>()
+
+    let updateArgs = () => {
+        setQuery(
+            document.querySelector<HTMLInputElement>('#query')!.value || ''
+        )
+        setYear(document.querySelector<HTMLInputElement>('#year')!.value || '')
+    }
+
+    let timeoutUpdate = () => {
+        clearTimeout(timeoutRef)
+        let to_ref = setTimeout(() => {
+            updateArgs()
+        }, 1000)
+        setTimeoutRef(to_ref)
+    }
 
     useEffect(() => {
         setPage('1')
@@ -33,13 +48,6 @@ export function AdvancedSearch() {
     let nextPage = () => setPage((parseInt(page) + 1).toString())
     let previousPage = () => setPage((parseInt(page) - 1).toString())
 
-    let updateArgs = () => {
-        setQuery(
-            document.querySelector<HTMLInputElement>('#query')!.value || ''
-        )
-        setYear(document.querySelector<HTMLInputElement>('#year')!.value || '')
-    }
-
     return (
         <>
             <div className='row justify-center'>
@@ -55,12 +63,6 @@ export function AdvancedSearch() {
                         {x}
                     </div>
                 ))}
-                <div
-                    className='bg2 px-3 py-2 rounded-xl'
-                    onClick={() => updateArgs()}
-                >
-                    {ADVANCED_SEARCH_ICON}
-                </div>
             </div>
 
             {tab === 'IMDB ID' ? (
@@ -78,6 +80,7 @@ export function AdvancedSearch() {
                         id='query'
                         className='bg2 p-2 rounded-xl text-lg'
                         placeholder='Search Query'
+                        onChange={() => timeoutUpdate()}
                         defaultValue={query}
                     />
                     <input
@@ -85,6 +88,7 @@ export function AdvancedSearch() {
                         id='year'
                         className='bg2 p-2 rounded-xl text-lg'
                         placeholder='Year'
+                        onChange={() => timeoutUpdate()}
                         defaultValue={year}
                     />
                 </>
