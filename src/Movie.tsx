@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
 
 const RELEASE_TYPES = [
     '',
@@ -28,36 +28,10 @@ export function Movie({ state, updateState }: Props) {
         (x) => x?.iso_3166_1 === 'US'
     )[0]?.release_dates
 
-    const load_silhouette = (
-        <>
-            <div className='flex flex-row bg2 rounded-xl xl:p-8'>
-                <div className='bg3 rounded-xl w-[150px] h-[225px] m-2'></div>
-                <div className='col space-y-2 ml-1 mt-2'>
-                    <div className='bg3 w-[150px] p-2 rounded-xl' />
-                    <div className='bg3 w-[100px] p-2 rounded-xl' />
-                    <div className='bg3 w-[50px]  p-2 rounded-xl' />
-                </div>
-            </div>
-            <div className='flex flex-row space-x-2'>
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-            </div>
-            <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
-            <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
-            <div className='flex flex-row space-x-2'>
-                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
-                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
-                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
-            </div>
-        </>
-    )
+    if (fetching) return LOAD_SILHOUETTE
 
-    if (fetching) return load_silhouette
-
-    if (error) return <div className='err'>{error.message}</div>
+    if (error)
+        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
     return (
         <>
             <div

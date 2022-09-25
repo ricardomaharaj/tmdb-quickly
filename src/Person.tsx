@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
 
 export function Person({ state, updateState }: Props) {
     let [castFilter, setCastFilter] = useState('movie')
@@ -43,28 +43,7 @@ export function Person({ state, updateState }: Props) {
         )
     }
 
-    const load_silhouette = (
-        <>
-            <div className='bg2 row w-full p-1 rounded-xl'>
-                <div className='bg3 w-[150px] h-[225px] m-1 rounded-xl'></div>
-                <div className='col m-1 space-y-2'>
-                    <div className='bg3 rounded-xl p-2 w-[150px]'></div>
-                    <div className='bg3 rounded-xl p-2 w-[100px]'></div>
-                    <div className='bg3 rounded-xl p-2 w-[50px]'></div>
-                </div>
-            </div>
-            <div className='scroll-row'>
-                <div className='bg2 btn w-[80px] h-[32px]'></div>
-                <div className='bg2 btn w-[80px] h-[32px]'></div>
-                <div className='bg2 btn w-[80px] h-[32px]'></div>
-                <div className='bg2 btn w-[80px] h-[32px]'></div>
-                <div className='bg2 btn w-[80px] h-[32px]'></div>
-            </div>
-            <div className='bubble w-full h-[200px] '></div>
-        </>
-    )
-
-    if (fetching) return load_silhouette
+    if (fetching) return LOAD_SILHOUETTE
     if (error)
         return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
     return (

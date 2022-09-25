@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
 
 export function Season({ state, updateState }: Props) {
     let { id, season_number } = useParams()
@@ -9,33 +9,9 @@ export function Season({ state, updateState }: Props) {
     let { data, fetching, error } = res
     let season = data?.season
 
-    const load_silhouette = (
-        <>
-            <div className='row bg2 p-1 w-full rounded-xl'>
-                <div className='bg3 w-[150px] m-1 h-[225px] rounded-xl' />
-                <div className='col m-1 space-y-2'>
-                    <div className='bg3 p-2 rounded-xl w-[150px]' />
-                    <div className='bg3 p-2 rounded-xl w-[100px]' />
-                    <div className='bg3 p-2 rounded-xl w-[50px]' />
-                </div>
-            </div>
-            <div className='scroll-row'>
-                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
-                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
-                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
-                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
-                <div className='btn bg2 p-2 w-[80px] h-[32px]' />
-            </div>
-            <div className='col space-y-2'>
-                <div className='bubble w-full h-[150px]' />
-                <div className='bubble w-full h-[150px]' />
-                <div className='bubble w-full h-[150px]' />
-            </div>
-        </>
-    )
-
-    if (fetching) return load_silhouette
-    if (error) return <div className='err'>{error.message}</div>
+    if (fetching) return LOAD_SILHOUETTE
+    if (error)
+        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
     return (
         <>
             <div

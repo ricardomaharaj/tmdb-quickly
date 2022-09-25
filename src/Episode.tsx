@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
 
 export function Episode({ state, updateState }: Props) {
     let { id, season_number, episode_number } = useParams()
@@ -9,28 +9,9 @@ export function Episode({ state, updateState }: Props) {
     let { data, fetching, error } = res
     let episode = data?.episode
 
-    const load_silhouette = (
-        <>
-            <div className='row bg2 rounded-xl w-full h-[150px]'>
-                <div className='col m-2 space-y-2'>
-                    <div className='bg3 rounded-xl p-2 w-[150px]'></div>
-                    <div className='bg3 rounded-xl p-2 w-[100px]'></div>
-                    <div className='bg3 rounded-xl p-2 w-[50px]'></div>
-                </div>
-            </div>
-            <div className='scroll-row'>
-                <div className='bg2 btn w-[60px] h-[32px]'></div>
-                <div className='bg2 btn w-[60px] h-[32px]'></div>
-                <div className='bg2 btn w-[60px] h-[32px]'></div>
-                <div className='bg2 btn w-[60px] h-[32px]'></div>
-                <div className='bg2 btn w-[60px] h-[32px]'></div>
-            </div>
-            <div className='bubble w-full h-[100px]'></div>
-        </>
-    )
-
-    if (fetching) return load_silhouette
-    if (error) return <div className='err'>{error.message}</div>
+    if (fetching) return LOAD_SILHOUETTE
+    if (error)
+        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
     return (
         <>
             <div

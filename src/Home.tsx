@@ -28,7 +28,7 @@ export function Home({ state, updateState }: Props) {
     const MAX_OVERVIEW_LENGTH = 100
 
     if (error)
-        return <div className='bg-red-900 rounded-xl'>{error.message}</div>
+        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
 
     return (
         <>

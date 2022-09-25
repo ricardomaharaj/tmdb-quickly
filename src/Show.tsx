@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
 
 export function Show({ state, updateState }: Props) {
     let [imageTab, setImageTab] = useState('POSTERS')
@@ -14,35 +14,9 @@ export function Show({ state, updateState }: Props) {
 
     document.title = `${show?.name} | TMDB Quickly`
 
-    const load_silhouette = (
-        <>
-            <div className='row bg2 rounded-xl xl:p-8'>
-                <div className='bg3 rounded-xl w-[150px] h-[225px] m-2'></div>
-                <div className='col space-y-2 ml-1 mt-2'>
-                    <div className='bg3 w-[150px] p-2 rounded-xl' />
-                    <div className='bg3 w-[100px] p-2 rounded-xl' />
-                    <div className='bg3 w-[50px]  p-2 rounded-xl' />
-                </div>
-            </div>
-            <div className=''>
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-                <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
-            </div>
-            <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
-            <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
-            <div className=''>
-                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
-                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
-                <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
-            </div>
-        </>
-    )
-
-    if (fetching) return load_silhouette
-    if (error) return <div className='err'>{error.message}</div>
+    if (fetching) return LOAD_SILHOUETTE
+    if (error)
+        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
     return (
         <>
             <div
