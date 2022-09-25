@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
 import { IMG_URLs, Props } from './consts'
+import { Fragment } from 'react'
 
 export function Home({ state, updateState }: Props) {
     document.title = 'TMDB Quickly'
@@ -16,11 +17,13 @@ export function Home({ state, updateState }: Props) {
 
     const load_card_silohette = (
         <>
-            <div className='bg3 rounded-xl w-[94px] h-[141px]'></div>
-            <div className='col space-y-1 pl-2'>
-                <div className='row bg3 p-2 w-[150px] rounded-full' />
-                <div className='row bg3 p-2 w-[100px] rounded-full' />
-                <div className='row bg3 p-2 w-[50px] rounded-full' />
+            <div className='flex flex-row bg-slate-800 rounded-xl'>
+                <div className='bg-slate-700 rounded-xl m-2 w-[94px] h-[141px]'></div>
+                <div className='flex flex-col mt-2 space-y-2'>
+                    <div className='bg-slate-700 rounded-xl p-2 w-[150px]'></div>
+                    <div className='bg-slate-700 rounded-xl p-2 w-[100px]'></div>
+                    <div className='bg-slate-700 rounded-xl p-2 w-[50px]'></div>
+                </div>
             </div>
         </>
     )
@@ -67,12 +70,7 @@ export function Home({ state, updateState }: Props) {
                 {fetching ? (
                     <>
                         {new Array(9).fill(load_card_silohette).map((x, i) => (
-                            <div
-                                className='flex flex-row bg2 p-2 rounded-xl'
-                                key={i}
-                            >
-                                {x}
-                            </div>
+                            <Fragment key={i}>{x}</Fragment>
                         ))}
                     </>
                 ) : (
