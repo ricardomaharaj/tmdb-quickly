@@ -1,46 +1,34 @@
 import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
-import {
-    ADVANCED_SEARCH_ICON,
-    IMG_URLs,
-    LOADER__SEARCH_CARD_ARRAY,
-    MAX_OVERVIEW_LENGTH
-} from './consts'
-import { Stars } from './Stars'
-import { useSyncState } from './util'
-import { useEffect, useState } from 'react'
+import { IMG_URLs, Props } from './consts'
 
-export function Home() {
+export function Home({ state, updateState }: Props) {
     document.title = 'TMDB Quickly'
 
-    let [query, setQuery] = useSyncState({ key: 'query' })
-    let [page, setPage] = useSyncState({ key: 'page', initVal: '1' })
-    let [tab, setTab] = useSyncState({ key: 'homeTab', initVal: 'movie' })
-
-    let [timeoutRef, setTimeoutRef] = useState<NodeJS.Timeout>()
-
-    let updateQuery = () => {
-        if (timeoutRef) {
-            clearTimeout(timeoutRef)
-        }
-        let to_ref = setTimeout(() => {
-            setQuery(document.querySelector<HTMLInputElement>('#query')!.value)
-        }, 1000)
-        setTimeoutRef(to_ref)
-    }
-
-    useEffect(() => setPage('1'), [query])
-
-    let nextPage = () => setPage((parseInt(page) + 1).toString())
-    let lastPage = () => setPage((parseInt(page) - 1).toString())
-
-    let [res] = useSearchQuery({ query, page })
+    let [res] = useSearchQuery({
+        query: state.query,
+        page: state.page.toString()
+    })
     let { data, fetching, error } = res
 
     let results = data?.search?.results
     let maxPages = data?.search?.total_pages
 
-    if (error) return <div className='err'>{error.message}</div>
+    const load_card_silohette = (
+        <>
+            <div className='bg3 rounded-xl w-[94px] h-[141px]'></div>
+            <div className='col space-y-1 pl-2'>
+                <div className='row bg3 p-2 w-[150px] rounded-full' />
+                <div className='row bg3 p-2 w-[100px] rounded-full' />
+                <div className='row bg3 p-2 w-[50px] rounded-full' />
+            </div>
+        </>
+    )
+
+    const MAX_OVERVIEW_LENGTH = 100
+
+    if (error)
+        return <div className='bg-red-900 rounded-xl'>{error.message}</div>
 
     return (
         <>
@@ -48,38 +36,41 @@ export function Home() {
                 type='text'
                 id='query'
                 placeholder='SEARCH'
-                defaultValue={query}
-                className='bg2 p-3 text-xl text-center rounded-xl outline-none'
-                onChange={() => updateQuery()}
+                defaultValue={state.query}
+                className='bg-slate-800 p-3 text-xl text-center rounded-xl outline-none'
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        updateState({ query: e.currentTarget.value })
+                    }
+                }}
             />
-            <div className='btn-row'>
+            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
                 {[
                     { name: 'MOVIES', val: 'movie' },
                     { name: 'SHOWS', val: 'tv' },
                     { name: 'PEOPLE', val: 'person' }
                 ].map((x, i) => (
-                    <div
-                        className={`btn ${tab === x.val ? 'bg3' : 'bg2'}`}
-                        onClick={() => setTab(x.val)}
+                    <button
+                        className={`${
+                            state.homeTab === x.val
+                                ? 'bg-slate-700'
+                                : 'bg-slate-800'
+                        } hover:bg-slate-600 rounded-xl p-2`}
+                        onClick={() => updateState({ homeTab: x.val })}
                         key={i}
                     >
                         {x.name}
-                    </div>
+                    </button>
                 ))}
-                {query && (
-                    <Link
-                        to='/advancedSearch'
-                        className='bg2 px-3 py-2 rounded-xl'
-                    >
-                        {ADVANCED_SEARCH_ICON}
-                    </Link>
-                )}
             </div>
-            <div className='grid123'>
+            <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                 {fetching ? (
                     <>
-                        {LOADER__SEARCH_CARD_ARRAY.map((x, i) => (
-                            <div className='row bg2 p-2 rounded-xl' key={i}>
+                        {new Array(9).fill(load_card_silohette).map((x, i) => (
+                            <div
+                                className='flex flex-row bg2 p-2 rounded-xl'
+                                key={i}
+                            >
                                 {x}
                             </div>
                         ))}
@@ -87,11 +78,11 @@ export function Home() {
                 ) : (
                     <>
                         {results
-                            ?.filter((x) => x.media_type === tab)
+                            ?.filter((x) => x.media_type === state.homeTab)
                             .map((x, i) => (
                                 <Link
                                     to={`/${x.media_type}/${x.id}`}
-                                    className='card'
+                                    className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
                                     key={i}
                                 >
                                     {(x.poster_path || x.profile_path) && (
@@ -99,32 +90,28 @@ export function Home() {
                                             src={`${IMG_URLs.W94H141}${
                                                 x.poster_path || x.profile_path
                                             }`}
-                                            className='card-img w94-h141'
+                                            className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
                                             width='94'
                                             height='141'
                                             loading='lazy'
                                             alt=''
                                         />
                                     )}
-                                    <div className='card-text'>
-                                        {query &&
-                                            (x.release_date ||
-                                                x.first_air_date) && (
-                                                <div>
-                                                    {(
-                                                        x.release_date ||
-                                                        x.first_air_date
-                                                    )?.substring(0, 4)}
-                                                </div>
-                                            )}
+                                    <div>
+                                        {(x.release_date ||
+                                            x.first_air_date) && (
+                                            <div className='text-sm'>
+                                                {(
+                                                    x.release_date ||
+                                                    x.first_air_date
+                                                )?.substring(0, 4)}
+                                            </div>
+                                        )}
                                         {(x.name || x.title) && (
                                             <div>{x.name || x.title}</div>
                                         )}
-                                        {x.vote_average! > 0 && (
-                                            <Stars average={x.vote_average} />
-                                        )}
                                         {x.overview && (
-                                            <div className='subtext'>
+                                            <div className='text-slate-400'>
                                                 {x.overview.length >
                                                 MAX_OVERVIEW_LENGTH
                                                     ? x.overview
@@ -146,24 +133,28 @@ export function Home() {
                     </>
                 )}
             </div>
-            {query && (
-                <div className='btn-row'>
+            {state.query && (
+                <div className='flex flex-row space-x-2'>
                     <button
-                        className={`btn ${
-                            parseInt(page) <= 1 ? 'disabled' : 'bg2'
-                        }`}
-                        disabled={parseInt(page) <= 1}
-                        onClick={lastPage}
+                        className={`${
+                            state.page <= 1
+                                ? 'text-slate-600'
+                                : 'bg-slate-800 hover:bg-slate-600'
+                        } rounded-xl p-2`}
+                        disabled={state.page <= 1}
+                        onClick={() => updateState({ page: state.page - 1 })}
                     >
                         BACK
                     </button>
-                    <div className='btn bg2'>{page}</div>
+                    <div className='p-2'>{state.page}</div>
                     <button
-                        className={`btn ${
-                            parseInt(page) >= maxPages! ? 'disabled' : 'bg2'
-                        }`}
-                        disabled={parseInt(page) >= maxPages!}
-                        onClick={nextPage}
+                        className={`${
+                            state.page >= maxPages!
+                                ? 'text-slate-600'
+                                : 'bg-slate-800 hover:bg-slate-600'
+                        } rounded-xl p-2`}
+                        disabled={state.page >= maxPages!}
+                        onClick={() => updateState({ page: state.page + 1 })}
                     >
                         NEXT
                     </button>

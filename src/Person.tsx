@@ -1,15 +1,11 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
-import { toDateString, useSyncState } from './util'
-import { IMG_URLs } from './consts'
-import { Stars } from './Stars'
+import { toDateString } from './util'
+import { IMG_URLs, Props } from './consts'
 
-export function Person() {
+export function Person({ state, updateState }: Props) {
     let [castFilter, setCastFilter] = useState('movie')
-    let [crewFilter, setCrewFilter] = useState('ALL')
-
-    let [tab, setTab] = useSyncState({ key: 'personTab', initVal: 'BIO' })
 
     let { id } = useParams()
     let [res] = usePersonQuery({ id })
@@ -17,13 +13,6 @@ export function Person() {
     let person = data?.person
 
     document.title = `${person?.name} | TMDB Quickly`
-
-    let crewFilterOpts: string[] = []
-    person?.combined_credits?.crew?.forEach(({ job }) => {
-        if (crewFilterOpts.findIndex((x) => x === job) === -1)
-            crewFilterOpts.push(job!)
-    })
-    crewFilterOpts.splice(0, 0, 'ALL')
 
     let calculateAge = (birthday: string, deathday?: string) => {
         let age: number = 0
@@ -76,20 +65,21 @@ export function Person() {
     )
 
     if (fetching) return load_silhouette
-    if (error) return <div className='err'>{error.message}</div>
+    if (error)
+        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
     return (
         <>
-            <div className='card'>
+            <div className='flex flex-row bg-slate-800 rounded-xl p-2'>
                 {person?.profile_path && (
                     <img
                         src={`${IMG_URLs.W150H225}${person?.profile_path}`}
-                        className='card-img w150-h225'
+                        className='rounded-xl mr-2 max-w-[150px] max-h-[225px]'
                         width='150'
                         height='225'
                         alt=''
                     />
                 )}
-                <div className='card-text'>
+                <div className='flex flex-col space-y-1'>
                     <div>{person?.name}</div>
                     {person?.birthday && (
                         <div>{`Born: ${toDateString(person.birthday)}`}</div>
@@ -110,74 +100,72 @@ export function Person() {
                         )}
                 </div>
             </div>
-            <div className='scroll-row'>
+            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
                 {['BIO', 'CAST', 'CREW', 'IMAGES'].map((x, i) => (
-                    <div
-                        className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
-                        onClick={() => setTab(x)}
+                    <button
+                        className={`${
+                            state.personTab === x
+                                ? 'bg-slate-700'
+                                : 'bg-slate-800'
+                        } rounded-xl p-2 hover:bg-slate-600`}
+                        onClick={() => updateState({ personTab: x })}
                         key={i}
                     >
                         {x}
-                    </div>
+                    </button>
                 ))}
             </div>
-            {tab === 'BIO' && (
+            {state.personTab === 'BIO' && (
                 <>
                     {person?.biography && (
-                        <div className='bubble space-y-2'>
+                        <div className='bg-slate-800 rounded-xl p-3 space-y-2'>
                             {bioSplitter(person.biography)}
                         </div>
                     )}
                 </>
             )}
-            {tab === 'CAST' && (
+            {state.personTab === 'CAST' && (
                 <>
-                    <div className='btn-row'>
+                    <div className='flex flex-row space-x-2'>
                         {[
                             { name: 'MOVIES', val: 'movie' },
                             { name: 'SHOWS', val: 'tv' }
                         ].map((x, i) => (
-                            <div
-                                className={`btn ${
-                                    castFilter === x.val ? 'bg3' : 'bg2'
-                                }`}
+                            <button
+                                className={`${
+                                    castFilter === x.val
+                                        ? 'bg-slate-700'
+                                        : 'bg-slate-800'
+                                } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() => {
                                     setCastFilter(x.val)
                                 }}
                                 key={i}
                             >
                                 {x.name}
-                            </div>
+                            </button>
                         ))}
                     </div>
-                    <div className='grid123'>
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {person?.combined_credits?.cast
                             ?.filter((x) => x.media_type === castFilter)
-                            ?.sort((a, b) => {
-                                let aDate = a.release_date || a.first_air_date
-                                let bDate = b.release_date || b.first_air_date
-                                if (!aDate || !bDate) return 1
-                                if (Date.parse(aDate) > Date.parse(bDate))
-                                    return -1
-                                else return 1
-                            })
                             ?.map((x, i) => (
                                 <Link
                                     to={`/${x.media_type}/${x.id}`}
-                                    className='card'
+                                    className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
                                     key={i}
                                 >
                                     {x.poster_path && (
                                         <img
                                             src={`${IMG_URLs.W94H141}${x.poster_path}`}
-                                            className='card-img w94-h141'
+                                            className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
                                             loading='lazy'
                                             width='94'
                                             height='141'
                                             alt=''
                                         />
                                     )}
-                                    <div className='card-text'>
+                                    <div>
                                         {(x.release_date ||
                                             x.first_air_date) && (
                                             <div>
@@ -191,118 +179,72 @@ export function Person() {
                                             <div>{x.name || x.title}</div>
                                         )}
                                         {x.character && (
-                                            <div className='subtext'>
+                                            <div className='text-slate-400'>
                                                 {x.character}
                                             </div>
                                         )}
-                                        {x.vote_average
-                                            ? x.vote_average > 0 && (
-                                                  <Stars
-                                                      average={x.vote_average}
-                                                  />
-                                              )
-                                            : null}
                                     </div>
                                 </Link>
                             ))}
                     </div>
                 </>
             )}
-            {tab === 'CREW' && (
-                <>
-                    <div className='single-row'>
-                        <select
-                            defaultValue={crewFilter}
-                            onChange={(e) => setCrewFilter(e.target.value)}
+            {state.personTab === 'CREW' && (
+                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                    {person?.combined_credits?.crew?.map((x, i) => (
+                        <Link
+                            to={`/${x.media_type}/${x.id}`}
+                            className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
+                            key={i}
                         >
-                            {crewFilterOpts.map((x, i) => (
-                                <option value={x} key={i}>
-                                    {x}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className='grid123'>
-                        {person?.combined_credits?.crew
-                            ?.filter((x) => {
-                                if (crewFilter === 'ALL') return true
-                                if (x.job === crewFilter) return true
-                                else return false
-                            })
-                            ?.sort((a, b) => {
-                                let aDate = a.release_date || a.first_air_date
-                                let bDate = b.release_date || b.first_air_date
-                                if (!aDate || !bDate) return 1
-                                if (Date.parse(aDate) > Date.parse(bDate))
-                                    return -1
-                                else return 1
-                            })
-                            ?.map((x, i) => (
-                                <Link
-                                    to={`/${x.media_type}/${x.id}`}
-                                    key={i}
-                                    className='card'
-                                >
-                                    {x.poster_path && (
-                                        <img
-                                            src={`${IMG_URLs.W94H141}${x.poster_path}`}
-                                            className='card-img w94-h141'
-                                            loading='lazy'
-                                            width='94'
-                                            height='141'
-                                            alt=''
-                                        />
-                                    )}
-                                    <div className='card-text'>
-                                        {(x.release_date ||
-                                            x.first_air_date) && (
-                                            <div>
-                                                {(
-                                                    x.release_date ||
-                                                    x.first_air_date
-                                                )?.substring(0, 4)}
-                                            </div>
-                                        )}
-                                        {(x.name || x.title) && (
-                                            <div>{x.name || x.title}</div>
-                                        )}
-                                        {x.job && (
-                                            <div className='subtext'>
-                                                {x.job}
-                                            </div>
-                                        )}
-                                        {x.vote_average
-                                            ? x.vote_average > 0 && (
-                                                  <Stars
-                                                      average={x.vote_average}
-                                                  />
-                                              )
-                                            : null}
-                                    </div>
-                                </Link>
-                            ))}
-                    </div>
-                </>
-            )}
-            {tab === 'IMAGES' && (
-                <>
-                    <div className='grid234'>
-                        {person?.images?.profiles?.map((x, i) => (
-                            <a
-                                href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                key={i}
-                            >
+                            {x.poster_path && (
                                 <img
-                                    src={`${IMG_URLs.W500}${x.file_path}`}
+                                    src={`${IMG_URLs.W94H141}${x.poster_path}`}
+                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
                                     loading='lazy'
+                                    width='94'
+                                    height='141'
                                     alt=''
                                 />
-                            </a>
-                        ))}
-                    </div>
-                </>
+                            )}
+                            <div>
+                                {(x.release_date || x.first_air_date) && (
+                                    <div className='text-sm'>
+                                        {(
+                                            x.release_date || x.first_air_date
+                                        )?.substring(0, 4)}
+                                    </div>
+                                )}
+                                {(x.name || x.title) && (
+                                    <div>{x.name || x.title}</div>
+                                )}
+                                {x.job && (
+                                    <div className='text-slate-400'>
+                                        {x.job}
+                                    </div>
+                                )}
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            )}
+            {state.personTab === 'IMAGES' && (
+                <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
+                    {person?.images?.profiles?.map((x, i) => (
+                        <a
+                            href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            key={i}
+                        >
+                            <img
+                                src={`${IMG_URLs.W500}${x.file_path}`}
+                                loading='lazy'
+                                alt=''
+                            />
+                        </a>
+                    ))}
+                </div>
             )}
         </>
     )

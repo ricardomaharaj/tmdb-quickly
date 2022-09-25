@@ -266,7 +266,6 @@ interface Show {
                 original_name?: string
                 popularity?: number
                 profile_path?: string
-                cast_id?: number
                 character?: string
                 credit_id?: string
                 order?: number
@@ -674,38 +673,6 @@ export function useEpisodeQuery(variables: {
                     season_number: $season_number
                     episode_number: $episode_number
                 )
-            }
-        `,
-        variables
-    })
-}
-
-export function useFindQuery(variables: { imdb: string }) {
-    return useQuery({
-        query: gql`
-            query ($imdb: String) {
-                find(imdb: $imdb)
-            }
-        `,
-        variables
-    })
-}
-
-export function useyearQuery(variables: {
-    query: string
-    page: string
-    year: string
-    type: string
-}) {
-    return useQuery<{ year: SearchResults }>({
-        query: gql`
-            query (
-                $query: String
-                $page: String
-                $year: String
-                $type: String
-            ) {
-                year(query: $query, page: $page, year: $year, type: $type)
             }
         `,
         variables

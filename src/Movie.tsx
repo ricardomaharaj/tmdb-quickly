@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
-import { runtimeCalc, toDateString, useSyncState } from './util'
-import { IMG_URLs } from './consts'
-import { Stars } from './Stars'
+import { runtimeCalc, toDateString } from './util'
+import { IMG_URLs, Props } from './consts'
 
 const RELEASE_TYPES = [
     '',
@@ -15,12 +14,8 @@ const RELEASE_TYPES = [
     'TV'
 ]
 
-export function Movie() {
+export function Movie({ state, updateState }: Props) {
     let [imageTab, setImageTab] = useState('POSTERS')
-    let [crewFilter, setCrewFilter] = useState('ALL')
-    let [videoFilter, setVideoFilter] = useState('ALL')
-
-    let [tab, setTab] = useSyncState({ key: 'movieTab', initVal: 'INFO' })
 
     let { id } = useParams()
     let [res] = useMovieQuery({ id })
@@ -33,27 +28,9 @@ export function Movie() {
         (x) => x?.iso_3166_1 === 'US'
     )[0]?.release_dates
 
-    let crewFilterOpts: string[] = []
-    let videoFilterOpts: string[] = []
-
-    movie?.credits?.crew?.forEach(({ job }) => {
-        if (crewFilterOpts.findIndex((x) => x === job) === -1)
-            crewFilterOpts.push(job!)
-    })
-    movie?.videos?.results?.forEach(({ type }) => {
-        if (videoFilterOpts.findIndex((x) => x === type) === -1)
-            videoFilterOpts.push(type!)
-    })
-
-    crewFilterOpts.sort((a, b) => {
-        return a > b ? 1 : -1
-    })
-    crewFilterOpts.splice(0, 0, 'ALL')
-    videoFilterOpts.splice(0, 0, 'ALL')
-
     const load_silhouette = (
         <>
-            <div className='row bg2 rounded-xl xl:p-8'>
+            <div className='flex flex-row bg2 rounded-xl xl:p-8'>
                 <div className='bg3 rounded-xl w-[150px] h-[225px] m-2'></div>
                 <div className='col space-y-2 ml-1 mt-2'>
                     <div className='bg3 w-[150px] p-2 rounded-xl' />
@@ -61,7 +38,7 @@ export function Movie() {
                     <div className='bg3 w-[50px]  p-2 rounded-xl' />
                 </div>
             </div>
-            <div className='row space-x-2'>
+            <div className='flex flex-row space-x-2'>
                 <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
                 <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
                 <div className='bg2 p-2 w-[80px] h-[32px] rounded-xl' />
@@ -70,7 +47,7 @@ export function Movie() {
             </div>
             <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
             <div className='bg2 p-2 w-full h-[200px] rounded-xl' />
-            <div className='row space-x-2'>
+            <div className='flex flex-row space-x-2'>
                 <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
                 <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
                 <div className='bg2 p-2 w-[100px] h-[100px] rounded-xl'></div>
@@ -84,64 +61,52 @@ export function Movie() {
     return (
         <>
             <div
-                className='bg-img'
+                className='bg-cover bg-center rounded-xl'
                 style={{
                     backgroundImage: `url(${IMG_URLs.W500}${movie?.backdrop_path})`
                 }}
             >
-                <div className='dark-card'>
+                <div className='p-2 xl:p-10 backdrop-brightness-50 rounded-xl flex flex-row'>
                     <img
                         src={`${IMG_URLs.W150H225}/${movie?.poster_path}`}
-                        className='dark-card-img w150-h225'
+                        className='max-w-[150px] max-h-[225px] rounded-xl mr-2'
                         width='150'
                         height='225'
                         alt=''
                     />
-                    <div className='dark-card-text'>
-                        {movie?.release_date && (
-                            <div>{toDateString(movie.release_date)}</div>
-                        )}
+                    <div>
                         {movie?.title && (
-                            <div
-                                onClick={() =>
-                                    navigator.clipboard.writeText(
-                                        movie?.title?.replaceAll(' ', '.') +
-                                            '.' +
-                                            movie?.release_date?.substring(0, 4)
-                                    )
-                                }
-                            >
-                                {movie?.title}
-                            </div>
+                            <div className='font-bold mb-1'>{movie?.title}</div>
                         )}
                         {movie?.tagline && (
                             <div className='text-sm'>{movie.tagline}</div>
                         )}
-                        {movie?.vote_average
-                            ? movie.vote_average > 0 && (
-                                  <Stars average={movie.vote_average} />
-                              )
-                            : null}
                     </div>
                 </div>
             </div>
-            <div className='scroll-row'>
+            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
                 {['INFO', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) => (
-                    <div
-                        className={`btn ${tab === x ? 'bg3' : 'bg2'}`}
-                        onClick={() => setTab(x)}
+                    <button
+                        className={`${
+                            state.movieTab === x
+                                ? 'bg-slate-700'
+                                : 'bg-slate-800'
+                        } rounded-xl p-2 hover:bg-slate-600`}
+                        onClick={() => updateState({ movieTab: x })}
                         key={i}
                     >
                         {x}
-                    </div>
+                    </button>
                 ))}
             </div>
-            {tab === 'INFO' && (
+            {state.movieTab === 'INFO' && (
                 <>
                     {movie?.overview && (
-                        <div className='bubble'>{movie.overview}</div>
+                        <div className='bg-slate-800 rounded-xl p-4'>
+                            {movie.overview}
+                        </div>
                     )}
-                    <div className='bubble'>
+                    <div className='bg-slate-800 rounded-xl p-4'>
                         {movie?.status && <div>Status: {movie?.status}</div>}
                         {movie?.runtime
                             ? movie.runtime > 0 && (
@@ -215,16 +180,22 @@ export function Movie() {
                             <span>{` ID: ${id}`}</span>
                         </div>
                     </div>
-                    <div className='scroll-row'>
+                    <div className='flex flex-row space-x-2'>
                         {movie?.genres?.map((x, i) => (
-                            <div className='meta-bubble' key={i}>
+                            <div
+                                className='bg-slate-800 rounded-xl p-2'
+                                key={i}
+                            >
                                 {x.name}
                             </div>
                         ))}
                     </div>
-                    <div className='scroll-row'>
+                    <div className='flex flex-row space-x-2'>
                         {releaseDates?.map((x, i) => (
-                            <div className='meta-bubble text-sm' key={i}>
+                            <div
+                                className='bg-slate-800 rounded-xl p-2 text-sm'
+                                key={i}
+                            >
                                 {x.type && <div>{RELEASE_TYPES[x.type]}</div>}
                                 {x.release_date && (
                                     <div>{toDateString(x.release_date)}</div>
@@ -232,106 +203,97 @@ export function Movie() {
                             </div>
                         ))}
                     </div>
-                    <div className='scroll-row'>
+                    <div className='flex flex-row space-x-2'>
                         {movie?.production_companies?.map((x, i) => (
-                            <div className='meta-bubble text-sm' key={i}>
+                            <div
+                                className='bg-slate-800 rounded-xl p-2 text-sm'
+                                key={i}
+                            >
                                 {x.name}
                             </div>
                         ))}
                     </div>
                 </>
             )}
-            {tab === 'CAST' && (
-                <div className='grid123'>
+            {state.movieTab === 'CAST' && (
+                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {movie?.credits?.cast?.map((x, i) => (
-                        <Link to={`/person/${x.id}`} className='card' key={i}>
+                        <Link
+                            to={`/person/${x.id}`}
+                            className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
+                            key={i}
+                        >
                             {x.profile_path && (
                                 <img
                                     src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                    className='card-img w94-h141'
+                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
                                     loading='lazy'
                                     width='94'
                                     height='141'
                                     alt=''
                                 />
                             )}
-                            <div className='card-text'>
+                            <div>
                                 {x.name && <div>{x.name}</div>}
                                 {x.character && (
-                                    <div className='subtext'>{x.character}</div>
+                                    <div className='text-slate-400'>
+                                        {x.character}
+                                    </div>
                                 )}
                             </div>
                         </Link>
                     ))}
                 </div>
             )}
-            {tab === 'CREW' && (
-                <>
-                    <div className='row'>
-                        <select
-                            defaultValue={crewFilter}
-                            onChange={(e) => setCrewFilter(e.target.value)}
+            {state.movieTab === 'CREW' && (
+                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                    {movie?.credits?.crew?.map((x, i) => (
+                        <Link
+                            to={`/person/${x.id}`}
+                            className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
+                            key={i}
                         >
-                            {crewFilterOpts.map((x, i) => (
-                                <option value={x} key={i}>
-                                    {x}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className='grid123'>
-                        {movie?.credits?.crew
-                            ?.filter(({ job }) => {
-                                if (crewFilter === 'ALL') return true
-                                if (job === crewFilter) return true
-                                else return false
-                            })
-                            ?.map((x, i) => (
-                                <Link
-                                    to={`/person/${x.id}`}
-                                    key={i}
-                                    className='card'
-                                >
-                                    {x.profile_path && (
-                                        <img
-                                            src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                            className='card-img w94-h141'
-                                            loading='lazy'
-                                            width='94'
-                                            height='141'
-                                            alt=''
-                                        />
-                                    )}
-                                    <div className='card-text'>
-                                        {x.name && <div>{x.name}</div>}
-                                        {x.job && (
-                                            <div className='subtext'>
-                                                {x.job}
-                                            </div>
-                                        )}
+                            {x.profile_path && (
+                                <img
+                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+                                    loading='lazy'
+                                    width='94'
+                                    height='141'
+                                    alt=''
+                                />
+                            )}
+                            <div>
+                                {x.name && <div>{x.name}</div>}
+                                {x.job && (
+                                    <div className='text-slate-400'>
+                                        {x.job}
                                     </div>
-                                </Link>
-                            ))}
-                    </div>
-                </>
+                                )}
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             )}
-            {tab === 'IMAGES' && (
+            {state.movieTab === 'IMAGES' && (
                 <>
-                    <div className='btn-row'>
+                    <div className='flex flex-row space-x-2'>
                         {['POSTERS', 'BACKDROPS'].map((x, i) => (
-                            <div
-                                className={`btn ${
-                                    imageTab === x ? 'bg3' : 'bg2'
-                                }`}
+                            <button
+                                className={`${
+                                    imageTab === x
+                                        ? 'bg-slate-700'
+                                        : 'bg-slate-800'
+                                } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() => setImageTab(x)}
                                 key={i}
                             >
                                 {x}
-                            </div>
+                            </button>
                         ))}
                     </div>
                     {imageTab === 'POSTERS' && (
-                        <div className='grid234'>
+                        <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                             {movie?.images?.posters
                                 ?.filter(
                                     ({ iso_639_1 }) =>
@@ -354,7 +316,7 @@ export function Movie() {
                         </div>
                     )}
                     {imageTab === 'BACKDROPS' && (
-                        <div className='grid123'>
+                        <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                             {movie?.images?.backdrops
                                 ?.filter(
                                     ({ iso_639_1 }) =>
@@ -378,61 +340,36 @@ export function Movie() {
                     )}
                 </>
             )}
-            {tab === 'VIDEOS' && (
-                <>
-                    <div className='row'>
-                        <select
-                            defaultValue={videoFilter}
-                            onChange={(e) => setVideoFilter(e.target.value)}
+            {state.movieTab === 'VIDEOS' && (
+                <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
+                    {movie?.videos?.results?.map((x, i) => (
+                        <div
+                            className='flex flex-col bg-slate-800 rounded-xl hover:bg-slate-700'
+                            key={i}
                         >
-                            {videoFilterOpts.map((x, i) => (
-                                <option value={x} key={i}>
-                                    {x}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className='grid234'>
-                        {movie?.videos?.results
-                            ?.filter(({ type }) => {
-                                if (videoFilter === 'ALL') return true
-                                if (type === videoFilter) return true
-                                else return false
-                            })
-                            ?.sort((a, b) =>
-                                Date.parse(a.published_at!) >
-                                Date.parse(b.published_at!)
-                                    ? -1
-                                    : 1
-                            )
-                            ?.map((x, i) => (
-                                <div className='vid-card' key={i}>
-                                    <a
-                                        target='_blank'
-                                        rel='noopener noreferrer'
-                                        href={`https://www.youtube.com/watch?v=${x.key}`}
-                                    >
-                                        <img
-                                            src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
-                                            className='vid-card-img'
-                                            loading='lazy'
-                                            alt=''
-                                        />
-                                        <div className='vid-card-text'>
-                                            <span>{x.name}</span>
-                                            {x.published_at && (
-                                                <span className='subtext'>
-                                                    {` | ${toDateString(
-                                                        x.published_at
-                                                    )}`}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </a>
+                            <a
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                href={`https://www.youtube.com/watch?v=${x.key}`}
+                            >
+                                <img
+                                    src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
+                                    className='rounded-t-xl'
+                                    loading='lazy'
+                                    alt=''
+                                />
+                                <div className='flex flex-col m-2'>
+                                    <span>{x.name}</span>
+                                    {x.published_at && (
+                                        <span className='text-slate-400'>
+                                            {toDateString(x.published_at)}
+                                        </span>
+                                    )}
                                 </div>
-                            ))}
-                    </div>
-                </>
+                            </a>
+                        </div>
+                    ))}
+                </div>
             )}
         </>
     )
