@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
 
 export function Person({ state, updateState }: Props) {
-    let [castFilter, setCastFilter] = useState('movie')
-
     let { id } = useParams()
     let [res] = usePersonQuery({ id })
     let { data, fetching, error } = res
@@ -42,6 +39,26 @@ export function Person({ state, updateState }: Props) {
             </>
         )
     }
+
+    let castMovies = person?.combined_credits?.cast
+        ?.filter((x) => x.media_type === 'movie')
+
+        .sort((a, b) => (a.release_date! > b.release_date! ? -1 : 1))
+        .slice(
+            state.personCastPage === 1 ? 0 : state.personCastPage * 9,
+            state.personCastPage === 1 ? 9 : state.personCastPage * 9 + 9
+        )
+
+    let castShows = person?.combined_credits?.cast
+        ?.filter((x) => x.media_type === 'tv')
+
+        .sort((a, b) => (a.first_air_date! > b.first_air_date! ? -1 : 1))
+        .slice(
+            state.personCastPage === 1 ? 0 : state.personCastPage * 9,
+            state.personCastPage === 1 ? 9 : state.personCastPage * 9 + 9
+        )
+
+    let cast = state.personCastTab === 'MOVIES' ? castMovies : castShows
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -106,65 +123,87 @@ export function Person({ state, updateState }: Props) {
             {state.personTab === 'CAST' && (
                 <>
                     <div className='flex flex-row space-x-2'>
-                        {[
-                            { name: 'MOVIES', val: 'movie' },
-                            { name: 'SHOWS', val: 'tv' }
-                        ].map((x, i) => (
+                        {['MOVIES', 'SHOWS'].map((x, i) => (
                             <button
                                 className={`${
-                                    castFilter === x.val
+                                    state.personCastTab === x
                                         ? 'bg-slate-700'
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() => {
-                                    setCastFilter(x.val)
+                                    updateState({ personCastTab: x })
                                 }}
                                 key={i}
                             >
-                                {x.name}
+                                {x}
                             </button>
                         ))}
                     </div>
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                        {person?.combined_credits?.cast
-                            ?.filter((x) => x.media_type === castFilter)
-                            ?.map((x, i) => (
-                                <Link
-                                    to={`/${x.media_type}/${x.id}`}
-                                    className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
-                                    key={i}
-                                >
-                                    {x.poster_path && (
-                                        <img
-                                            src={`${IMG_URLs.W94H141}${x.poster_path}`}
-                                            className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                            loading='lazy'
-                                            width='94'
-                                            height='141'
-                                            alt=''
-                                        />
+                        {cast?.map((x, i) => (
+                            <Link
+                                to={`/${x.media_type}/${x.id}`}
+                                className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
+                                key={i}
+                            >
+                                {x.poster_path && (
+                                    <img
+                                        src={`${IMG_URLs.W94H141}${x.poster_path}`}
+                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+                                        loading='lazy'
+                                        width='94'
+                                        height='141'
+                                        alt=''
+                                    />
+                                )}
+                                <div>
+                                    {(x.release_date || x.first_air_date) && (
+                                        <div className='text-slate-400'>
+                                            {toDateString(
+                                                x.release_date! ||
+                                                    x.first_air_date!
+                                            )}
+                                        </div>
                                     )}
-                                    <div>
-                                        {(x.release_date ||
-                                            x.first_air_date) && (
-                                            <div>
-                                                {(
-                                                    x.release_date ||
-                                                    x.first_air_date
-                                                )?.substring(0, 4)}
-                                            </div>
-                                        )}
-                                        {(x.name || x.title) && (
-                                            <div>{x.name || x.title}</div>
-                                        )}
-                                        {x.character && (
-                                            <div className='text-slate-400'>
-                                                {x.character}
-                                            </div>
-                                        )}
-                                    </div>
-                                </Link>
-                            ))}
+                                    {(x.name || x.title) && (
+                                        <div>{x.name || x.title}</div>
+                                    )}
+                                    {x.character && (
+                                        <div className='text-slate-400'>
+                                            {x.character}
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                        <button
+                            className={`${
+                                state.personCastPage <= 1
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2 `}
+                            disabled={state.personCastPage <= 1}
+                            onClick={() =>
+                                updateState({
+                                    personCastPage: state.personCastPage - 1
+                                })
+                            }
+                        >
+                            BACK
+                        </button>
+                        <div className='p-2'>{state.personCastPage}</div>
+                        <button
+                            className='bg-slate-800 rounded-xl p-2 hover:bg-slate-600'
+                            onClick={() =>
+                                updateState({
+                                    personCastPage: state.personCastPage + 1
+                                })
+                            }
+                        >
+                            NEXT
+                        </button>
                     </div>
                 </>
             )}
