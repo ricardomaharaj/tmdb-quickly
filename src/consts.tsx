@@ -28,6 +28,8 @@ export interface State {
     seasonTab: string
     episodeTab: string
     personTab: string
+    personCastTab: string
+    personCastPage: number
     advancedTab: string
 }
 

@@ -26,6 +26,8 @@ export function App() {
         seasonTab: 'EPISODES',
         episodeTab: 'INFO',
         personTab: 'BIO',
+        personCastTab: 'MOVIES',
+        personCastPage: 1,
         advancedTab: 'MOVIES'
     })
 
