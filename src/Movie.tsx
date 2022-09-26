@@ -164,7 +164,7 @@ export function Movie({ state, updateState }: Props) {
                             </div>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
                         {releaseDates?.map((x, i) => (
                             <div
                                 className='bg-slate-800 rounded-xl p-2 text-sm'
@@ -177,7 +177,7 @@ export function Movie({ state, updateState }: Props) {
                             </div>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
                         {movie?.production_companies?.map((x, i) => (
                             <div
                                 className='bg-slate-800 rounded-xl p-2 text-sm'
