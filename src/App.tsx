@@ -22,6 +22,8 @@ export function App() {
         page: 1,
         homeTab: 'movie',
         movieTab: 'INFO',
+        movieCastQuery: '',
+        movieCastPage: 1,
         showTab: 'INFO',
         seasonTab: 'EPISODES',
         episodeTab: 'INFO',

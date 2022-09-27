@@ -24,6 +24,8 @@ export interface State {
     page: number
     homeTab: string
     movieTab: string
+    movieCastQuery: string
+    movieCastPage: number
     showTab: string
     seasonTab: string
     episodeTab: string
