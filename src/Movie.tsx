@@ -32,7 +32,7 @@ export function Movie({ state, updateState }: Props) {
         ?.filter(
             (x) =>
                 x.name
-                ?.toLowerCase()
+                    ?.toLowerCase()
                     .includes(state.movieCastQuery.toLowerCase()) ||
                 x.character
                     ?.toLowerCase()
@@ -41,6 +41,21 @@ export function Movie({ state, updateState }: Props) {
         ?.slice(
             state.movieCastPage === 1 ? 0 : state.movieCastPage * 9,
             state.movieCastPage === 1 ? 9 : state.movieCastPage * 9 + 9
+        )
+
+    let crew = movie?.credits?.crew
+        ?.filter(
+            (x) =>
+                x.name
+                    ?.toLowerCase()
+                    .includes(state.movieCrewQuery.toLowerCase()) ||
+                x.job
+                    ?.toLowerCase()
+                    .includes(state.movieCrewQuery.toLowerCase())
+        )
+        ?.slice(
+            state.movieCrewPage === 1 ? 0 : state.movieCrewPage * 9,
+            state.movieCrewPage === 1 ? 9 : state.movieCrewPage * 9 + 9
         )
 
     if (fetching) return LOAD_SILHOUETTE
@@ -292,34 +307,91 @@ export function Movie({ state, updateState }: Props) {
                 </>
             )}
             {state.movieTab === 'CREW' && (
-                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                    {movie?.credits?.crew?.map((x, i) => (
-                        <Link
-                            to={`/person/${x.id}`}
-                            className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                            key={i}
-                        >
-                            {x.profile_path && (
-                                <img
-                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                    loading='lazy'
-                                    width='94'
-                                    height='141'
-                                    alt=''
-                                />
-                            )}
-                            <div>
-                                {x.name && <div>{x.name}</div>}
-                                {x.job && (
-                                    <div className='text-slate-400'>
-                                        {x.job}
+                <>
+                    <div className='flex flex-row'>
+                        <input
+                            type='text'
+                            className='bg-slate-800 rounded-xl p-2'
+                            defaultValue={state.movieCrewQuery}
+                            placeholder='Search Crew'
+                            onChange={(e) =>
+                                updateState({
+                                    movieCrewQuery: e.currentTarget.value,
+                                    movieCrewPage: 1
+                                })
+                            }
+                        />
+                    </div>
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                        {crew?.map((x, i) => (
+                            <Link
+                                to={`/person/${x.id}`}
+                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
+                                key={i}
+                            >
+                                {x.profile_path ? (
+                                    <img
+                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+                                        loading='lazy'
+                                        width='94'
+                                        height='141'
+                                        alt=''
+                                    />
+                                ) : (
+                                    <div className='bg-slate-900 rounded-xl mr-2'>
+                                        <svg
+                                            xmlns='http://www.w3.org/2000/svg'
+                                            width='16'
+                                            height='16'
+                                            fill='currentColor'
+                                            className='w-[94px] h-[141px] brightness-50'
+                                            viewBox='0 0 16 16'
+                                        >
+                                            <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
+                                        </svg>
                                     </div>
                                 )}
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                                <div>
+                                    {x.name && <div>{x.name}</div>}
+                                    {x.job && (
+                                        <div className='text-slate-400'>
+                                            {x.job}
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                        <button
+                            className={`${
+                                state.movieCrewPage <= 1
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2 `}
+                            disabled={state.movieCrewPage <= 1}
+                            onClick={() =>
+                                updateState({
+                                    movieCrewPage: state.movieCrewPage - 1
+                                })
+                            }
+                        >
+                            BACK
+                        </button>
+                        <div className='p-2'>{state.movieCrewPage}</div>
+                        <button
+                            className='bg-slate-800 rounded-xl p-2 hover:bg-slate-600'
+                            onClick={() =>
+                                updateState({
+                                    movieCrewPage: state.movieCrewPage + 1
+                                })
+                            }
+                        >
+                            NEXT
+                        </button>
+                    </div>
+                </>
             )}
             {state.movieTab === 'IMAGES' && (
                 <>
