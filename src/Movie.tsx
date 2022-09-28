@@ -29,10 +29,14 @@ export function Movie({ state, updateState }: Props) {
     )[0]?.release_dates
 
     let cast = movie?.credits?.cast
-        ?.filter((x) =>
-            (x.name || x.character)
+        ?.filter(
+            (x) =>
+                x.name
                 ?.toLowerCase()
-                ?.includes(state.movieCastQuery.toLowerCase())
+                    .includes(state.movieCastQuery.toLowerCase()) ||
+                x.character
+                    ?.toLowerCase()
+                    .includes(state.movieCastQuery.toLowerCase())
         )
         ?.slice(
             state.movieCastPage === 1 ? 0 : state.movieCastPage * 9,
