@@ -214,7 +214,8 @@ export function Movie({ state, updateState }: Props) {
                             placeholder='Search Cast'
                             onChange={(e) =>
                                 updateState({
-                                    movieCastQuery: e.currentTarget.value
+                                    movieCastQuery: e.currentTarget.value,
+                                    movieCastPage: 1
                                 })
                             }
                         />
