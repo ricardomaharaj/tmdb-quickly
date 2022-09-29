@@ -43,7 +43,7 @@ export function Home({ state, updateState }: Props) {
                 className='bg-slate-800 p-3 text-xl text-center rounded-xl outline-none'
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        updateState({ query: e.currentTarget.value })
+                        updateState({ query: e.currentTarget.value, page: 1 })
                     }
                 }}
             />
