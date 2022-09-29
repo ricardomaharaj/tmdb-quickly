@@ -24,16 +24,17 @@ export interface State {
     page: number
     homeTab: string
     movieTab: string
-    movieCastQuery: string
-    movieCastPage: number
-    movieCrewQuery: string
-    movieCrewPage: number
+    movieQuery: string
+    moviePage: number
     showTab: string
+    showQuery: string
+    showPage: number
     seasonTab: string
     episodeTab: string
     personTab: string
     personCastTab: string
-    personCastPage: number
+    personQuery: string
+    personPage: number
     advancedTab: string
 }
 

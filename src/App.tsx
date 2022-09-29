@@ -22,16 +22,17 @@ export function App() {
         page: 1,
         homeTab: 'movie',
         movieTab: 'INFO',
-        movieCastQuery: '',
-        movieCastPage: 1,
-        movieCrewQuery: '',
-        movieCrewPage: 1,
+        movieQuery: '',
+        moviePage: 1,
         showTab: 'INFO',
+        showQuery: '',
+        showPage: 1,
         seasonTab: 'EPISODES',
         episodeTab: 'INFO',
         personTab: 'BIO',
         personCastTab: 'MOVIES',
-        personCastPage: 1,
+        personQuery: '',
+        personPage: 1,
         advancedTab: 'MOVIES'
     })
 
