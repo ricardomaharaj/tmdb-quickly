@@ -294,7 +294,7 @@ export function Show({ state, updateState }: Props) {
                         {show?.seasons &&
                             show?.seasons.map((x, i) => (
                                 <Link
-                                    to={`/tv/${id}/season/${x.season_number}`}
+                                    to={`season/${x.season_number}`}
                                     className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
                                     key={i}
                                 >

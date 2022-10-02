@@ -63,7 +63,7 @@ export function Season({ state, updateState }: Props) {
                     <div className='flex flex-col space-y-2'>
                         {season?.episodes?.map((x, i) => (
                             <Link
-                                to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
+                                to={`episode/${x.episode_number}`}
                                 className='bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
                                 key={i}
                             >
