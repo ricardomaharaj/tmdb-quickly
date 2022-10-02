@@ -14,6 +14,9 @@ export function Show({ state, updateState }: Props) {
 
     document.title = `${show?.name} | TMDB Quickly`
 
+    let startYear = show?.first_air_date?.substring(0, 4)
+    let endYear = show?.last_air_date?.substring(0, 4)
+    let showOver = show?.status === 'Ended' || show?.status === 'Canceled'
     if (fetching) return LOAD_SILHOUETTE
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
@@ -35,11 +38,22 @@ export function Show({ state, updateState }: Props) {
                             alt=''
                         />
                     )}
+                    <div className='space-y-1'>
                     <div>
+                            {startYear && <span>{startYear}</span>}
+                            {endYear && (
+                                <>
+                                    {showOver && startYear !== endYear && (
+                                        <span>{` - ${endYear}`}</span>
+                                    )}
+                                </>
+                            )}
+                            {show?.status === 'Returning Series' && (
+                                <span>{' - '}</span>
+                            )}
+                        </div>
                         {show?.name && (
-                            <div className='font-semibold mb-1'>
-                                {show.name}
-                            </div>
+                            <div className='font-semibold'>{show.name}</div>
                         )}
                         {show?.tagline && (
                             <div className='text-sm'>{show?.tagline}</div>
