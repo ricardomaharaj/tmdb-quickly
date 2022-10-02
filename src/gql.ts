@@ -254,9 +254,8 @@ interface Show {
     type?: string
     vote_average?: number
     vote_count?: number
-    credits?: {
-        id?: number
-        cast?: [
+    aggregate_credits: {
+        cast: [
             {
                 adult?: boolean
                 gender?: number
@@ -266,12 +265,18 @@ interface Show {
                 original_name?: string
                 popularity?: number
                 profile_path?: string
+                roles?: [
+                    {
+                        credit_id?: string
                 character?: string
-                credit_id?: string
+                        episode_count?: number
+                    }
+                ]
+                total_episode_count?: number
                 order?: number
             }
         ]
-        crew?: [
+        crew: [
             {
                 adult?: boolean
                 gender?: number
@@ -281,9 +286,11 @@ interface Show {
                 original_name?: string
                 popularity?: number
                 profile_path?: string
-                credit_id?: string
+                jobs?: [
+                    { credit_id?: string; job?: string; episode_count?: number }
+                ]
                 department?: string
-                job?: string
+                total_episode_count?: number
             }
         ]
     }

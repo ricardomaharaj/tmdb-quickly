@@ -154,10 +154,10 @@ export function Show({ state, updateState }: Props) {
             )}
             {state.showTab === 'CAST' && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                    {data?.show?.credits?.cast?.map((x, i) => (
+                        {cast?.map((x, i) => (
                         <Link
                             to={`/person/${x.id}`}
-                            className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
+                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
                             key={i}
                         >
                                 {x.profile_path ? (
@@ -185,9 +185,34 @@ export function Show({ state, updateState }: Props) {
                             )}
                             <div>
                                 {x.name && <div>{x.name}</div>}
-                                {x.character && (
+                                    {x.roles && (
                                     <div className='text-slate-400'>
-                                        {x.character}
+                                            {x.roles
+                                                ?.sort((a, b) =>
+                                                    a.episode_count! >
+                                                    b.episode_count!
+                                                        ? -1
+                                                        : 1
+                                                )
+                                                .map((x, i) => {
+                                                    if (i === 4)
+                                                        return (
+                                                            <div key={i}>
+                                                                ...
+                                                            </div>
+                                                        )
+                                                    if (i > 4) return
+                                                    return (
+                                                        <div key={i}>
+                                                            {`${x.character?.replaceAll(
+                                                                '(voice)',
+                                                                ''
+                                                            )} (${
+                                                                x.episode_count
+                                                            } Eps)`}
+                                                        </div>
+                                                    )
+                                                })}
                                     </div>
                                 )}
                             </div>
@@ -197,10 +222,10 @@ export function Show({ state, updateState }: Props) {
             )}
             {state.showTab === 'CREW' && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                    {data?.show?.credits?.crew?.map((x, i) => (
+                        {crew?.map((x, i) => (
                         <Link
                             to={`/person/${x.id}`}
-                            className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
+                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
                             key={i}
                         >
                                 {x.profile_path ? (
@@ -228,9 +253,20 @@ export function Show({ state, updateState }: Props) {
                             )}
                             <div>
                                 {x.name && <div>{x.name}</div>}
-                                {x.job && (
+                                    {x.jobs && (
                                     <div className='text-slate-400'>
-                                        {x.job}
+                                            {x.jobs
+                                                ?.sort((a, b) =>
+                                                    a.episode_count! >
+                                                    b.episode_count!
+                                                        ? -1
+                                                        : 1
+                                                )
+                                                .map((x, i) => (
+                                                    <div
+                                                        key={i}
+                                                    >{`${x.job} (${x.episode_count} Eps)`}</div>
+                                                ))}
                                     </div>
                                 )}
                             </div>
