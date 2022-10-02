@@ -11,7 +11,7 @@ export function Season({ state, updateState }: Props) {
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
-        return <div className='bg-red-800 rounded-xl p-4'>{error.message}</div>
+        return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
         <>
             <div
