@@ -123,7 +123,9 @@ export function Show({ state, updateState }: Props) {
                                     ? 'bg-slate-700'
                                     : 'bg-slate-800'
                             } rounded-xl p-2 hover:bg-slate-600`}
-                            onClick={() => updateState({ showTab: x })}
+                            onClick={() =>
+                                updateState({ showTab: x, showPage: 1 })
+                            }
                             key={i}
                         >
                             {x}
