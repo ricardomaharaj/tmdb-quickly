@@ -17,6 +17,59 @@ export function Show({ state, updateState }: Props) {
     let startYear = show?.first_air_date?.substring(0, 4)
     let endYear = show?.last_air_date?.substring(0, 4)
     let showOver = show?.status === 'Ended' || show?.status === 'Canceled'
+
+    let cast = show?.aggregate_credits?.cast
+        ?.sort((a, b) =>
+            a.total_episode_count! > b.total_episode_count! ? -1 : 1
+        )
+        ?.filter((x) => {
+            for (let i = 0; i < x?.roles?.length!; i++) {
+                if (
+                    x?.roles?.[i]?.character
+                        ?.toLowerCase()
+                        .includes(state.showQuery.toLowerCase())
+                ) {
+                    return true
+                }
+            }
+
+            if (x.name?.toLowerCase().includes(state.showQuery.toLowerCase())) {
+                return true
+            }
+
+            return false
+        })
+        ?.slice(
+            state.showPage === 1 ? 0 : state.showPage * 9,
+            state.showPage === 1 ? 9 : state.showPage * 9 + 9
+        )
+
+    let crew = show?.aggregate_credits?.crew
+        ?.sort((a, b) =>
+            a.total_episode_count! > b.total_episode_count! ? -1 : 1
+        )
+        ?.filter((x) => {
+            for (let i = 0; i < x?.jobs?.length!; i++) {
+                if (
+                    x?.jobs?.[i]?.job
+                        ?.toLowerCase()
+                        .includes(state.showQuery.toLowerCase())
+                ) {
+                    return true
+                }
+            }
+
+            if (x.name?.toLowerCase().includes(state.showQuery.toLowerCase())) {
+                return true
+            }
+
+            return false
+        })
+        ?.slice(
+            state.showPage === 1 ? 0 : state.showPage * 9,
+            state.showPage === 1 ? 9 : state.showPage * 9 + 9
+        )
+
     if (fetching) return LOAD_SILHOUETTE
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
