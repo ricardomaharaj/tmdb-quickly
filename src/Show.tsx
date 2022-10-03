@@ -220,6 +220,21 @@ export function Show({ state, updateState }: Props) {
                 </>
             )}
             {state.showTab === 'CAST' && (
+                <>
+                    <div className='flex flex-row'>
+                        <input
+                            type='text'
+                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                            defaultValue={state.showQuery}
+                            placeholder='Search Cast'
+                            onChange={(e) =>
+                                updateState({
+                                    showQuery: e.currentTarget.value,
+                                    showPage: 1
+                                })
+                            }
+                        />
+                    </div>
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
                         <Link
@@ -286,8 +301,57 @@ export function Show({ state, updateState }: Props) {
                         </Link>
                     ))}
                 </div>
+                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                        <button
+                            className={`${
+                                state.showPage <= 1
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2 `}
+                            disabled={state.showPage <= 1}
+                            onClick={() =>
+                                updateState({
+                                    showPage: state.showPage - 1
+                                })
+                            }
+                        >
+                            BACK
+                        </button>
+                        <div className='p-2'>{state.showPage}</div>
+                        <button
+                            className={`${
+                                cast?.length! < 9
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={cast?.length! < 9}
+                            onClick={() =>
+                                updateState({
+                                    showPage: state.showPage + 1
+                                })
+                            }
+                        >
+                            NEXT
+                        </button>
+                    </div>
+                </>
             )}
             {state.showTab === 'CREW' && (
+                <>
+                    <div className='flex flex-row'>
+                        <input
+                            type='text'
+                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                            defaultValue={state.showQuery}
+                            placeholder='Search Crew'
+                            onChange={(e) =>
+                                updateState({
+                                    showQuery: e.currentTarget.value,
+                                    showPage: 1
+                                })
+                            }
+                        />
+                    </div>
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
                         <Link
@@ -340,6 +404,40 @@ export function Show({ state, updateState }: Props) {
                         </Link>
                     ))}
                 </div>
+                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                        <button
+                            className={`${
+                                state.showPage <= 1
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2 `}
+                            disabled={state.showPage <= 1}
+                            onClick={() =>
+                                updateState({
+                                    showPage: state.showPage - 1
+                                })
+                            }
+                        >
+                            BACK
+                        </button>
+                        <div className='p-2'>{state.showPage}</div>
+                        <button
+                            className={`${
+                                crew?.length! < 9
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={crew?.length! < 9}
+                            onClick={() =>
+                                updateState({
+                                    showPage: state.showPage + 1
+                                })
+                            }
+                        >
+                            NEXT
+                        </button>
+                    </div>
+                </>
             )}
             {state.showTab === 'SEASONS' && (
                 <>
