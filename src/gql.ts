@@ -268,7 +268,7 @@ interface Show {
                 roles?: [
                     {
                         credit_id?: string
-                character?: string
+                        character?: string
                         episode_count?: number
                     }
                 ]
@@ -492,39 +492,6 @@ interface Season {
     id?: number
     poster_path?: string
     season_number?: number
-    credits?: {
-        id?: number
-        cast?: [
-            {
-                adult?: boolean
-                gender?: number
-                id?: number
-                known_for_department?: string
-                name?: string
-                original_name?: string
-                popularity?: number
-                profile_path?: string
-                character?: string
-                credit_id?: string
-                order?: number
-            }
-        ]
-        crew?: [
-            {
-                adult?: boolean
-                gender?: number
-                id?: number
-                known_for_department?: string
-                name?: string
-                original_name?: string
-                popularity?: number
-                profile_path?: string
-                credit_id?: string
-                department?: string
-                job?: string
-            }
-        ]
-    }
     images?: {
         id?: number
         posters?: [
