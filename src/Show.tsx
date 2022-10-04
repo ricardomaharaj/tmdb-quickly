@@ -92,7 +92,7 @@ export function Show({ state, updateState }: Props) {
                         />
                     )}
                     <div className='space-y-1'>
-                    <div>
+                        <div>
                             {startYear && <span>{startYear}</span>}
                             {endYear && (
                                 <>
@@ -237,22 +237,22 @@ export function Show({ state, updateState }: Props) {
                             }
                         />
                     </div>
-                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
-                        <Link
-                            to={`/person/${x.id}`}
+                            <Link
+                                to={`/person/${x.id}`}
                                 className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                            key={i}
-                        >
+                                key={i}
+                            >
                                 {x.profile_path ? (
-                                <img
-                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                    loading='lazy'
-                                    width='94'
-                                    height='141'
-                                    alt=''
-                                />
+                                    <img
+                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+                                        loading='lazy'
+                                        width='94'
+                                        height='141'
+                                        alt=''
+                                    />
                                 ) : (
                                     <div className='bg-slate-900 rounded-xl mr-2'>
                                         <svg
@@ -266,11 +266,11 @@ export function Show({ state, updateState }: Props) {
                                             <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
                                         </svg>
                                     </div>
-                            )}
-                            <div>
-                                {x.name && <div>{x.name}</div>}
+                                )}
+                                <div>
+                                    {x.name && <div>{x.name}</div>}
                                     {x.roles && (
-                                    <div className='text-slate-400'>
+                                        <div className='text-slate-400'>
                                             {x.roles
                                                 ?.sort((a, b) =>
                                                     a.episode_count! >
@@ -297,12 +297,12 @@ export function Show({ state, updateState }: Props) {
                                                         </div>
                                                     )
                                                 })}
-                                    </div>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                     <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
                         <button
                             className={`${
@@ -354,22 +354,22 @@ export function Show({ state, updateState }: Props) {
                             }
                         />
                     </div>
-                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
-                        <Link
-                            to={`/person/${x.id}`}
+                            <Link
+                                to={`/person/${x.id}`}
                                 className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                            key={i}
-                        >
+                                key={i}
+                            >
                                 {x.profile_path ? (
-                                <img
-                                    src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                    loading='lazy'
-                                    width='94'
-                                    height='141'
-                                    alt=''
-                                />
+                                    <img
+                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
+                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+                                        loading='lazy'
+                                        width='94'
+                                        height='141'
+                                        alt=''
+                                    />
                                 ) : (
                                     <div className='bg-slate-900 rounded-xl mr-2'>
                                         <svg
@@ -383,11 +383,11 @@ export function Show({ state, updateState }: Props) {
                                             <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
                                         </svg>
                                     </div>
-                            )}
-                            <div>
-                                {x.name && <div>{x.name}</div>}
+                                )}
+                                <div>
+                                    {x.name && <div>{x.name}</div>}
                                     {x.jobs && (
-                                    <div className='text-slate-400'>
+                                        <div className='text-slate-400'>
                                             {x.jobs
                                                 ?.sort((a, b) =>
                                                     a.episode_count! >
@@ -400,12 +400,12 @@ export function Show({ state, updateState }: Props) {
                                                         key={i}
                                                     >{`${x.job} (${x.episode_count} Eps)`}</div>
                                                 ))}
-                                    </div>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                     <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
                         <button
                             className={`${
