@@ -9,6 +9,9 @@ export function Season({ state, updateState }: Props) {
     let { data, fetching, error } = res
     let season = data?.season
 
+    if (state.seasonTab === 'INFO' && !season?.overview)
+        updateState({ seasonTab: 'EPISODES' })
+
     if (fetching) return LOAD_SILHOUETTE
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
@@ -42,22 +45,41 @@ export function Season({ state, updateState }: Props) {
                 </div>
             </div>
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {['EPISODES', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map(
-                    (x, i) => (
-                        <button
-                            className={`${
-                                state.seasonTab === x
-                                    ? 'bg-slate-700'
-                                    : 'bg-slate-800'
-                            } rounded-xl p-2 hover:bg-slate-600`}
-                            onClick={() => updateState({ seasonTab: x })}
-                            key={i}
-                        >
-                            {x}
-                        </button>
-                    )
+                {season?.overview && (
+                    <button
+                        className={`${
+                            state.seasonTab === 'INFO'
+                                ? 'bg-slate-700'
+                                : 'bg-slate-800'
+                        } rounded-xl p-2 hover:bg-slate-600`}
+                        onClick={() => updateState({ seasonTab: 'INFO' })}
+                    >
+                        {'INFO'}
+                    </button>
                 )}
+                {['EPISODES', 'IMAGES', 'VIDEOS'].map((x, i) => (
+                    <button
+                        className={`${
+                            state.seasonTab === x
+                                ? 'bg-slate-700'
+                                : 'bg-slate-800'
+                        } rounded-xl p-2 hover:bg-slate-600`}
+                        onClick={() => updateState({ seasonTab: x })}
+                        key={i}
+                    >
+                        {x}
+                    </button>
+                ))}
             </div>
+            {state.seasonTab === 'INFO' && (
+                <>
+                    {season?.overview && (
+                        <div className='bg-slate-800 rounded-xl p-4'>
+                            {season.overview}
+                        </div>
+                    )}
+                </>
+            )}
             {state.seasonTab === 'EPISODES' && (
                 <>
                     <div className='flex flex-col space-y-2'>
