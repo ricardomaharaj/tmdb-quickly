@@ -104,7 +104,9 @@ export function Person({ state, updateState }: Props) {
                                 ? 'bg-slate-700'
                                 : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => updateState({ personTab: x })}
+                        onClick={() =>
+                            updateState({ personTab: x, personPage: 1 })
+                        }
                         key={i}
                     >
                         {x}
