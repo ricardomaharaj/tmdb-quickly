@@ -40,25 +40,50 @@ export function Person({ state, updateState }: Props) {
         )
     }
 
-    let castMovies = person?.combined_credits?.cast
-        ?.filter((x) => x.media_type === 'movie')
-
-        .sort((a, b) => (a.release_date! > b.release_date! ? -1 : 1))
+    let cast = person?.combined_credits?.cast
+        ?.filter((x) => {
+            let type = state.personCastTab === 'SHOWS' ? 'tv' : 'movie'
+            if (x.media_type === type) return true
+            return false
+        })
+        ?.filter(
+            (x) =>
+                (x.title || x.name)
+                    ?.toLowerCase()
+                    .includes(state.personQuery.toLowerCase()) ||
+                x.character
+                    ?.toLowerCase()
+                    .includes(state.personQuery.toLowerCase())
+        )
+        .sort((a, b) =>
+            (a.release_date || a.first_air_date)! >
+            (b.release_date || b.first_air_date)!
+                ? -1
+                : 1
+        )
         .slice(
-            state.personCastPage === 1 ? 0 : state.personCastPage * 9,
-            state.personCastPage === 1 ? 9 : state.personCastPage * 9 + 9
+            state.personPage === 1 ? 0 : state.personPage * 9,
+            state.personPage === 1 ? 9 : state.personPage * 9 + 9
         )
 
-    let castShows = person?.combined_credits?.cast
-        ?.filter((x) => x.media_type === 'tv')
-
-        .sort((a, b) => (a.first_air_date! > b.first_air_date! ? -1 : 1))
-        .slice(
-            state.personCastPage === 1 ? 0 : state.personCastPage * 9,
-            state.personCastPage === 1 ? 9 : state.personCastPage * 9 + 9
+    let crew = person?.combined_credits?.crew
+        ?.filter(
+            (x) =>
+                (x.title || x.name)
+                    ?.toLowerCase()
+                    .includes(state.personQuery.toLowerCase()) ||
+                x.job?.toLowerCase().includes(state.personQuery.toLowerCase())
         )
-
-    let cast = state.personCastTab === 'MOVIES' ? castMovies : castShows
+        .sort((a, b) =>
+            (a.release_date || a.first_air_date)! >
+            (b.release_date || b.first_air_date)!
+                ? -1
+                : 1
+        )
+        ?.slice(
+            state.personPage === 1 ? 0 : state.personPage * 9,
+            state.personPage === 1 ? 9 : state.personPage * 9 + 9
+        )
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
