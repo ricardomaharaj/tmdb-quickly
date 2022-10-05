@@ -149,6 +149,20 @@ export function Person({ state, updateState }: Props) {
             )}
             {state.personTab === 'CAST' && (
                 <>
+                    <div className='flex flex-row'>
+                        <input
+                            type='text'
+                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                            defaultValue={state.personQuery}
+                            placeholder='Search Cast'
+                            onChange={(e) =>
+                                updateState({
+                                    personQuery: e.currentTarget.value,
+                                    personPage: 1
+                                })
+                            }
+                        />
+                    </div>
                     <div className='flex flex-row space-x-2'>
                         {['MOVIES', 'SHOWS'].map((x, i) => (
                             <button
@@ -158,7 +172,10 @@ export function Person({ state, updateState }: Props) {
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() => {
-                                    updateState({ personCastTab: x })
+                                    updateState({
+                                        personCastTab: x,
+                                        personPage: 1
+                                    })
                                 }}
                                 key={i}
                             >
