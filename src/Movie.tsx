@@ -222,13 +222,13 @@ export function Movie({ state, updateState }: Props) {
                     <div className='flex flex-row'>
                         <input
                             type='text'
-                            className='bg-slate-800 rounded-xl p-2'
-                            defaultValue={state.movieCastQuery}
+                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                            defaultValue={state.movieQuery}
                             placeholder='Search Cast'
                             onChange={(e) =>
                                 updateState({
-                                    movieCastQuery: e.currentTarget.value,
-                                    movieCastPage: 1
+                                    movieQuery: e.currentTarget.value,
+                                    moviePage: 1
                                 })
                             }
                         />
@@ -277,25 +277,30 @@ export function Movie({ state, updateState }: Props) {
                     <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
                         <button
                             className={`${
-                                state.movieCastPage <= 1
+                                state.moviePage <= 1
                                     ? 'text-slate-600'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2 `}
-                            disabled={state.movieCastPage <= 1}
+                            disabled={state.moviePage <= 1}
                             onClick={() =>
                                 updateState({
-                                    movieCastPage: state.movieCastPage - 1
+                                    moviePage: state.moviePage - 1
                                 })
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.movieCastPage}</div>
+                        <div className='p-2'>{state.moviePage}</div>
                         <button
-                            className='bg-slate-800 rounded-xl p-2 hover:bg-slate-600'
+                            className={`${
+                                cast?.length! < 9
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={cast?.length! < 9}
                             onClick={() =>
                                 updateState({
-                                    movieCastPage: state.movieCastPage + 1
+                                    moviePage: state.moviePage + 1
                                 })
                             }
                         >
@@ -309,13 +314,13 @@ export function Movie({ state, updateState }: Props) {
                     <div className='flex flex-row'>
                         <input
                             type='text'
-                            className='bg-slate-800 rounded-xl p-2'
-                            defaultValue={state.movieCrewQuery}
+                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                            defaultValue={state.movieQuery}
                             placeholder='Search Crew'
                             onChange={(e) =>
                                 updateState({
-                                    movieCrewQuery: e.currentTarget.value,
-                                    movieCrewPage: 1
+                                    movieQuery: e.currentTarget.value,
+                                    moviePage: 1
                                 })
                             }
                         />
@@ -364,25 +369,30 @@ export function Movie({ state, updateState }: Props) {
                     <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
                         <button
                             className={`${
-                                state.movieCrewPage <= 1
+                                state.moviePage <= 1
                                     ? 'text-slate-600'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2 `}
-                            disabled={state.movieCrewPage <= 1}
+                            disabled={state.moviePage <= 1}
                             onClick={() =>
                                 updateState({
-                                    movieCrewPage: state.movieCrewPage - 1
+                                    moviePage: state.moviePage - 1
                                 })
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.movieCrewPage}</div>
+                        <div className='p-2'>{state.moviePage}</div>
                         <button
-                            className='bg-slate-800 rounded-xl p-2 hover:bg-slate-600'
+                            className={`${
+                                crew?.length! < 9
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={crew?.length! < 9}
                             onClick={() =>
                                 updateState({
-                                    movieCrewPage: state.movieCrewPage + 1
+                                    moviePage: state.moviePage + 1
                                 })
                             }
                         >
