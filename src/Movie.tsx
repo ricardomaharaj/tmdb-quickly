@@ -267,7 +267,10 @@ export function Movie({ state, updateState }: Props) {
                                     {x.name && <div>{x.name}</div>}
                                     {x.character && (
                                         <div className='text-slate-400'>
-                                            {x.character}
+                                            {x.character.replaceAll(
+                                                '(voice)',
+                                                ''
+                                            )}
                                         </div>
                                     )}
                                 </div>

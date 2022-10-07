@@ -231,7 +231,10 @@ export function Person({ state, updateState }: Props) {
                                     )}
                                     {x.character && (
                                         <div className='text-slate-400'>
-                                            {x.character}
+                                            {x.character.replaceAll(
+                                                '(voice)',
+                                                ''
+                                            )}
                                         </div>
                                     )}
                                 </div>
