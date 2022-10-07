@@ -182,7 +182,7 @@ export function Movie({ state, updateState }: Props) {
                             <span>{` ID: ${id}`}</span>
                         </div>
                     </div>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
                         {movie?.genres?.map((x, i) => (
                             <div
                                 className='bg-slate-800 rounded-xl p-2'
