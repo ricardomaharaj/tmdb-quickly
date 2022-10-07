@@ -33,14 +33,14 @@ export function Movie({ state, updateState }: Props) {
             (x) =>
                 x.name
                     ?.toLowerCase()
-                    .includes(state.movieCastQuery.toLowerCase()) ||
+                    .includes(state.movieQuery.toLowerCase()) ||
                 x.character
                     ?.toLowerCase()
-                    .includes(state.movieCastQuery.toLowerCase())
+                    .includes(state.movieQuery.toLowerCase())
         )
         ?.slice(
-            state.movieCastPage === 1 ? 0 : state.movieCastPage * 9,
-            state.movieCastPage === 1 ? 9 : state.movieCastPage * 9 + 9
+            state.moviePage === 1 ? 0 : state.moviePage * 9,
+            state.moviePage === 1 ? 9 : state.moviePage * 9 + 9
         )
 
     let crew = movie?.credits?.crew
@@ -48,14 +48,12 @@ export function Movie({ state, updateState }: Props) {
             (x) =>
                 x.name
                     ?.toLowerCase()
-                    .includes(state.movieCrewQuery.toLowerCase()) ||
-                x.job
-                    ?.toLowerCase()
-                    .includes(state.movieCrewQuery.toLowerCase())
+                    .includes(state.movieQuery.toLowerCase()) ||
+                x.job?.toLowerCase().includes(state.movieQuery.toLowerCase())
         )
         ?.slice(
-            state.movieCrewPage === 1 ? 0 : state.movieCrewPage * 9,
-            state.movieCrewPage === 1 ? 9 : state.movieCrewPage * 9 + 9
+            state.moviePage === 1 ? 0 : state.moviePage * 9,
+            state.moviePage === 1 ? 9 : state.moviePage * 9 + 9
         )
 
     if (fetching) return LOAD_SILHOUETTE
