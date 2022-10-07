@@ -97,7 +97,9 @@ export function Movie({ state, updateState }: Props) {
                                 ? 'bg-slate-700'
                                 : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => updateState({ movieTab: x })}
+                        onClick={() =>
+                            updateState({ movieTab: x, moviePage: 1 })
+                        }
                         key={i}
                     >
                         {x}
