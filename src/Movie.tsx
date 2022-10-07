@@ -76,9 +76,12 @@ export function Movie({ state, updateState }: Props) {
                         height='225'
                         alt=''
                     />
-                    <div>
+                    <div className='space-y-1'>
+                        {movie?.release_date && (
+                            <div>{movie.release_date.substring(0, 4)}</div>
+                        )}
                         {movie?.title && (
-                            <div className='font-bold mb-1'>{movie?.title}</div>
+                            <div className='font-bold'>{movie?.title}</div>
                         )}
                         {movie?.tagline && (
                             <div className='text-sm'>{movie.tagline}</div>
