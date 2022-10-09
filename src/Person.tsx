@@ -244,25 +244,30 @@ export function Person({ state, updateState }: Props) {
                     <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
                         <button
                             className={`${
-                                state.personCastPage <= 1
+                                state.personPage <= 1
                                     ? 'text-slate-600'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2 `}
-                            disabled={state.personCastPage <= 1}
+                            disabled={state.personPage <= 1}
                             onClick={() =>
                                 updateState({
-                                    personCastPage: state.personCastPage - 1
+                                    personPage: state.personPage - 1
                                 })
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.personCastPage}</div>
+                        <div className='p-2'>{state.personPage}</div>
                         <button
-                            className='bg-slate-800 rounded-xl p-2 hover:bg-slate-600'
+                            className={`${
+                                cast?.length! < 9
+                                    ? 'text-slate-600'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={cast?.length! < 9}
                             onClick={() =>
                                 updateState({
-                                    personCastPage: state.personCastPage + 1
+                                    personPage: state.personPage + 1
                                 })
                             }
                         >
