@@ -221,8 +221,8 @@ export function Person({ state, updateState }: Props) {
                                     {(x.release_date || x.first_air_date) && (
                                         <div className='text-slate-400'>
                                             {toDateString(
-                                                x.release_date! ||
-                                                    x.first_air_date!
+                                                (x.release_date ||
+                                                    x.first_air_date)!
                                             )}
                                         </div>
                                     )}
