@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
-import { useSeasonQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { useSeasonQuery } from './types/Season'
 
 export function Season({ state, updateState }: Props) {
     let { id, season_number } = useParams()
