@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
-import { useEpisodeQuery } from './gql'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { useEpisodeQuery } from './types/Episode'
 
 export function Episode({ state, updateState }: Props) {
     let { id, season_number, episode_number } = useParams()
