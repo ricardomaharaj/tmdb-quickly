@@ -20,22 +20,30 @@ export const LOAD_SILHOUETTE = (
 )
 
 export interface State {
-    query: string
-    page: number
-    homeTab: string
+    // Search
+    searchTab: string
+    searchQuery: string
+    searchPage: number
+
+    // Movie
     movieTab: string
     movieQuery: string
     moviePage: number
+
+    // Show
     showTab: string
     showQuery: string
     showPage: number
+
+    // Season + Episode
     seasonTab: string
     episodeTab: string
+
+    // Person
     personTab: string
-    personCastTab: string
     personQuery: string
     personPage: number
-    advancedTab: string
+    personCreditsTab: string
 }
 
 export interface Props {

@@ -1,6 +1,6 @@
 import { createClient, Provider as UrqlProvider } from 'urql'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import { Home } from './Home'
+import { Search } from './Search'
 import { Movie } from './Movie'
 import { Show } from './Show'
 import { Season } from './Season'
@@ -18,22 +18,25 @@ let urqlClient = createClient({ url })
 
 export function App() {
     let [state, setState] = useState<State>({
-        query: '',
-        page: 1,
-        homeTab: 'movie',
+        searchTab: 'movie',
+        searchQuery: '',
+        searchPage: 1,
+
         movieTab: 'INFO',
         movieQuery: '',
         moviePage: 1,
+
         showTab: 'INFO',
         showQuery: '',
         showPage: 1,
+
         seasonTab: 'EPISODES',
         episodeTab: 'INFO',
+
         personTab: 'BIO',
-        personCastTab: 'MOVIES',
         personQuery: '',
         personPage: 1,
-        advancedTab: 'MOVIES'
+        personCreditsTab: 'MOVIES'
     })
 
     let updateState = (update: Partial<State>) =>
@@ -58,7 +61,7 @@ export function App() {
                             <Route
                                 path='/'
                                 element={
-                                    <Home
+                                    <Search
                                         state={state}
                                         updateState={updateState}
                                     />
@@ -112,7 +115,7 @@ export function App() {
                             <Route
                                 path='*'
                                 element={
-                                    <Home
+                                    <Search
                                         state={state}
                                         updateState={updateState}
                                     />
