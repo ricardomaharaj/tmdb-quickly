@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
-import { useSearchQuery } from './gql'
 import { IMG_URLs, Props } from './consts'
 import { Fragment } from 'react'
+import { useSearchQuery } from './types/Search'
 
-export function Home({ state, updateState }: Props) {
+export function Search({ state, updateState }: Props) {
     document.title = 'TMDB Quickly'
 
     let [res] = useSearchQuery({
-        query: state.query,
-        page: state.page.toString()
+        query: state.searchQuery,
+        page: state.searchPage.toString()
     })
     let { data, fetching, error } = res
 
@@ -28,6 +28,12 @@ export function Home({ state, updateState }: Props) {
         </>
     )
 
+    const TABS = [
+        { name: 'MOVIES', val: 'movie' },
+        { name: 'SHOWS', val: 'tv' },
+        { name: 'PEOPLE', val: 'person' }
+    ]
+
     const MAX_OVERVIEW_LENGTH = 100
 
     if (error)
@@ -39,27 +45,26 @@ export function Home({ state, updateState }: Props) {
                 type='text'
                 id='query'
                 placeholder='SEARCH'
-                defaultValue={state.query}
+                defaultValue={state.searchQuery}
                 className='bg-slate-800 p-3 text-xl text-center rounded-xl outline-none'
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        updateState({ query: e.currentTarget.value, page: 1 })
+                        updateState({
+                            searchQuery: e.currentTarget.value,
+                            searchPage: 1
+                        })
                     }
                 }}
             />
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {[
-                    { name: 'MOVIES', val: 'movie' },
-                    { name: 'SHOWS', val: 'tv' },
-                    { name: 'PEOPLE', val: 'person' }
-                ].map((x, i) => (
+                {TABS.map((x, i) => (
                     <button
                         className={`${
-                            state.homeTab === x.val
+                            state.searchTab === x.val
                                 ? 'bg-slate-700'
                                 : 'bg-slate-800'
                         } hover:bg-slate-600 rounded-xl p-2`}
-                        onClick={() => updateState({ homeTab: x.val })}
+                        onClick={() => updateState({ searchTab: x.val })}
                         key={i}
                     >
                         {x.name}
@@ -76,7 +81,7 @@ export function Home({ state, updateState }: Props) {
                 ) : (
                     <>
                         {results
-                            ?.filter((x) => x.media_type === state.homeTab)
+                            ?.filter((x) => x.media_type === state.searchTab)
                             .map((x, i) => (
                                 <Link
                                     to={`/${x.media_type}/${x.id}`}
@@ -131,28 +136,32 @@ export function Home({ state, updateState }: Props) {
                     </>
                 )}
             </div>
-            {state.query && (
+            {state.searchQuery && (
                 <div className='flex flex-row space-x-2'>
                     <button
                         className={`${
-                            state.page <= 1
+                            state.searchPage <= 1
                                 ? 'text-slate-600'
                                 : 'bg-slate-800 hover:bg-slate-600'
                         } rounded-xl p-2`}
-                        disabled={state.page <= 1}
-                        onClick={() => updateState({ page: state.page - 1 })}
+                        disabled={state.searchPage <= 1}
+                        onClick={() =>
+                            updateState({ searchPage: state.searchPage - 1 })
+                        }
                     >
                         BACK
                     </button>
-                    <div className='p-2'>{state.page}</div>
+                    <div className='p-2'>{state.searchPage}</div>
                     <button
                         className={`${
-                            state.page >= maxPages!
+                            state.searchPage >= maxPages!
                                 ? 'text-slate-600'
                                 : 'bg-slate-800 hover:bg-slate-600'
                         } rounded-xl p-2`}
-                        disabled={state.page >= maxPages!}
-                        onClick={() => updateState({ page: state.page + 1 })}
+                        disabled={state.searchPage >= maxPages!}
+                        onClick={() =>
+                            updateState({ searchPage: state.searchPage + 1 })
+                        }
                     >
                         NEXT
                     </button>
