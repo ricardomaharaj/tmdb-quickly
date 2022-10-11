@@ -224,20 +224,18 @@ export function Movie({ state, updateState }: Props) {
             )}
             {state.movieTab === 'CAST' && (
                 <>
-                    <div className='flex flex-row'>
-                        <input
-                            type='text'
-                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                            defaultValue={state.movieQuery}
-                            placeholder='Search Cast'
-                            onChange={(e) =>
-                                updateState({
-                                    movieQuery: e.currentTarget.value,
-                                    moviePage: 1
-                                })
-                            }
-                        />
-                    </div>
+                    <input
+                        type='text'
+                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                        defaultValue={state.movieQuery}
+                        placeholder='Search Cast'
+                        onChange={(e) =>
+                            updateState({
+                                movieQuery: e.currentTarget.value,
+                                moviePage: 1
+                            })
+                        }
+                    />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
                             <Link
@@ -319,20 +317,18 @@ export function Movie({ state, updateState }: Props) {
             )}
             {state.movieTab === 'CREW' && (
                 <>
-                    <div className='flex flex-row'>
-                        <input
-                            type='text'
-                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                            defaultValue={state.movieQuery}
-                            placeholder='Search Crew'
-                            onChange={(e) =>
-                                updateState({
-                                    movieQuery: e.currentTarget.value,
-                                    moviePage: 1
-                                })
-                            }
-                        />
-                    </div>
+                    <input
+                        type='text'
+                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                        defaultValue={state.movieQuery}
+                        placeholder='Search Crew'
+                        onChange={(e) =>
+                            updateState({
+                                movieQuery: e.currentTarget.value,
+                                moviePage: 1
+                            })
+                        }
+                    />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
                             <Link

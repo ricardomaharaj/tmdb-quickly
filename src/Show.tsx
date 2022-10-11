@@ -223,20 +223,18 @@ export function Show({ state, updateState }: Props) {
             )}
             {state.showTab === 'CAST' && (
                 <>
-                    <div className='flex flex-row'>
-                        <input
-                            type='text'
-                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                            defaultValue={state.showQuery}
-                            placeholder='Search Cast'
-                            onChange={(e) =>
-                                updateState({
-                                    showQuery: e.currentTarget.value,
-                                    showPage: 1
-                                })
-                            }
-                        />
-                    </div>
+                    <input
+                        type='text'
+                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                        defaultValue={state.showQuery}
+                        placeholder='Search Cast'
+                        onChange={(e) =>
+                            updateState({
+                                showQuery: e.currentTarget.value,
+                                showPage: 1
+                            })
+                        }
+                    />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
                             <Link
@@ -340,20 +338,18 @@ export function Show({ state, updateState }: Props) {
             )}
             {state.showTab === 'CREW' && (
                 <>
-                    <div className='flex flex-row'>
-                        <input
-                            type='text'
-                            className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                            defaultValue={state.showQuery}
-                            placeholder='Search Crew'
-                            onChange={(e) =>
-                                updateState({
-                                    showQuery: e.currentTarget.value,
-                                    showPage: 1
-                                })
-                            }
-                        />
-                    </div>
+                    <input
+                        type='text'
+                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                        defaultValue={state.showQuery}
+                        placeholder='Search Crew'
+                        onChange={(e) =>
+                            updateState({
+                                showQuery: e.currentTarget.value,
+                                showPage: 1
+                            })
+                        }
+                    />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
                             <Link
