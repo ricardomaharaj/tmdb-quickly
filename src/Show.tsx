@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useShowQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { useShowQuery } from './types/Show'
 
 export function Show({ state, updateState }: Props) {
     let [imageTab, setImageTab] = useState('POSTERS')
 
     let { id } = useParams()
-    let [res] = useShowQuery({ id })
+    let [res] = useShowQuery({ id: id! })
     let { data, fetching, error } = res
     let show = data?.show
 

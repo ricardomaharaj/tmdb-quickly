@@ -1,11 +1,11 @@
 import { Link, useParams } from 'react-router-dom'
-import { usePersonQuery } from './gql'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { usePersonQuery } from './types/Person'
 
 export function Person({ state, updateState }: Props) {
     let { id } = useParams()
-    let [res] = usePersonQuery({ id })
+    let [res] = usePersonQuery({ id: id! })
     let { data, fetching, error } = res
     let person = data?.person
 

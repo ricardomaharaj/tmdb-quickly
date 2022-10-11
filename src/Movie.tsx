@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useMovieQuery } from './gql'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { useMovieQuery } from './types/Movie'
 
 const RELEASE_TYPES = [
     '',
@@ -18,7 +18,7 @@ export function Movie({ state, updateState }: Props) {
     let [imageTab, setImageTab] = useState('POSTERS')
 
     let { id } = useParams()
-    let [res] = useMovieQuery({ id })
+    let [res] = useMovieQuery({ id: id! })
     let { data, fetching, error } = res
     let movie = data?.movie
 
