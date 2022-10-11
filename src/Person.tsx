@@ -26,7 +26,7 @@ export function Person({ state, updateState }: Props) {
         bio = bio.replaceAll('. ', '.\n')
 
         // remove newline where inappropriate
-        let prefixes = ['Dr', 'Mr', 'Ms', 'Mrs', 'Lt', 'Vol']
+        let prefixes = ['Dr', 'Mr', 'Ms', 'Mrs', 'Jr', 'Lt', 'Vol']
         prefixes.forEach((prefix) => {
             bio = bio.replaceAll(`${prefix}\.\n`, `${prefix}\.\ `)
         })
@@ -297,7 +297,7 @@ export function Person({ state, updateState }: Props) {
                                             width='16'
                                             height='16'
                                             fill='currentColor'
-                                            className='w-[94px] h-[141px] brightness-50'
+                                            className='w-[94px] h-[141px] brightness-50 p-2'
                                             viewBox='0 0 16 16'
                                         >
                                             {x.media_type === 'tv' ? (
