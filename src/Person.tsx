@@ -274,22 +274,33 @@ export function Person({ state, updateState }: Props) {
                 </>
             )}
             {state.personTab === 'CREW' && (
-                <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                    {person?.combined_credits?.crew?.map((x, i) => (
-                        <Link
-                            to={`/${x.media_type}/${x.id}`}
-                            className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
-                            key={i}
-                        >
+                    <input
+                        type='text'
+                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
+                        placeholder='Search Crew Credits'
+                        onChange={(e) =>
+                            updateState({
+                                personQuery: e.currentTarget.value,
+                                personPage: 1
+                            })
+                        }
+                    />
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                        {crew?.map((x, i) => (
+                            <Link
+                                to={`/${x.media_type}/${x.id}`}
+                                className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
+                                key={i}
+                            >
                                 {x.poster_path ? (
-                                <img
-                                    src={`${IMG_URLs.W94H141}${x.poster_path}`}
-                                    className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                    loading='lazy'
-                                    width='94'
-                                    height='141'
-                                    alt=''
-                                />
+                                    <img
+                                        src={`${IMG_URLs.W94H141}${x.poster_path}`}
+                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+                                        loading='lazy'
+                                        width='94'
+                                        height='141'
+                                        alt=''
+                                    />
                                 ) : (
                                     <div className='bg-slate-800 rounded-xl mr-2'>
                                         <svg
@@ -307,27 +318,62 @@ export function Person({ state, updateState }: Props) {
                                             )}
                                         </svg>
                                     </div>
-                            )}
-                            <div>
-                                {(x.release_date || x.first_air_date) && (
-                                    <div className='text-sm'>
-                                        {(
-                                            x.release_date || x.first_air_date
-                                        )?.substring(0, 4)}
-                                    </div>
                                 )}
-                                {(x.name || x.title) && (
-                                    <div>{x.name || x.title}</div>
-                                )}
-                                {x.job && (
-                                    <div className='text-slate-400'>
-                                        {x.job}
-                                    </div>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                                <div>
+                                    {(x.release_date || x.first_air_date) && (
+                                        <div className='text-slate-400'>
+                                            {toDateString(
+                                                (x.release_date ||
+                                                    x.first_air_date)!
+                                            )}
+                                        </div>
+                                    )}
+                                    {(x.name || x.title) && (
+                                        <div>{x.name || x.title}</div>
+                                    )}
+                                    {x.job && (
+                                        <div className='text-slate-400'>
+                                            {x.job}
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                    <div className='flex flex-row space-x-2'>
+                        <button
+                            className={`${
+                                firstPage
+                                    ? 'text-slate-400'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={firstPage}
+                            onClick={() =>
+                                updateState({
+                                    personPage: state.personPage - 1
+                                })
+                            }
+                        >
+                            BACK
+                        </button>
+                        <div className='p-2'>{state.personPage}</div>
+                        <button
+                            className={`${
+                                lastCrew
+                                    ? 'text-slate-400'
+                                    : 'bg-slate-800 hover:bg-slate-600'
+                            } rounded-xl p-2`}
+                            disabled={lastCrew}
+                            onClick={() =>
+                                updateState({
+                                    personPage: state.personPage + 1
+                                })
+                            }
+                        >
+                            NEXT
+                        </button>
+                    </div>
+                </>
             )}
             {state.personTab === 'IMAGES' && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
