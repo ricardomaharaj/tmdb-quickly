@@ -40,50 +40,52 @@ export function Person({ state, updateState }: Props) {
         )
     }
 
+    let creditsFilter = state.personCreditsTab === 'SHOWS' ? 'tv' : 'movie'
+
+    let firstPage = state.personPage === 1
+
+    let startPage = firstPage ? 0 : state.personPage * 9
+    let endPage = firstPage ? 9 : state.personPage * 9 + 9
+
     let cast = person?.combined_credits?.cast
-        ?.filter((x) => {
-            let type = state.personCastTab === 'SHOWS' ? 'tv' : 'movie'
-            if (x.media_type === type) return true
+        ?.filter((x) => x.media_type === creditsFilter)
+        .filter((x) => {
+            let query = state.personQuery.toLowerCase()
+            let media = (x.name || x.title)?.toLowerCase()
+            let character = x.character?.toLowerCase()
+            if (media?.includes(query)) return true
+            if (character?.includes(query)) return true
             return false
         })
-        ?.filter(
-            (x) =>
-                (x.title || x.name)
-                    ?.toLowerCase()
-                    .includes(state.personQuery.toLowerCase()) ||
-                x.character
-                    ?.toLowerCase()
-                    .includes(state.personQuery.toLowerCase())
-        )
-        .sort((a, b) =>
+        ?.sort((a, b) =>
             (a.release_date || a.first_air_date)! >
             (b.release_date || b.first_air_date)!
                 ? -1
                 : 1
         )
-        .slice(
-            state.personPage === 1 ? 0 : state.personPage * 9,
-            state.personPage === 1 ? 9 : state.personPage * 9 + 9
-        )
+        .slice(startPage, endPage)
+
+    let lastCast = cast?.length! < 9
 
     let crew = person?.combined_credits?.crew
-        ?.filter(
-            (x) =>
-                (x.title || x.name)
-                    ?.toLowerCase()
-                    .includes(state.personQuery.toLowerCase()) ||
-                x.job?.toLowerCase().includes(state.personQuery.toLowerCase())
-        )
-        .sort((a, b) =>
+        ?.filter((x) => x.media_type === creditsFilter)
+        .filter((x) => {
+            let query = state.personQuery.toLowerCase()
+            let media = (x.name || x.title)?.toLowerCase()
+            let job = x.job?.toLowerCase()
+            if (media?.includes(query)) return true
+            if (job?.includes(query)) return true
+            return false
+        })
+        ?.sort((a, b) =>
             (a.release_date || a.first_air_date)! >
             (b.release_date || b.first_air_date)!
                 ? -1
                 : 1
         )
-        ?.slice(
-            state.personPage === 1 ? 0 : state.personPage * 9,
-            state.personPage === 1 ? 9 : state.personPage * 9 + 9
-        )
+        .slice(startPage, endPage)
+
+    let lastCrew = cast?.length! < 9
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -153,16 +155,16 @@ export function Person({ state, updateState }: Props) {
                         {['MOVIES', 'SHOWS'].map((x, i) => (
                             <button
                                 className={`${
-                                    state.personCastTab === x
+                                    state.personCreditsTab === x
                                         ? 'bg-slate-700'
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
-                                onClick={() => {
+                                onClick={() =>
                                     updateState({
-                                        personCastTab: x,
+                                        personCreditsTab: x,
                                         personPage: 1
                                     })
-                                }}
+                                }
                                 key={i}
                             >
                                 {x}
@@ -238,14 +240,14 @@ export function Person({ state, updateState }: Props) {
                             </Link>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                    <div className='flex flex-row space-x-2'>
                         <button
                             className={`${
-                                state.personPage <= 1
-                                    ? 'text-slate-600'
+                                firstPage
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2 `}
-                            disabled={state.personPage <= 1}
+                            } rounded-xl p-2`}
+                            disabled={firstPage}
                             onClick={() =>
                                 updateState({
                                     personPage: state.personPage - 1
@@ -257,11 +259,11 @@ export function Person({ state, updateState }: Props) {
                         <div className='p-2'>{state.personPage}</div>
                         <button
                             className={`${
-                                cast?.length! < 9
-                                    ? 'text-slate-600'
+                                lastCast
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2`}
-                            disabled={cast?.length! < 9}
+                            disabled={lastCast}
                             onClick={() =>
                                 updateState({
                                     personPage: state.personPage + 1
