@@ -274,6 +274,27 @@ export function Person({ state, updateState }: Props) {
                 </>
             )}
             {state.personTab === 'CREW' && (
+                <>
+                    <div className='flex flex-row space-x-2'>
+                        {['MOVIES', 'SHOWS'].map((x, i) => (
+                            <button
+                                className={`${
+                                    state.personCreditsTab === x
+                                        ? 'bg-slate-700'
+                                        : 'bg-slate-800'
+                                } rounded-xl p-2 hover:bg-slate-600`}
+                                onClick={() =>
+                                    updateState({
+                                        personCreditsTab: x,
+                                        personPage: 1
+                                    })
+                                }
+                                key={i}
+                            >
+                                {x}
+                            </button>
+                        ))}
+                    </div>
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
