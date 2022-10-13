@@ -164,15 +164,7 @@ export function Movie({ state, updateState }: Props) {
                                 >
                                     IMDB
                                 </a>
-                                <span
-                                    onClick={() =>
-                                        navigator.clipboard.writeText(
-                                            movie?.imdb_id!
-                                        )
-                                    }
-                                >
-                                    {` ID: ${movie.imdb_id}`}
-                                </span>
+                                <span>{` ID: ${movie.imdb_id}`}</span>
                             </div>
                         )}
                         <div>
