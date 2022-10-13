@@ -28,33 +28,36 @@ export function Movie({ state, updateState }: Props) {
         (x) => x?.iso_3166_1 === 'US'
     )[0]?.release_dates
 
+    let firstPage = state.moviePage === 1
+
+    let startPage = firstPage ? 0 : state.moviePage * 9
+    let endPage = firstPage ? 9 : state.moviePage * 9 + 9
+
     let cast = movie?.credits?.cast
-        ?.filter(
-            (x) =>
-                x.name
-                    ?.toLowerCase()
-                    .includes(state.movieQuery.toLowerCase()) ||
-                x.character
-                    ?.toLowerCase()
-                    .includes(state.movieQuery.toLowerCase())
-        )
-        ?.slice(
-            state.moviePage === 1 ? 0 : state.moviePage * 9,
-            state.moviePage === 1 ? 9 : state.moviePage * 9 + 9
-        )
+        ?.filter((x) => {
+            let name = x.name?.toLowerCase()
+            let character = x.character?.toLowerCase()
+            let query = state.movieQuery.toLowerCase()
+            if (name?.includes(query)) return true
+            if (character?.includes(query)) return true
+            return false
+        })
+        .slice(startPage, endPage)
+
+    let lastCast = cast?.length! < 9
 
     let crew = movie?.credits?.crew
-        ?.filter(
-            (x) =>
-                x.name
-                    ?.toLowerCase()
-                    .includes(state.movieQuery.toLowerCase()) ||
-                x.job?.toLowerCase().includes(state.movieQuery.toLowerCase())
-        )
-        ?.slice(
-            state.moviePage === 1 ? 0 : state.moviePage * 9,
-            state.moviePage === 1 ? 9 : state.moviePage * 9 + 9
-        )
+        ?.filter((x) => {
+            let name = x.name?.toLowerCase()
+            let job = x.job?.toLowerCase()
+            let query = state.movieQuery.toLowerCase()
+            if (name?.includes(query)) return true
+            if (job?.includes(query)) return true
+            return false
+        })
+        .slice(startPage, endPage)
+
+    let lastCrew = crew?.length! < 9
 
     if (fetching) return LOAD_SILHOUETTE
 
@@ -272,18 +275,16 @@ export function Movie({ state, updateState }: Props) {
                             </Link>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                    <div className='flex flex-row space-x-2'>
                         <button
                             className={`${
-                                state.moviePage <= 1
-                                    ? 'text-slate-600'
+                                firstPage
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2 `}
-                            disabled={state.moviePage <= 1}
+                            } rounded-xl p-2`}
+                            disabled={firstPage}
                             onClick={() =>
-                                updateState({
-                                    moviePage: state.moviePage - 1
-                                })
+                                updateState({ moviePage: state.moviePage - 1 })
                             }
                         >
                             BACK
@@ -291,15 +292,13 @@ export function Movie({ state, updateState }: Props) {
                         <div className='p-2'>{state.moviePage}</div>
                         <button
                             className={`${
-                                cast?.length! < 9
-                                    ? 'text-slate-600'
+                                lastCast
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2`}
-                            disabled={cast?.length! < 9}
+                            disabled={lastCast}
                             onClick={() =>
-                                updateState({
-                                    moviePage: state.moviePage + 1
-                                })
+                                updateState({ moviePage: state.moviePage + 1 })
                             }
                         >
                             NEXT
@@ -362,18 +361,16 @@ export function Movie({ state, updateState }: Props) {
                             </Link>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                    <div className='flex flex-row space-x-2'>
                         <button
                             className={`${
-                                state.moviePage <= 1
-                                    ? 'text-slate-600'
+                                firstPage
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2 `}
-                            disabled={state.moviePage <= 1}
+                            } rounded-xl p-2`}
+                            disabled={firstPage}
                             onClick={() =>
-                                updateState({
-                                    moviePage: state.moviePage - 1
-                                })
+                                updateState({ moviePage: state.moviePage - 1 })
                             }
                         >
                             BACK
@@ -381,15 +378,13 @@ export function Movie({ state, updateState }: Props) {
                         <div className='p-2'>{state.moviePage}</div>
                         <button
                             className={`${
-                                crew?.length! < 9
-                                    ? 'text-slate-600'
+                                lastCrew
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2`}
-                            disabled={crew?.length! < 9}
+                            disabled={lastCrew}
                             onClick={() =>
-                                updateState({
-                                    moviePage: state.moviePage + 1
-                                })
+                                updateState({ moviePage: state.moviePage + 1 })
                             }
                         >
                             NEXT

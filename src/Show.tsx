@@ -18,57 +18,54 @@ export function Show({ state, updateState }: Props) {
     let endYear = show?.last_air_date?.substring(0, 4)
     let showOver = show?.status === 'Ended' || show?.status === 'Canceled'
 
+    let firstPage = state.showPage === 1
+
+    let startPage = firstPage ? 0 : state.showPage * 9
+    let endPage = firstPage ? 9 : state.showPage * 9 + 9
+
     let cast = show?.aggregate_credits?.cast
         ?.sort((a, b) =>
             a.total_episode_count! > b.total_episode_count! ? -1 : 1
         )
         ?.filter((x) => {
+            let query = state.showQuery.toLowerCase()
+
+            // forEach does not work in this case
             for (let i = 0; i < x?.roles?.length!; i++) {
-                if (
-                    x?.roles?.[i]?.character
-                        ?.toLowerCase()
-                        .includes(state.showQuery.toLowerCase())
-                ) {
-                    return true
-                }
+                let character = x?.roles?.[i]?.character?.toLowerCase()
+                if (character?.includes(query)) return true
             }
 
-            if (x.name?.toLowerCase().includes(state.showQuery.toLowerCase())) {
-                return true
-            }
+            let name = x?.name?.toLowerCase()
+            if (name?.includes(query)) return true
 
             return false
         })
-        ?.slice(
-            state.showPage === 1 ? 0 : state.showPage * 9,
-            state.showPage === 1 ? 9 : state.showPage * 9 + 9
-        )
+        .slice(startPage, endPage)
+
+    let lastCast = cast?.length! < 9
 
     let crew = show?.aggregate_credits?.crew
         ?.sort((a, b) =>
             a.total_episode_count! > b.total_episode_count! ? -1 : 1
         )
         ?.filter((x) => {
+            let query = state.showQuery.toLowerCase()
+
+            // forEach does not work in this case
             for (let i = 0; i < x?.jobs?.length!; i++) {
-                if (
-                    x?.jobs?.[i]?.job
-                        ?.toLowerCase()
-                        .includes(state.showQuery.toLowerCase())
-                ) {
-                    return true
-                }
+                let job = x?.jobs?.[i]?.job?.toLowerCase()
+                if (job?.includes(query)) return true
             }
 
-            if (x.name?.toLowerCase().includes(state.showQuery.toLowerCase())) {
-                return true
-            }
+            let name = x?.name?.toLowerCase()
+            if (name?.includes(query)) return true
 
             return false
         })
-        ?.slice(
-            state.showPage === 1 ? 0 : state.showPage * 9,
-            state.showPage === 1 ? 9 : state.showPage * 9 + 9
-        )
+        .slice(startPage, endPage)
+
+    let lastCrew = crew?.length! < 9
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -301,18 +298,16 @@ export function Show({ state, updateState }: Props) {
                             </Link>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                    <div className='flex flex-row space-x-2'>
                         <button
                             className={`${
-                                state.showPage <= 1
-                                    ? 'text-slate-600'
+                                firstPage
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2 `}
-                            disabled={state.showPage <= 1}
+                            } rounded-xl p-2`}
+                            disabled={firstPage}
                             onClick={() =>
-                                updateState({
-                                    showPage: state.showPage - 1
-                                })
+                                updateState({ showPage: state.showPage - 1 })
                             }
                         >
                             BACK
@@ -320,15 +315,13 @@ export function Show({ state, updateState }: Props) {
                         <div className='p-2'>{state.showPage}</div>
                         <button
                             className={`${
-                                cast?.length! < 9
-                                    ? 'text-slate-600'
+                                lastCast
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2`}
-                            disabled={cast?.length! < 9}
+                            disabled={lastCast}
                             onClick={() =>
-                                updateState({
-                                    showPage: state.showPage + 1
-                                })
+                                updateState({ showPage: state.showPage + 1 })
                             }
                         >
                             NEXT
@@ -402,18 +395,16 @@ export function Show({ state, updateState }: Props) {
                             </Link>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll xl:overflow-hidden'>
+                    <div className='flex flex-row space-x-2'>
                         <button
                             className={`${
-                                state.showPage <= 1
-                                    ? 'text-slate-600'
+                                firstPage
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2 `}
-                            disabled={state.showPage <= 1}
+                            } rounded-xl p-2`}
+                            disabled={firstPage}
                             onClick={() =>
-                                updateState({
-                                    showPage: state.showPage - 1
-                                })
+                                updateState({ showPage: state.showPage - 1 })
                             }
                         >
                             BACK
@@ -421,15 +412,13 @@ export function Show({ state, updateState }: Props) {
                         <div className='p-2'>{state.showPage}</div>
                         <button
                             className={`${
-                                crew?.length! < 9
-                                    ? 'text-slate-600'
+                                lastCrew
+                                    ? 'text-slate-400'
                                     : 'bg-slate-800 hover:bg-slate-600'
                             } rounded-xl p-2`}
-                            disabled={crew?.length! < 9}
+                            disabled={lastCrew}
                             onClick={() =>
-                                updateState({
-                                    showPage: state.showPage + 1
-                                })
+                                updateState({ showPage: state.showPage + 1 })
                             }
                         >
                             NEXT
