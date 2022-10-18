@@ -1,9 +1,16 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { usePersonQuery } from './types/Person'
 
-export function Person({ state, updateState }: Props) {
+export function Person() {
+    let [params, setParams] = useSearchParams()
+
+    let tab = params.get('tab') || 'BIO'
+    let creditsTab = params.get('creditsTab') || 'MOVIES'
+    let query = params.get('query') || ''
+    let page = parseInt(params.get('page') || '1')
+
     let { id } = useParams()
     let [res] = usePersonQuery({ id: id! })
     let { data, fetching, error } = res
@@ -40,21 +47,22 @@ export function Person({ state, updateState }: Props) {
         )
     }
 
-    let creditsFilter = state.personCreditsTab === 'SHOWS' ? 'tv' : 'movie'
+    let creditsFilter = creditsTab === 'SHOWS' ? 'tv' : 'movie'
 
-    let firstPage = state.personPage === 1
+    let firstPage = page === 1
 
-    let startPage = firstPage ? 0 : state.personPage * 9
-    let endPage = firstPage ? 9 : state.personPage * 9 + 9
+    let pageLimit = 9
+    let startPage = (page - 1) * pageLimit
+    let endPage = page * pageLimit
 
     let cast = person?.combined_credits?.cast
         ?.filter((x) => x.media_type === creditsFilter)
         .filter((x) => {
-            let query = state.personQuery.toLowerCase()
+            let q = query.toLowerCase()
             let media = (x.name || x.title)?.toLowerCase()
             let character = x.character?.toLowerCase()
-            if (media?.includes(query)) return true
-            if (character?.includes(query)) return true
+            if (media?.includes(q)) return true
+            if (character?.includes(q)) return true
             return false
         })
         ?.sort((a, b) =>
@@ -70,11 +78,11 @@ export function Person({ state, updateState }: Props) {
     let crew = person?.combined_credits?.crew
         ?.filter((x) => x.media_type === creditsFilter)
         .filter((x) => {
-            let query = state.personQuery.toLowerCase()
+            let q = query.toLowerCase()
             let media = (x.name || x.title)?.toLowerCase()
             let job = x.job?.toLowerCase()
-            if (media?.includes(query)) return true
-            if (job?.includes(query)) return true
+            if (media?.includes(q)) return true
+            if (job?.includes(q)) return true
             return false
         })
         ?.sort((a, b) =>
@@ -127,20 +135,16 @@ export function Person({ state, updateState }: Props) {
                 {['BIO', 'CAST', 'CREW', 'IMAGES'].map((x, i) => (
                     <button
                         className={`${
-                            state.personTab === x
-                                ? 'bg-slate-700'
-                                : 'bg-slate-800'
+                            tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() =>
-                            updateState({ personTab: x, personPage: 1 })
-                        }
+                        onClick={() => setParams({ tab: x }, { replace: true })}
                         key={i}
                     >
                         {x}
                     </button>
                 ))}
             </div>
-            {state.personTab === 'BIO' && (
+            {tab === 'BIO' && (
                 <>
                     {person?.biography && (
                         <div className='bg-slate-800 rounded-xl p-3 space-y-2'>
@@ -149,21 +153,21 @@ export function Person({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.personTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <>
                     <div className='flex flex-row space-x-2'>
                         {['MOVIES', 'SHOWS'].map((x, i) => (
                             <button
                                 className={`${
-                                    state.personCreditsTab === x
+                                    creditsTab === x
                                         ? 'bg-slate-700'
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() =>
-                                    updateState({
-                                        personCreditsTab: x,
-                                        personPage: 1
-                                    })
+                                    setParams(
+                                        { tab, creditsTab: x, query },
+                                        { replace: true }
+                                    )
                                 }
                                 key={i}
                             >
@@ -175,11 +179,16 @@ export function Person({ state, updateState }: Props) {
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
                         placeholder='Search Cast Credits'
+                        defaultValue={query}
                         onChange={(e) =>
-                            updateState({
-                                personQuery: e.currentTarget.value,
-                                personPage: 1
-                            })
+                            setParams(
+                                {
+                                    tab,
+                                    creditsTab,
+                                    query: e.currentTarget.value
+                                },
+                                { replace: true }
+                            )
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -249,14 +258,20 @@ export function Person({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateState({
-                                    personPage: state.personPage - 1
-                                })
+                                setParams(
+                                    {
+                                        tab,
+                                        creditsTab,
+                                        page: (page - 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.personPage}</div>
+                        <div className='p-2'>{page}</div>
                         <button
                             className={`${
                                 lastCast
@@ -265,9 +280,15 @@ export function Person({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                updateState({
-                                    personPage: state.personPage + 1
-                                })
+                                setParams(
+                                    {
+                                        tab,
+                                        creditsTab,
+                                        page: (page + 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             NEXT
@@ -275,21 +296,21 @@ export function Person({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.personTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <div className='flex flex-row space-x-2'>
                         {['MOVIES', 'SHOWS'].map((x, i) => (
                             <button
                                 className={`${
-                                    state.personCreditsTab === x
+                                    creditsTab === x
                                         ? 'bg-slate-700'
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() =>
-                                    updateState({
-                                        personCreditsTab: x,
-                                        personPage: 1
-                                    })
+                                    setParams(
+                                        { tab, creditsTab: x, query },
+                                        { replace: true }
+                                    )
                                 }
                                 key={i}
                             >
@@ -301,11 +322,16 @@ export function Person({ state, updateState }: Props) {
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
                         placeholder='Search Crew Credits'
+                        defaultValue={query}
                         onChange={(e) =>
-                            updateState({
-                                personQuery: e.currentTarget.value,
-                                personPage: 1
-                            })
+                            setParams(
+                                {
+                                    tab,
+                                    creditsTab,
+                                    query: e.currentTarget.value
+                                },
+                                { replace: true }
+                            )
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -372,14 +398,20 @@ export function Person({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateState({
-                                    personPage: state.personPage - 1
-                                })
+                                setParams(
+                                    {
+                                        tab,
+                                        creditsTab,
+                                        page: (page - 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.personPage}</div>
+                        <div className='p-2'>{page}</div>
                         <button
                             className={`${
                                 lastCrew
@@ -388,9 +420,15 @@ export function Person({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                updateState({
-                                    personPage: state.personPage + 1
-                                })
+                                setParams(
+                                    {
+                                        tab,
+                                        creditsTab,
+                                        page: (page + 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             NEXT
@@ -398,7 +436,7 @@ export function Person({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.personTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {person?.images?.profiles?.map((x, i) => (
                         <a

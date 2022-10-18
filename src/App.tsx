@@ -6,8 +6,6 @@ import { Show } from './Show'
 import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
-import { useState } from 'react'
-import { State } from './consts'
 
 let url =
     process.env.NODE_ENV === 'production'
@@ -17,31 +15,6 @@ let url =
 let urqlClient = createClient({ url })
 
 export function App() {
-    let [state, setState] = useState<State>({
-        searchTab: 'movie',
-        searchQuery: '',
-        searchPage: 1,
-
-        movieTab: 'INFO',
-        movieQuery: '',
-        moviePage: 1,
-
-        showTab: 'INFO',
-        showQuery: '',
-        showPage: 1,
-
-        seasonTab: 'EPISODES',
-        episodeTab: 'INFO',
-
-        personTab: 'BIO',
-        personQuery: '',
-        personPage: 1,
-        personCreditsTab: 'MOVIES'
-    })
-
-    let updateState = (update: Partial<State>) =>
-        setState({ ...state, ...update })
-
     return (
         <BrowserRouter>
             <UrqlProvider value={urqlClient}>
@@ -58,69 +31,19 @@ export function App() {
                             />
                         </Link>
                         <Routes>
-                            <Route
-                                path='/'
-                                element={
-                                    <Search
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
-                            />
-                            <Route
-                                path='/movie/:id'
-                                element={
-                                    <Movie
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
-                            />
-                            <Route
-                                path='/tv/:id'
-                                element={
-                                    <Show
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
-                            />
+                            <Route path='/' element={<Search />} />
+                            <Route path='/movie/:id' element={<Movie />} />
+                            <Route path='/tv/:id' element={<Show />} />
                             <Route
                                 path='/tv/:id/season/:season_number'
-                                element={
-                                    <Season
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
+                                element={<Season />}
                             />
                             <Route
                                 path='/tv/:id/season/:season_number/episode/:episode_number'
-                                element={
-                                    <Episode
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
+                                element={<Episode />}
                             />
-                            <Route
-                                path='/person/:id'
-                                element={
-                                    <Person
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
-                            />
-                            <Route
-                                path='*'
-                                element={
-                                    <Search
-                                        state={state}
-                                        updateState={updateState}
-                                    />
-                                }
-                            />
+                            <Route path='/person/:id' element={<Person />} />
+                            <Route path='*' element={<Search />} />
                         </Routes>
                     </div>
                 </div>

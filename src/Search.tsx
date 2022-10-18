@@ -1,14 +1,21 @@
-import { Link } from 'react-router-dom'
-import { IMG_URLs, Props } from './consts'
+import { Link, useSearchParams } from 'react-router-dom'
+import { IMG_URLs } from './consts'
 import { Fragment } from 'react'
 import { useSearchQuery } from './types/Search'
 
-export function Search({ state, updateState }: Props) {
+export function Search() {
     document.title = 'TMDB Quickly'
 
+    let [params, setParams] = useSearchParams()
+
+    let tab = params.get('tab') || 'movie'
+    let query = params.get('query') || ''
+    let page = params.get('page') || '1'
+    let pageInt = parseInt(page)
+
     let [res] = useSearchQuery({
-        query: state.searchQuery,
-        page: state.searchPage.toString()
+        query,
+        page
     })
     let { data, fetching, error } = res
 
@@ -45,14 +52,14 @@ export function Search({ state, updateState }: Props) {
                 type='text'
                 id='query'
                 placeholder='SEARCH'
-                defaultValue={state.searchQuery}
+                defaultValue={query}
                 className='bg-slate-800 p-3 text-xl text-center rounded-xl outline-none'
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        updateState({
-                            searchQuery: e.currentTarget.value,
-                            searchPage: 1
-                        })
+                        setParams(
+                            { tab, query: e.currentTarget.value },
+                            { replace: true }
+                        )
                     }
                 }}
             />
@@ -60,11 +67,14 @@ export function Search({ state, updateState }: Props) {
                 {TABS.map((x, i) => (
                     <button
                         className={`${
-                            state.searchTab === x.val
-                                ? 'bg-slate-700'
-                                : 'bg-slate-800'
+                            tab === x.val ? 'bg-slate-700' : 'bg-slate-800'
                         } hover:bg-slate-600 rounded-xl p-2`}
-                        onClick={() => updateState({ searchTab: x.val })}
+                        onClick={() =>
+                            setParams(
+                                { tab: x.val, page, query },
+                                { replace: true }
+                            )
+                        }
                         key={i}
                     >
                         {x.name}
@@ -81,7 +91,7 @@ export function Search({ state, updateState }: Props) {
                 ) : (
                     <>
                         {results
-                            ?.filter((x) => x.media_type === state.searchTab)
+                            ?.filter((x) => x.media_type === tab)
                             .map((x, i) => (
                                 <Link
                                     to={`/${x.media_type}/${x.id}`}
@@ -136,31 +146,37 @@ export function Search({ state, updateState }: Props) {
                     </>
                 )}
             </div>
-            {state.searchQuery && (
+            {query && (
                 <div className='flex flex-row space-x-2'>
                     <button
                         className={`${
-                            state.searchPage <= 1
+                            pageInt <= 1
                                 ? 'text-slate-600'
                                 : 'bg-slate-800 hover:bg-slate-600'
                         } rounded-xl p-2`}
-                        disabled={state.searchPage <= 1}
+                        disabled={pageInt <= 1}
                         onClick={() =>
-                            updateState({ searchPage: state.searchPage - 1 })
+                            setParams(
+                                { tab, page: (pageInt - 1).toString(), query },
+                                { replace: true }
+                            )
                         }
                     >
                         BACK
                     </button>
-                    <div className='p-2'>{state.searchPage}</div>
+                    <div className='p-2'>{pageInt}</div>
                     <button
                         className={`${
-                            state.searchPage >= maxPages!
+                            pageInt >= maxPages!
                                 ? 'text-slate-600'
                                 : 'bg-slate-800 hover:bg-slate-600'
                         } rounded-xl p-2`}
-                        disabled={state.searchPage >= maxPages!}
+                        disabled={pageInt >= maxPages!}
                         onClick={() =>
-                            updateState({ searchPage: state.searchPage + 1 })
+                            setParams(
+                                { tab, page: (pageInt + 1).toString(), query },
+                                { replace: true }
+                            )
                         }
                     >
                         NEXT

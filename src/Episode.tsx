@@ -1,9 +1,13 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useEpisodeQuery } from './types/Episode'
 
-export function Episode({ state, updateState }: Props) {
+export function Episode() {
+    let [params, setParams] = useSearchParams()
+
+    let tab = params.get('tab') || 'INFO'
+
     let { id, season_number, episode_number } = useParams()
     let [res] = useEpisodeQuery({ id, season_number, episode_number })
     let { data, fetching, error } = res
@@ -48,18 +52,16 @@ export function Episode({ state, updateState }: Props) {
                 {['INFO', 'GUESTS', 'CREW', 'IMAGES'].map((x, i) => (
                     <button
                         className={`${
-                            state.episodeTab === x
-                                ? 'bg-slate-700'
-                                : 'bg-slate-800'
+                            tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => updateState({ episodeTab: x })}
+                        onClick={() => setParams({ tab: x }, { replace: true })}
                         key={i}
                     >
                         {x}
                     </button>
                 ))}
             </div>
-            {state.episodeTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {episode?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -68,7 +70,7 @@ export function Episode({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.episodeTab === 'GUESTS' && (
+            {tab === 'GUESTS' && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.guest_stars?.map((x, i) => (
                         <Link
@@ -111,7 +113,7 @@ export function Episode({ state, updateState }: Props) {
                     ))}
                 </div>
             )}
-            {state.episodeTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.crew?.map((x, i) => (
                         <Link
@@ -154,7 +156,7 @@ export function Episode({ state, updateState }: Props) {
                     ))}
                 </div>
             )}
-            {state.episodeTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.images?.stills?.map((x, i) => (
                         <a

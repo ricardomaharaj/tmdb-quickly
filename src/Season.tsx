@@ -1,16 +1,21 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useSeasonQuery } from './types/Season'
 
-export function Season({ state, updateState }: Props) {
+export function Season() {
+    let [params, setParams] = useSearchParams()
+
+    let tab = params.get('tab') || 'INFO'
+
     let { id, season_number } = useParams()
     let [res] = useSeasonQuery({ id, season_number })
     let { data, fetching, error } = res
     let season = data?.season
 
-    if (state.seasonTab === 'INFO' && !season?.overview)
-        updateState({ seasonTab: 'EPISODES' })
+    if (tab === 'INFO' && !season?.overview) {
+        tab = 'EPISODES'
+    }
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -48,11 +53,11 @@ export function Season({ state, updateState }: Props) {
                 {season?.overview && (
                     <button
                         className={`${
-                            state.seasonTab === 'INFO'
-                                ? 'bg-slate-700'
-                                : 'bg-slate-800'
+                            tab === 'INFO' ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => updateState({ seasonTab: 'INFO' })}
+                        onClick={() =>
+                            setParams({ tab: 'INFO' }, { replace: true })
+                        }
                     >
                         {'INFO'}
                     </button>
@@ -60,18 +65,16 @@ export function Season({ state, updateState }: Props) {
                 {['EPISODES', 'IMAGES', 'VIDEOS'].map((x, i) => (
                     <button
                         className={`${
-                            state.seasonTab === x
-                                ? 'bg-slate-700'
-                                : 'bg-slate-800'
+                            tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => updateState({ seasonTab: x })}
+                        onClick={() => setParams({ tab: x }, { replace: true })}
                         key={i}
                     >
                         {x}
                     </button>
                 ))}
             </div>
-            {state.seasonTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {season?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -80,7 +83,7 @@ export function Season({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.seasonTab === 'EPISODES' && (
+            {tab === 'EPISODES' && (
                 <>
                     <div className='flex flex-col space-y-2'>
                         {season?.episodes?.map((x, i) => (
@@ -135,7 +138,7 @@ export function Season({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.seasonTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {season?.images?.posters
                         ?.filter(
@@ -157,7 +160,7 @@ export function Season({ state, updateState }: Props) {
                         ))}
                 </div>
             )}
-            {state.seasonTab === 'VIDEOS' && (
+            {tab === 'VIDEOS' && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {season?.videos?.results?.map((x, i) => (
                         <div

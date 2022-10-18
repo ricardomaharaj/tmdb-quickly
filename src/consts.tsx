@@ -18,35 +18,3 @@ export const LOAD_SILHOUETTE = (
         </div>
     </div>
 )
-
-export interface State {
-    // Search
-    searchTab: string
-    searchQuery: string
-    searchPage: number
-
-    // Movie
-    movieTab: string
-    movieQuery: string
-    moviePage: number
-
-    // Show
-    showTab: string
-    showQuery: string
-    showPage: number
-
-    // Season + Episode
-    seasonTab: string
-    episodeTab: string
-
-    // Person
-    personTab: string
-    personQuery: string
-    personPage: number
-    personCreditsTab: string
-}
-
-export interface Props {
-    state: State
-    updateState: (update: Partial<State>) => void
-}

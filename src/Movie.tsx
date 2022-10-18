@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useMovieQuery } from './types/Movie'
 
 const RELEASE_TYPES = [
@@ -14,8 +14,13 @@ const RELEASE_TYPES = [
     'TV'
 ]
 
-export function Movie({ state, updateState }: Props) {
+export function Movie() {
     let [imageTab, setImageTab] = useState('POSTERS')
+    let [params, setParams] = useSearchParams()
+
+    let tab = params.get('tab') || 'INFO'
+    let query = params.get('query') || ''
+    let page = parseInt(params.get('page') || '1')
 
     let { id } = useParams()
     let [res] = useMovieQuery({ id: id! })
@@ -28,18 +33,19 @@ export function Movie({ state, updateState }: Props) {
         (x) => x?.iso_3166_1 === 'US'
     )[0]?.release_dates
 
-    let firstPage = state.moviePage === 1
+    let firstPage = page === 1
 
-    let startPage = firstPage ? 0 : state.moviePage * 9
-    let endPage = firstPage ? 9 : state.moviePage * 9 + 9
+    let pageLimit = 9
+    let startPage = (page - 1) * pageLimit
+    let endPage = page * pageLimit
 
     let cast = movie?.credits?.cast
         ?.filter((x) => {
             let name = x.name?.toLowerCase()
             let character = x.character?.toLowerCase()
-            let query = state.movieQuery.toLowerCase()
-            if (name?.includes(query)) return true
-            if (character?.includes(query)) return true
+            let q = query.toLowerCase()
+            if (name?.includes(q)) return true
+            if (character?.includes(q)) return true
             return false
         })
         .slice(startPage, endPage)
@@ -50,9 +56,9 @@ export function Movie({ state, updateState }: Props) {
         ?.filter((x) => {
             let name = x.name?.toLowerCase()
             let job = x.job?.toLowerCase()
-            let query = state.movieQuery.toLowerCase()
-            if (name?.includes(query)) return true
-            if (job?.includes(query)) return true
+            let q = query.toLowerCase()
+            if (name?.includes(q)) return true
+            if (job?.includes(q)) return true
             return false
         })
         .slice(startPage, endPage)
@@ -96,12 +102,10 @@ export function Movie({ state, updateState }: Props) {
                 {['INFO', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) => (
                     <button
                         className={`${
-                            state.movieTab === x
-                                ? 'bg-slate-700'
-                                : 'bg-slate-800'
+                            tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
                         onClick={() =>
-                            updateState({ movieTab: x, moviePage: 1 })
+                            setParams({ tab: x, query }, { replace: true })
                         }
                         key={i}
                     >
@@ -109,7 +113,7 @@ export function Movie({ state, updateState }: Props) {
                     </button>
                 ))}
             </div>
-            {state.movieTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {movie?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -217,18 +221,21 @@ export function Movie({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.movieTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <>
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        defaultValue={state.movieQuery}
+                        defaultValue={query}
                         placeholder='Search Cast'
                         onChange={(e) =>
-                            updateState({
-                                movieQuery: e.currentTarget.value,
-                                moviePage: 1
-                            })
+                            setParams(
+                                {
+                                    tab: 'CAST',
+                                    query: e.currentTarget.value
+                                },
+                                { replace: true }
+                            )
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -284,12 +291,19 @@ export function Movie({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateState({ moviePage: state.moviePage - 1 })
+                                setParams(
+                                    {
+                                        tab: 'CAST',
+                                        page: (page - 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.moviePage}</div>
+                        <div className='p-2'>{page}</div>
                         <button
                             className={`${
                                 lastCast
@@ -298,7 +312,14 @@ export function Movie({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                updateState({ moviePage: state.moviePage + 1 })
+                                setParams(
+                                    {
+                                        tab: 'CAST',
+                                        page: (page + 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             NEXT
@@ -306,18 +327,18 @@ export function Movie({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.movieTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        defaultValue={state.movieQuery}
+                        defaultValue={query}
                         placeholder='Search Crew'
                         onChange={(e) =>
-                            updateState({
-                                movieQuery: e.currentTarget.value,
-                                moviePage: 1
-                            })
+                            setParams(
+                                { tab: 'CREW', query: e.currentTarget.value },
+                                { replace: true }
+                            )
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -370,12 +391,19 @@ export function Movie({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateState({ moviePage: state.moviePage - 1 })
+                                setParams(
+                                    {
+                                        tab: 'CREW',
+                                        page: (page - 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.moviePage}</div>
+                        <div className='p-2'>{page}</div>
                         <button
                             className={`${
                                 lastCrew
@@ -384,7 +412,14 @@ export function Movie({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                updateState({ moviePage: state.moviePage + 1 })
+                                setParams(
+                                    {
+                                        tab: 'CREW',
+                                        page: (page + 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             NEXT
@@ -392,7 +427,7 @@ export function Movie({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.movieTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <>
                     <div className='flex flex-row space-x-2'>
                         {['POSTERS', 'BACKDROPS'].map((x, i) => (
@@ -457,7 +492,7 @@ export function Movie({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.movieTab === 'VIDEOS' && (
+            {tab === 'VIDEOS' && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {movie?.videos?.results?.map((x, i) => (
                         <div

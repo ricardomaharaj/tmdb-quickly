@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE, Props } from './consts'
+import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useShowQuery } from './types/Show'
 
-export function Show({ state, updateState }: Props) {
+export function Show() {
     let [imageTab, setImageTab] = useState('POSTERS')
+    let [params, setParams] = useSearchParams()
+
+    let tab = params.get('tab') || 'INFO'
+    let query = params.get('query') || ''
+    let page = parseInt(params.get('page') || '1')
 
     let { id } = useParams()
     let [res] = useShowQuery({ id: id! })
@@ -18,26 +23,27 @@ export function Show({ state, updateState }: Props) {
     let endYear = show?.last_air_date?.substring(0, 4)
     let showOver = show?.status === 'Ended' || show?.status === 'Canceled'
 
-    let firstPage = state.showPage === 1
+    let firstPage = page === 1
 
-    let startPage = firstPage ? 0 : state.showPage * 9
-    let endPage = firstPage ? 9 : state.showPage * 9 + 9
+    let pageLimit = 9
+    let startPage = (page - 1) * pageLimit
+    let endPage = page * pageLimit
 
     let cast = show?.aggregate_credits?.cast
         ?.sort((a, b) =>
             a.total_episode_count! > b.total_episode_count! ? -1 : 1
         )
         ?.filter((x) => {
-            let query = state.showQuery.toLowerCase()
+            let q = query.toLowerCase()
 
             // forEach does not work in this case
             for (let i = 0; i < x?.roles?.length!; i++) {
                 let character = x?.roles?.[i]?.character?.toLowerCase()
-                if (character?.includes(query)) return true
+                if (character?.includes(q)) return true
             }
 
             let name = x?.name?.toLowerCase()
-            if (name?.includes(query)) return true
+            if (name?.includes(q)) return true
 
             return false
         })
@@ -50,16 +56,16 @@ export function Show({ state, updateState }: Props) {
             a.total_episode_count! > b.total_episode_count! ? -1 : 1
         )
         ?.filter((x) => {
-            let query = state.showQuery.toLowerCase()
+            let q = query.toLowerCase()
 
             // forEach does not work in this case
             for (let i = 0; i < x?.jobs?.length!; i++) {
                 let job = x?.jobs?.[i]?.job?.toLowerCase()
-                if (job?.includes(query)) return true
+                if (job?.includes(q)) return true
             }
 
             let name = x?.name?.toLowerCase()
-            if (name?.includes(query)) return true
+            if (name?.includes(q)) return true
 
             return false
         })
@@ -116,12 +122,10 @@ export function Show({ state, updateState }: Props) {
                     (x, i) => (
                         <button
                             className={`${
-                                state.showTab === x
-                                    ? 'bg-slate-700'
-                                    : 'bg-slate-800'
+                                tab === x ? 'bg-slate-700' : 'bg-slate-800'
                             } rounded-xl p-2 hover:bg-slate-600`}
                             onClick={() =>
-                                updateState({ showTab: x, showPage: 1 })
+                                setParams({ tab: x, query }, { replace: true })
                             }
                             key={i}
                         >
@@ -130,7 +134,7 @@ export function Show({ state, updateState }: Props) {
                     )
                 )}
             </div>
-            {state.showTab === 'INFO' && (
+            {tab === 'INFO' && (
                 <>
                     {show?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -218,18 +222,18 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'CAST' && (
+            {tab === 'CAST' && (
                 <>
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        defaultValue={state.showQuery}
+                        defaultValue={query}
                         placeholder='Search Cast'
                         onChange={(e) =>
-                            updateState({
-                                showQuery: e.currentTarget.value,
-                                showPage: 1
-                            })
+                            setParams(
+                                { tab: 'CAST', query: e.currentTarget.value },
+                                { replace: true }
+                            )
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -307,12 +311,19 @@ export function Show({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateState({ showPage: state.showPage - 1 })
+                                setParams(
+                                    {
+                                        tab: 'CAST',
+                                        page: (page - 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.showPage}</div>
+                        <div className='p-2'>{page}</div>
                         <button
                             className={`${
                                 lastCast
@@ -321,7 +332,14 @@ export function Show({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                updateState({ showPage: state.showPage + 1 })
+                                setParams(
+                                    {
+                                        tab: 'CAST',
+                                        page: (page + 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             NEXT
@@ -329,18 +347,18 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'CREW' && (
+            {tab === 'CREW' && (
                 <>
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        defaultValue={state.showQuery}
+                        defaultValue={query}
                         placeholder='Search Crew'
                         onChange={(e) =>
-                            updateState({
-                                showQuery: e.currentTarget.value,
-                                showPage: 1
-                            })
+                            setParams(
+                                { tab: 'CREW', query: e.currentTarget.value },
+                                { replace: true }
+                            )
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -404,12 +422,19 @@ export function Show({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateState({ showPage: state.showPage - 1 })
+                                setParams(
+                                    {
+                                        tab: 'CREW',
+                                        page: (page - 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             BACK
                         </button>
-                        <div className='p-2'>{state.showPage}</div>
+                        <div className='p-2'>{page}</div>
                         <button
                             className={`${
                                 lastCrew
@@ -418,7 +443,14 @@ export function Show({ state, updateState }: Props) {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                updateState({ showPage: state.showPage + 1 })
+                                setParams(
+                                    {
+                                        tab: 'CREW',
+                                        page: (page + 1).toString(),
+                                        query
+                                    },
+                                    { replace: true }
+                                )
                             }
                         >
                             NEXT
@@ -426,7 +458,7 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'SEASONS' && (
+            {tab === 'SEASONS' && (
                 <>
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {show?.seasons &&
@@ -464,7 +496,7 @@ export function Show({ state, updateState }: Props) {
                     </div>
                 </>
             )}
-            {state.showTab === 'IMAGES' && (
+            {tab === 'IMAGES' && (
                 <>
                     <div className='flex flex-row space-x-2'>
                         {['POSTERS', 'BACKDROPS'].map((x, i) => (
@@ -529,7 +561,7 @@ export function Show({ state, updateState }: Props) {
                     )}
                 </>
             )}
-            {state.showTab === 'VIDEOS' && (
+            {tab === 'VIDEOS' && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {show?.videos?.results?.map((x, i) => (
                         <div
