@@ -6,16 +6,12 @@ import { useSeasonQuery } from './types/Season'
 export function Season() {
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || 'INFO'
+    let tab = params.get('tab') || 'EPISODES'
 
     let { id, season_number } = useParams()
     let [res] = useSeasonQuery({ id, season_number })
     let { data, fetching, error } = res
     let season = data?.season
-
-    if (tab === 'INFO' && !season?.overview) {
-        tab = 'EPISODES'
-    }
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -50,18 +46,6 @@ export function Season() {
                 </div>
             </div>
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {season?.overview && (
-                    <button
-                        className={`${
-                            tab === 'INFO' ? 'bg-slate-700' : 'bg-slate-800'
-                        } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() =>
-                            setParams({ tab: 'INFO' }, { replace: true })
-                        }
-                    >
-                        {'INFO'}
-                    </button>
-                )}
                 {['EPISODES', 'IMAGES', 'VIDEOS'].map((x, i) => (
                     <button
                         className={`${
