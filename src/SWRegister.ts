@@ -6,21 +6,29 @@ const isLocalhost = Boolean(
         )
 )
 
-export function registerSW(config) {
+type Config = {
+    onSuccess?: (registration: ServiceWorkerRegistration) => void
+    onUpdate?: (registration: ServiceWorkerRegistration) => void
+}
+
+export function registerSW(config?: Config) {
     if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-        const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href)
+        const publicUrl = new URL(process.env.PUBLIC_URL!, window.location.href)
         if (publicUrl.origin !== window.location.origin) {
             return
         }
+
         window.addEventListener('load', () => {
             const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`
+
             if (isLocalhost) {
                 checkValidSW(swUrl, config)
-                navigator.serviceWorker.ready.then(() =>
+
+                navigator.serviceWorker.ready.then(() => {
                     console.log(
                         'This web app is being served cache-first by a service worker'
                     )
-                )
+                })
             } else {
                 registerValidSW(swUrl, config)
             }
@@ -28,7 +36,7 @@ export function registerSW(config) {
     }
 }
 
-function registerValidSW(swUrl, config) {
+function registerValidSW(swUrl: string, config?: Config) {
     navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
@@ -43,11 +51,13 @@ function registerValidSW(swUrl, config) {
                             console.log(
                                 'New content is available and will be used when all tabs for this page are closed'
                             )
+
                             if (config && config.onUpdate) {
                                 config.onUpdate(registration)
                             }
                         } else {
-                            console.log('Content is cached for offline use')
+                            console.log('Content is cached for offline use.')
+
                             if (config && config.onSuccess) {
                                 config.onSuccess(registration)
                             }
@@ -56,13 +66,15 @@ function registerValidSW(swUrl, config) {
                 }
             }
         })
-        .catch((err) =>
-            console.error(`Error during service worker registration: ${err}`)
-        )
+        .catch((error) => {
+            console.error('Error during service worker registration:', error)
+        })
 }
 
-function checkValidSW(swUrl, config) {
-    fetch(swUrl, { headers: { 'Service-Worker': 'script' } })
+function checkValidSW(swUrl: string, config?: Config) {
+    fetch(swUrl, {
+        headers: { 'Service-Worker': 'script' }
+    })
         .then((response) => {
             const contentType = response.headers.get('content-type')
             if (
@@ -71,25 +83,29 @@ function checkValidSW(swUrl, config) {
                     contentType.indexOf('javascript') === -1)
             ) {
                 navigator.serviceWorker.ready.then((registration) => {
-                    registration
-                        .unregister()
-                        .then(() => window.location.reload())
+                    registration.unregister().then(() => {
+                        window.location.reload()
+                    })
                 })
             } else {
                 registerValidSW(swUrl, config)
             }
         })
-        .catch(() =>
+        .catch(() => {
             console.log(
-                'No internet connection found\n App is running in offline mode'
+                'No internet connection found. App is running in offline mode.'
             )
-        )
+        })
 }
 
 export function unregisterSW() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready
-            .then((registration) => registration.unregister())
-            .catch((err) => console.error(err.message))
+            .then((registration) => {
+                registration.unregister()
+            })
+            .catch((error) => {
+                console.error(error.message)
+            })
     }
 }
