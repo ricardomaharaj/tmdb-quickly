@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
-import { useShowQuery } from './types/Show'
+import { useShowQuery } from './gql'
 
 export function Show() {
     let [imageTab, setImageTab] = useState('POSTERS')

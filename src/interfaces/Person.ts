@@ -1,10 +1,4 @@
-import { useQuery, gql } from 'urql'
-
-interface Data {
-    person?: Person
-}
-
-interface Person {
+export interface Person {
     adult?: boolean
     also_known_as?: string[]
     biography?: string
@@ -103,15 +97,4 @@ interface Profile {
     vote_average?: number
     vote_count?: number
     width?: number
-}
-
-export function usePersonQuery(variables: { id: string }) {
-    return useQuery<Data>({
-        query: gql`
-            query ($id: ID) {
-                person(id: $id)
-            }
-        `,
-        variables
-    })
 }

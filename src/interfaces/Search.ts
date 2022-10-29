@@ -1,17 +1,11 @@
-import { gql, useQuery } from 'urql'
-
-interface Data {
-    search?: Search
-}
-
-interface Search {
+export interface Search {
     page?: number
     results?: Result[]
     total_pages?: number
     total_results?: number
 }
 
-interface Result {
+export interface Result {
     backdrop_path?: string
     first_air_date?: string
     genre_ids?: number[]
@@ -34,15 +28,4 @@ interface Result {
     release_date?: string
     title?: string
     video?: boolean
-}
-
-export function useSearchQuery(variables: { query: string; page: string }) {
-    return useQuery<Data>({
-        query: gql`
-            query ($query: String, $page: String) {
-                search(query: $query, page: $page)
-            }
-        `,
-        variables
-    })
 }

@@ -1,10 +1,4 @@
-import { gql, useQuery } from 'urql'
-
-interface Data {
-    episode?: Episode
-}
-
-interface Episode {
+export interface Episode {
     air_date?: string
     crew?: Crew[]
     episode_number?: number
@@ -61,23 +55,4 @@ interface Still {
     vote_average?: number
     vote_count?: number
     width?: number
-}
-
-export function useEpisodeQuery(variables: {
-    id?: string
-    season_number?: string
-    episode_number?: String
-}) {
-    return useQuery<Data>({
-        query: gql`
-            query ($id: ID, $season_number: String, $episode_number: String) {
-                episode(
-                    id: $id
-                    season_number: $season_number
-                    episode_number: $episode_number
-                )
-            }
-        `,
-        variables
-    })
 }

@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
-import { usePersonQuery } from './types/Person'
+import { usePersonQuery } from './gql'
 
 export function Person() {
     let [params, setParams] = useSearchParams()

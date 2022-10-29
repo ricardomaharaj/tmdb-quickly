@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
-import { useEpisodeQuery } from './types/Episode'
+import { useEpisodeQuery } from './gql'
 
 export function Episode() {
     let [params, setParams] = useSearchParams()

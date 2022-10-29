@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
-import { useSeasonQuery } from './types/Season'
+import { useSeasonQuery } from './gql'
 
 export function Season() {
     let [params, setParams] = useSearchParams()

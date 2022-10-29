@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { IMG_URLs } from './consts'
 import { Fragment } from 'react'
-import { useSearchQuery } from './types/Search'
+import { useSearchQuery } from './gql'
 
 export function Search() {
     document.title = 'TMDB Quickly'

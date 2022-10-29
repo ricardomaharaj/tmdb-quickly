@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
-import { useMovieQuery } from './types/Movie'
+import { useMovieQuery } from './gql'
 
 const RELEASE_TYPES = [
     '',

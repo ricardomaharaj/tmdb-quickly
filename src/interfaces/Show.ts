@@ -1,41 +1,39 @@
-import { useQuery, gql } from 'urql'
-
-interface Data {
-    movie?: Movie
-}
-
-interface Movie {
+export interface Show {
     adult?: boolean
     backdrop_path?: string
-    budget?: number
+    created_by?: CreatedBy[]
+    episode_run_time?: number[]
+    first_air_date?: string
     genres?: Genre[]
     homepage?: string
     id?: number
-    imdb_id?: string
+    in_production?: boolean
+    last_air_date?: string
+    name?: string
+    networks?: Network[]
+    number_of_episodes?: number
+    number_of_seasons?: number
+    origin_country?: string[]
     original_language?: string
-    original_title?: string
+    original_name?: string
     overview?: string
     popularity?: number
     poster_path?: string
     production_companies?: ProductionCompany[]
     production_countries?: ProductionCountry[]
-    release_date?: string
-    revenue?: number
-    runtime?: number
-    spoken_languages?: SpokenLanguage[]
+    seasons?: Season[]
     status?: string
     tagline?: string
-    title?: string
-    video?: boolean
+    type?: string
     vote_average?: number
     vote_count?: number
-    credits?: Credits
+    aggregate_credits?: AggregateCredits
     videos?: Videos
     images?: Images
-    release_dates?: ReleaseDates
+    external_ids?: ExternalIDS
 }
 
-interface Credits {
+interface AggregateCredits {
     cast?: Cast[]
     crew?: Crew[]
 }
@@ -49,10 +47,15 @@ interface Cast {
     original_name?: string
     popularity?: number
     profile_path?: string
-    cast_id?: number
-    character?: string
-    credit_id?: string
+    roles?: Role[]
+    total_episode_count?: number
     order?: number
+}
+
+interface Role {
+    credit_id?: string
+    character?: string
+    episode_count?: number
 }
 
 interface Crew {
@@ -64,9 +67,34 @@ interface Crew {
     original_name?: string
     popularity?: number
     profile_path?: string
-    credit_id?: string
+    jobs?: Job[]
     department?: string
+    total_episode_count?: number
+}
+
+interface Job {
+    credit_id?: string
     job?: string
+    episode_count?: number
+}
+
+interface CreatedBy {
+    id?: number
+    credit_id?: string
+    name?: string
+    gender?: number
+    profile_path?: string
+}
+
+interface ExternalIDS {
+    imdb_id?: string
+    freebase_mid?: string
+    freebase_id?: string
+    tvdb_id?: number
+    tvrage_id?: number
+    facebook_id?: string
+    instagram_id?: string
+    twitter_id?: string
 }
 
 interface Genre {
@@ -76,7 +104,8 @@ interface Genre {
 
 interface Images {
     backdrops?: Backdrop[]
-    posters?: Poster[]
+    logos?: Logo[]
+    posters?: Backdrop[]
 }
 
 interface Backdrop {
@@ -89,7 +118,7 @@ interface Backdrop {
     width?: number
 }
 
-interface Poster {
+interface Logo {
     aspect_ratio?: number
     height?: number
     iso_639_1?: string
@@ -97,6 +126,13 @@ interface Poster {
     vote_average?: number
     vote_count?: number
     width?: number
+}
+
+interface Network {
+    id?: number
+    name?: string
+    logo_path?: string
+    origin_country?: string
 }
 
 interface ProductionCompany {
@@ -111,34 +147,21 @@ interface ProductionCountry {
     name?: string
 }
 
-interface ReleaseDates {
-    results?: ReleaseDatesResult[]
-}
-
-interface ReleaseDatesResult {
-    iso_3166_1?: string
-    release_dates?: ReleaseDate[]
-}
-
-interface ReleaseDate {
-    certification?: string
-    iso_639_1?: string
-    note?: string
-    release_date?: string
-    type?: number
-}
-
-interface SpokenLanguage {
-    english_name?: string
-    iso_639_1?: string
+interface Season {
+    air_date?: string
+    episode_count?: number
+    id?: number
     name?: string
+    overview?: string
+    poster_path?: string
+    season_number?: number
 }
 
 interface Videos {
-    results?: VideosResult[]
+    results?: Result[]
 }
 
-interface VideosResult {
+interface Result {
     iso_639_1?: string
     iso_3166_1?: string
     name?: string
@@ -149,15 +172,4 @@ interface VideosResult {
     official?: boolean
     published_at?: string
     id?: string
-}
-
-export function useMovieQuery(variables: { id: String }) {
-    return useQuery<Data>({
-        query: gql`
-            query ($id: ID) {
-                movie(id: $id)
-            }
-        `,
-        variables
-    })
 }
