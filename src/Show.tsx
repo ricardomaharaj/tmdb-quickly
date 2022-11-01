@@ -17,7 +17,7 @@ export function Show() {
     let { data, fetching, error } = res
     let show = data?.show
 
-    document.title = `${show?.name} | TMDB Quickly`
+    setTitle(show?.name)
 
     let startYear = show?.first_air_date?.substring(0, 4)
     let endYear = show?.last_air_date?.substring(0, 4)

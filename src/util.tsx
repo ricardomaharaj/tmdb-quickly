@@ -1,3 +1,5 @@
+import { APP_NAME } from './consts'
+
 export function toDateString(date: string) {
     if (date.length > 10) {
         date = date.substring(0, 10)
@@ -15,4 +17,12 @@ export function runtimeCalc(runtime: number) {
         return `${hours}h${minutes}m`
     }
     return `${runtime}m`
+}
+
+export function setTitle(title?: string) {
+    if (title) {
+        document.title = `${title} | ${APP_NAME}`
+    } else {
+        document.title = APP_NAME
+    }
 }

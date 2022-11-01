@@ -16,7 +16,7 @@ export function Person() {
     let { data, fetching, error } = res
     let person = data?.person
 
-    document.title = `${person?.name} | TMDB Quickly`
+    setTitle(person?.name)
 
     let calculateAge = (birthday: string, deathday?: string) => {
         let age: number = 0

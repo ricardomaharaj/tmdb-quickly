@@ -31,7 +31,7 @@ export function Movie() {
     let { data, fetching, error } = res
     let movie = data?.movie
 
-    document.title = `${movie?.title} | TMDB Quickly`
+    setTitle(movie?.title)
 
     let releaseDates = movie?.release_dates?.results?.filter(
         (x) => x?.iso_3166_1 === 'US'

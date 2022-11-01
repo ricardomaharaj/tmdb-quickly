@@ -18,3 +18,5 @@ export const LOAD_SILHOUETTE = (
         </div>
     </div>
 )
+
+export const APP_NAME = 'TMDB Quickly'

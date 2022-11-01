@@ -4,7 +4,7 @@ import { Fragment } from 'react'
 import { useSearchQuery } from './gql'
 
 export function Search() {
-    document.title = 'TMDB Quickly'
+    setTitle()
 
     let [params, setParams] = useSearchParams()
 
