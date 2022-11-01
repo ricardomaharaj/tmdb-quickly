@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { runtimeCalc, toDateString } from './util'
+import { runtimeCalc, setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useMovieQuery } from './gql'
 
@@ -22,9 +22,8 @@ export function Movie() {
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
 
-    let updateQueryParams = (update: any) => {
+    let replaceSearchParams = (update: any) =>
         setParams({ tab, query, page, ...update }, { replace: true })
-    }
 
     let { id } = useParams()
     let [res] = useMovieQuery({ id: id! })
@@ -108,7 +107,7 @@ export function Movie() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => updateQueryParams({ tab: x })}
+                        onClick={() => replaceSearchParams({ tab: x })}
                         key={i}
                     >
                         {x}
@@ -231,7 +230,9 @@ export function Movie() {
                         defaultValue={query}
                         placeholder='Search Cast'
                         onChange={(e) =>
-                            updateQueryParams({ query: e.currentTarget.value })
+                            replaceSearchParams({
+                                query: e.currentTarget.value
+                            })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -287,7 +288,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateQueryParams({ page: page - 1 })
+                                replaceSearchParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -301,7 +302,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                updateQueryParams({ page: page + 1 })
+                                replaceSearchParams({ page: page + 1 })
                             }
                         >
                             NEXT
@@ -317,7 +318,9 @@ export function Movie() {
                         defaultValue={query}
                         placeholder='Search Crew'
                         onChange={(e) =>
-                            updateQueryParams({ query: e.currentTarget.value })
+                            replaceSearchParams({
+                                query: e.currentTarget.value
+                            })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -370,7 +373,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                updateQueryParams({ page: page - 1 })
+                                replaceSearchParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -384,7 +387,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                updateQueryParams({ page: page + 1 })
+                                replaceSearchParams({ page: page + 1 })
                             }
                         >
                             NEXT

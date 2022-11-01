@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
-import { runtimeCalc, toDateString } from './util'
+import { runtimeCalc, setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useShowQuery } from './gql'
 
@@ -11,6 +11,9 @@ export function Show() {
     let tab = params.get('tab') || 'INFO'
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
+
+    let replaceSearchParams = (update: any) =>
+        setParams({ tab, query, page, ...update }, { replace: true })
 
     let { id } = useParams()
     let [res] = useShowQuery({ id: id! })
@@ -125,7 +128,7 @@ export function Show() {
                                 tab === x ? 'bg-slate-700' : 'bg-slate-800'
                             } rounded-xl p-2 hover:bg-slate-600`}
                             onClick={() =>
-                                setParams({ tab: x, query }, { replace: true })
+                                replaceSearchParams({ tab: x, query })
                             }
                             key={i}
                         >
@@ -230,10 +233,9 @@ export function Show() {
                         defaultValue={query}
                         placeholder='Search Cast'
                         onChange={(e) =>
-                            setParams(
-                                { tab: 'CAST', query: e.currentTarget.value },
-                                { replace: true }
-                            )
+                            replaceSearchParams({
+                                query: e.currentTarget.value
+                            })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -311,14 +313,7 @@ export function Show() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CAST',
-                                        page: (page - 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -332,14 +327,7 @@ export function Show() {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CAST',
-                                        page: (page + 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page + 1 })
                             }
                         >
                             NEXT
@@ -355,10 +343,9 @@ export function Show() {
                         defaultValue={query}
                         placeholder='Search Crew'
                         onChange={(e) =>
-                            setParams(
-                                { tab: 'CREW', query: e.currentTarget.value },
-                                { replace: true }
-                            )
+                            replaceSearchParams({
+                                query: e.currentTarget.value
+                            })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -422,14 +409,7 @@ export function Show() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CREW',
-                                        page: (page - 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -443,14 +423,7 @@ export function Show() {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CREW',
-                                        page: (page + 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page + 1 })
                             }
                         >
                             NEXT

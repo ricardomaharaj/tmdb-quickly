@@ -2,6 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { IMG_URLs } from './consts'
 import { Fragment } from 'react'
 import { useSearchQuery } from './gql'
+import { setTitle } from './util'
 
 export function Search() {
     setTitle()
@@ -11,6 +12,9 @@ export function Search() {
     let tab = params.get('tab') || 'movie'
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
+
+    let replaceSearchParams = (update: any) =>
+        setParams({ tab, query, page, ...update }, { replace: true })
 
     let [res] = useSearchQuery({
         query,
@@ -70,12 +74,7 @@ export function Search() {
                         className={`${
                             tab === x.val ? 'bg-slate-700' : 'bg-slate-800'
                         } hover:bg-slate-600 rounded-xl p-2`}
-                        onClick={() =>
-                            setParams(
-                                { tab: x.val, page, query },
-                                { replace: true }
-                            )
-                        }
+                        onClick={() => replaceSearchParams({ tab: x.val })}
                         key={i}
                     >
                         {x.name}

@@ -1,5 +1,5 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { toDateString } from './util'
+import { setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { usePersonQuery } from './gql'
 
@@ -10,6 +10,12 @@ export function Person() {
     let creditsTab = params.get('creditsTab') || 'MOVIES'
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
+
+    let replaceSearchParams = (update: any) =>
+        setParams(
+            { tab, creditsTab, query, page, ...update },
+            { replace: true }
+        )
 
     let { id } = useParams()
     let [res] = usePersonQuery({ id: id! })
@@ -137,7 +143,7 @@ export function Person() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => setParams({ tab: x }, { replace: true })}
+                        onClick={() => replaceSearchParams({ tab: x })}
                         key={i}
                     >
                         {x}
@@ -164,10 +170,7 @@ export function Person() {
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() =>
-                                    setParams(
-                                        { tab, creditsTab: x, query },
-                                        { replace: true }
-                                    )
+                                    replaceSearchParams({ creditsTab: x })
                                 }
                                 key={i}
                             >
@@ -181,14 +184,9 @@ export function Person() {
                         placeholder='Search Cast Credits'
                         defaultValue={query}
                         onChange={(e) =>
-                            setParams(
-                                {
-                                    tab,
-                                    creditsTab,
-                                    query: e.currentTarget.value
-                                },
-                                { replace: true }
-                            )
+                            replaceSearchParams({
+                                query: e.currentTarget.value
+                            })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -258,15 +256,7 @@ export function Person() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab,
-                                        creditsTab,
-                                        page: (page - 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -280,15 +270,7 @@ export function Person() {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab,
-                                        creditsTab,
-                                        page: (page + 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page + 1 })
                             }
                         >
                             NEXT
@@ -307,10 +289,7 @@ export function Person() {
                                         : 'bg-slate-800'
                                 } rounded-xl p-2 hover:bg-slate-600`}
                                 onClick={() =>
-                                    setParams(
-                                        { tab, creditsTab: x, query },
-                                        { replace: true }
-                                    )
+                                    replaceSearchParams({ creditsTab: x })
                                 }
                                 key={i}
                             >
@@ -398,15 +377,7 @@ export function Person() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab,
-                                        creditsTab,
-                                        page: (page - 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -420,15 +391,7 @@ export function Person() {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab,
-                                        creditsTab,
-                                        page: (page + 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                replaceSearchParams({ page: page + 1 })
                             }
                         >
                             NEXT
