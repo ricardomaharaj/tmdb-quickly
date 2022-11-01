@@ -22,6 +22,10 @@ export function Movie() {
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
 
+    let updateQueryParams = (update: any) => {
+        setParams({ tab, query, page, ...update }, { replace: true })
+    }
+
     let { id } = useParams()
     let [res] = useMovieQuery({ id: id! })
     let { data, fetching, error } = res
@@ -104,9 +108,7 @@ export function Movie() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() =>
-                            setParams({ tab: x, query }, { replace: true })
-                        }
+                        onClick={() => updateQueryParams({ tab: x })}
                         key={i}
                     >
                         {x}
@@ -229,13 +231,7 @@ export function Movie() {
                         defaultValue={query}
                         placeholder='Search Cast'
                         onChange={(e) =>
-                            setParams(
-                                {
-                                    tab: 'CAST',
-                                    query: e.currentTarget.value
-                                },
-                                { replace: true }
-                            )
+                            updateQueryParams({ query: e.currentTarget.value })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -291,14 +287,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CAST',
-                                        page: (page - 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                updateQueryParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -312,14 +301,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={lastCast}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CAST',
-                                        page: (page + 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                updateQueryParams({ page: page + 1 })
                             }
                         >
                             NEXT
@@ -335,10 +317,7 @@ export function Movie() {
                         defaultValue={query}
                         placeholder='Search Crew'
                         onChange={(e) =>
-                            setParams(
-                                { tab: 'CREW', query: e.currentTarget.value },
-                                { replace: true }
-                            )
+                            updateQueryParams({ query: e.currentTarget.value })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
@@ -391,14 +370,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={firstPage}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CREW',
-                                        page: (page - 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                updateQueryParams({ page: page - 1 })
                             }
                         >
                             BACK
@@ -412,14 +384,7 @@ export function Movie() {
                             } rounded-xl p-2`}
                             disabled={lastCrew}
                             onClick={() =>
-                                setParams(
-                                    {
-                                        tab: 'CREW',
-                                        page: (page + 1).toString(),
-                                        query
-                                    },
-                                    { replace: true }
-                                )
+                                updateQueryParams({ page: page + 1 })
                             }
                         >
                             NEXT
