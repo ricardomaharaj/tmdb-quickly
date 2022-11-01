@@ -51,9 +51,9 @@ export function Person() {
 
     let firstPage = page === 1
 
-    let pageLimit = 9
-    let startPage = (page - 1) * pageLimit
-    let endPage = page * pageLimit
+    let perPage = 9
+    let startPage = (page - 1) * perPage
+    let endPage = page * perPage
 
     let cast = person?.combined_credits?.cast
         ?.filter((x) => x.media_type === creditsFilter)
@@ -73,7 +73,7 @@ export function Person() {
         )
         .slice(startPage, endPage)
 
-    let lastCast = cast?.length! < 9
+    let lastCast = cast?.length! < perPage
 
     let crew = person?.combined_credits?.crew
         ?.filter((x) => x.media_type === creditsFilter)
@@ -93,7 +93,7 @@ export function Person() {
         )
         .slice(startPage, endPage)
 
-    let lastCrew = cast?.length! < 9
+    let lastCrew = crew?.length! < perPage
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)

@@ -39,9 +39,9 @@ export function Movie() {
 
     let firstPage = page === 1
 
-    let pageLimit = 9
-    let startPage = (page - 1) * pageLimit
-    let endPage = page * pageLimit
+    let perPage = 9
+    let startPage = (page - 1) * perPage
+    let endPage = page * perPage
 
     let cast = movie?.credits?.cast
         ?.filter((x) => {
@@ -54,7 +54,7 @@ export function Movie() {
         })
         .slice(startPage, endPage)
 
-    let lastCast = cast?.length! < 9
+    let lastCast = cast?.length! < perPage
 
     let crew = movie?.credits?.crew
         ?.filter((x) => {
@@ -67,7 +67,7 @@ export function Movie() {
         })
         .slice(startPage, endPage)
 
-    let lastCrew = crew?.length! < 9
+    let lastCrew = crew?.length! < perPage
 
     if (fetching) return LOAD_SILHOUETTE
 

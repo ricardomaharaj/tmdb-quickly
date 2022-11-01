@@ -25,9 +25,9 @@ export function Show() {
 
     let firstPage = page === 1
 
-    let pageLimit = 9
-    let startPage = (page - 1) * pageLimit
-    let endPage = page * pageLimit
+    let perPage = 9
+    let startPage = (page - 1) * perPage
+    let endPage = page * perPage
 
     let cast = show?.aggregate_credits?.cast
         ?.sort((a, b) =>
@@ -49,7 +49,7 @@ export function Show() {
         })
         .slice(startPage, endPage)
 
-    let lastCast = cast?.length! < 9
+    let lastCast = cast?.length! < perPage
 
     let crew = show?.aggregate_credits?.crew
         ?.sort((a, b) =>
@@ -71,7 +71,7 @@ export function Show() {
         })
         .slice(startPage, endPage)
 
-    let lastCrew = crew?.length! < 9
+    let lastCrew = crew?.length! < perPage
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)

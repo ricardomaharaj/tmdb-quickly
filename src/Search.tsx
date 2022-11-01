@@ -10,17 +10,18 @@ export function Search() {
 
     let tab = params.get('tab') || 'movie'
     let query = params.get('query') || ''
-    let page = params.get('page') || '1'
-    let pageInt = parseInt(page)
+    let page = parseInt(params.get('page') || '1')
 
     let [res] = useSearchQuery({
         query,
-        page
+        page: page.toString()
     })
     let { data, fetching, error } = res
 
     let results = data?.search?.results
     let maxPages = data?.search?.total_pages
+    let firstPage = page === 1
+    let lastPage = page === maxPages
 
     const load_card_silohette = (
         <>
@@ -150,34 +151,24 @@ export function Search() {
                 <div className='flex flex-row space-x-2'>
                     <button
                         className={`${
-                            pageInt <= 1
+                            firstPage
                                 ? 'text-slate-600'
                                 : 'bg-slate-800 hover:bg-slate-600'
                         } rounded-xl p-2`}
-                        disabled={pageInt <= 1}
-                        onClick={() =>
-                            setParams(
-                                { tab, page: (pageInt - 1).toString(), query },
-                                { replace: true }
-                            )
-                        }
+                        disabled={firstPage}
+                        onClick={() => replaceSearchParams({ page: page - 1 })}
                     >
                         BACK
                     </button>
-                    <div className='p-2'>{pageInt}</div>
+                    <div className='p-2'>{page}</div>
                     <button
                         className={`${
-                            pageInt >= maxPages!
+                            lastPage
                                 ? 'text-slate-600'
                                 : 'bg-slate-800 hover:bg-slate-600'
                         } rounded-xl p-2`}
-                        disabled={pageInt >= maxPages!}
-                        onClick={() =>
-                            setParams(
-                                { tab, page: (pageInt + 1).toString(), query },
-                                { replace: true }
-                            )
-                        }
+                        disabled={lastPage}
+                        onClick={() => replaceSearchParams({ page: page + 1 })}
                     >
                         NEXT
                     </button>
