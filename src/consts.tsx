@@ -20,3 +20,5 @@ export const LOAD_SILHOUETTE = (
 )
 
 export const APP_NAME = 'TMDB Quickly'
+
+export const MAX_OVERVIEW_LENGTH = 100
