@@ -1,4 +1,4 @@
-import { createClient, Provider as UrqlProvider } from 'urql'
+import * as Urql from 'urql'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { Search } from './Search'
 import { Movie } from './Movie'
@@ -7,17 +7,17 @@ import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
 
-let url =
+const url =
     process.env.NODE_ENV === 'production'
         ? 'https://r8r-gql.herokuapp.com/'
         : 'http://localhost:4000/'
 
-let urqlClient = createClient({ url })
+const UrqlClient = Urql.createClient({ url })
 
 export function App() {
     return (
         <BrowserRouter>
-            <UrqlProvider value={urqlClient}>
+            <Urql.Provider value={UrqlClient}>
                 <div className='container mx-auto'>
                     <div className='flex flex-col m-2 space-y-2'>
                         <Link
@@ -47,7 +47,7 @@ export function App() {
                         </Routes>
                     </div>
                 </div>
-            </UrqlProvider>
+            </Urql.Provider>
         </BrowserRouter>
     )
 }
