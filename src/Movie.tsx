@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useMovieQuery } from './gql'
+import CastCard from './components/movie/CastCard'
+import CrewCard from './components/movie/CrewCard'
 
 const RELEASE_TYPES = [
     '',
@@ -237,46 +239,7 @@ export function Movie() {
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
-                            <Link
-                                to={`/person/${x.id}`}
-                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                                key={i}
-                            >
-                                {x.profile_path ? (
-                                    <img
-                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                        loading='lazy'
-                                        width='94'
-                                        height='141'
-                                        alt=''
-                                    />
-                                ) : (
-                                    <div className='bg-slate-900 rounded-xl mr-2'>
-                                        <svg
-                                            xmlns='http://www.w3.org/2000/svg'
-                                            width='16'
-                                            height='16'
-                                            fill='currentColor'
-                                            className='w-[94px] h-[141px] brightness-50'
-                                            viewBox='0 0 16 16'
-                                        >
-                                            <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
-                                        </svg>
-                                    </div>
-                                )}
-                                <div>
-                                    {x.name && <div>{x.name}</div>}
-                                    {x.character && (
-                                        <div className='text-slate-400'>
-                                            {x.character.replaceAll(
-                                                '(voice)',
-                                                ''
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
+                            <CastCard person={x} key={i} />
                         ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
@@ -325,43 +288,7 @@ export function Movie() {
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
-                            <Link
-                                to={`/person/${x.id}`}
-                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                                key={i}
-                            >
-                                {x.profile_path ? (
-                                    <img
-                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                        loading='lazy'
-                                        width='94'
-                                        height='141'
-                                        alt=''
-                                    />
-                                ) : (
-                                    <div className='bg-slate-900 rounded-xl mr-2'>
-                                        <svg
-                                            xmlns='http://www.w3.org/2000/svg'
-                                            width='16'
-                                            height='16'
-                                            fill='currentColor'
-                                            className='w-[94px] h-[141px] brightness-50'
-                                            viewBox='0 0 16 16'
-                                        >
-                                            <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
-                                        </svg>
-                                    </div>
-                                )}
-                                <div>
-                                    {x.name && <div>{x.name}</div>}
-                                    {x.job && (
-                                        <div className='text-slate-400'>
-                                            {x.job}
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
+                            <CrewCard person={x} key={i} />
                         ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
