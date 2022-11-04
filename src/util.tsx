@@ -1,4 +1,4 @@
-import { APP_NAME } from './consts'
+import { APP_NAME, MAX_OVERVIEW_LENGTH } from './consts'
 
 export function toDateString(date: string) {
     if (date.length > 10) {
@@ -24,5 +24,19 @@ export function setTitle(title?: string) {
         document.title = `${title} | ${APP_NAME}`
     } else {
         document.title = APP_NAME
+    }
+}
+
+export function grabYear(date: string) {
+    return date.substring(0, 4)
+}
+
+export function overviewTrimmer(overview: string) {
+    if (overview.length > MAX_OVERVIEW_LENGTH) {
+        return overview
+            .substring(0, MAX_OVERVIEW_LENGTH - 3)
+            .padEnd(MAX_OVERVIEW_LENGTH, '.')
+    } else {
+        return overview
     }
 }
