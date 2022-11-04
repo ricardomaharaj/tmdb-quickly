@@ -1,4 +1,4 @@
-export interface Show {
+interface Show {
     adult?: boolean
     backdrop_path?: string
     created_by?: CreatedBy[]
@@ -38,7 +38,7 @@ interface AggregateCredits {
     crew?: Crew[]
 }
 
-interface Cast {
+export interface Cast {
     adult?: boolean
     gender?: number
     id?: number
@@ -58,7 +58,7 @@ interface Role {
     episode_count?: number
 }
 
-interface Crew {
+export interface Crew {
     adult?: boolean
     gender?: number
     id?: number
@@ -173,3 +173,4 @@ interface Result {
     published_at?: string
     id?: string
 }
+export default Show

@@ -1,4 +1,4 @@
-export interface Person {
+interface Person {
     adult?: boolean
     also_known_as?: string[]
     biography?: string
@@ -23,7 +23,7 @@ interface CombinedCredits {
     crew?: Crew[]
 }
 
-interface Cast {
+export interface Cast {
     adult?: boolean
     backdrop_path?: string
     genre_ids?: number[]
@@ -49,7 +49,7 @@ interface Cast {
     episode_count?: number
 }
 
-interface Crew {
+export interface Crew {
     adult?: boolean
     backdrop_path?: string
     genre_ids?: number[]
@@ -98,3 +98,5 @@ interface Profile {
     vote_count?: number
     width?: number
 }
+
+export default Person

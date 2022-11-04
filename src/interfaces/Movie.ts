@@ -1,4 +1,4 @@
-export interface Movie {
+interface Movie {
     adult?: boolean
     backdrop_path?: string
     budget?: number
@@ -34,7 +34,7 @@ interface Credits {
     crew?: Crew[]
 }
 
-interface Cast {
+export interface Cast {
     adult?: boolean
     gender?: number
     id?: number
@@ -49,7 +49,7 @@ interface Cast {
     order?: number
 }
 
-interface Crew {
+export interface Crew {
     adult?: boolean
     gender?: number
     id?: number
@@ -144,3 +144,5 @@ interface VideosResult {
     published_at?: string
     id?: string
 }
+
+export default Movie
