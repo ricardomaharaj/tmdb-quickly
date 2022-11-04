@@ -1,10 +1,10 @@
 import { gql, useQuery } from 'urql'
-import { Episode } from './interfaces/Episode'
-import { Movie } from './interfaces/Movie'
-import { Person } from './interfaces/Person'
-import { Search } from './interfaces/Search'
-import { Season } from './interfaces/Season'
-import { Show } from './interfaces/Show'
+import Episode from './interfaces/Episode'
+import Movie from './interfaces/Movie'
+import Person from './interfaces/Person'
+import Search from './interfaces/Search'
+import Season from './interfaces/Season'
+import Show from './interfaces/Show'
 
 export function useEpisodeQuery(variables: {
     id?: string
