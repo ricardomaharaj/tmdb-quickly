@@ -3,8 +3,8 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useMovieQuery } from './gql'
-import CastCard from './components/movie/CastCard'
-import CrewCard from './components/movie/CrewCard'
+import { CastCard } from './components/movie/CastCard'
+import { CrewCard } from './components/movie/CrewCard'
 
 const RELEASE_TYPES = [
     '',
