@@ -1,4 +1,4 @@
-import { APP_NAME, MAX_OVERVIEW_LENGTH } from './consts'
+import { APP_NAME } from './consts'
 
 export function toDateString(date: string) {
     if (date.length > 10) {
@@ -32,11 +32,14 @@ export function grabYear(date: string) {
 }
 
 export function overviewTrimmer(overview: string) {
-    if (overview.length > MAX_OVERVIEW_LENGTH) {
-        return overview
-            .substring(0, MAX_OVERVIEW_LENGTH - 3)
-            .padEnd(MAX_OVERVIEW_LENGTH, '.')
+    const MaxLength = 100
+    if (overview.length > MaxLength) {
+        return overview.substring(0, MaxLength - 3).padEnd(MaxLength, '.')
     } else {
         return overview
     }
+}
+
+export function removeVoiceTag(str: string) {
+    return str.replaceAll('(voice)', '')
 }
