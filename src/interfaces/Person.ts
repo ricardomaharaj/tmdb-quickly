@@ -1,4 +1,4 @@
-interface Person {
+export interface Person {
     adult?: boolean
     also_known_as?: string[]
     biography?: string
@@ -98,5 +98,3 @@ interface Profile {
     vote_count?: number
     width?: number
 }
-
-export default Person

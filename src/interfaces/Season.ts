@@ -1,4 +1,4 @@
-interface Season {
+export interface Season {
     _id?: string
     air_date?: string
     episodes?: Episode[]
@@ -11,7 +11,7 @@ interface Season {
     videos?: Videos
 }
 
-export interface Episode {
+interface Episode {
     air_date?: string
     episode_number?: number
     id?: number
@@ -86,5 +86,3 @@ interface Result {
     published_at?: string
     id?: string
 }
-
-export default Season

@@ -1,4 +1,4 @@
-interface Movie {
+export interface Movie {
     adult?: boolean
     backdrop_path?: string
     budget?: number
@@ -144,5 +144,3 @@ interface VideosResult {
     published_at?: string
     id?: string
 }
-
-export default Movie

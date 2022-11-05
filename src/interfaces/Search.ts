@@ -1,4 +1,4 @@
-interface Search {
+export interface Search {
     page?: number
     results?: Result[]
     total_pages?: number
@@ -29,5 +29,3 @@ export interface Result {
     title?: string
     video?: boolean
 }
-
-export default Search

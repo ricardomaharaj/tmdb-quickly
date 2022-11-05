@@ -1,4 +1,4 @@
-interface Show {
+export interface Show {
     adult?: boolean
     backdrop_path?: string
     created_by?: CreatedBy[]
@@ -147,7 +147,7 @@ interface ProductionCountry {
     name?: string
 }
 
-interface Season {
+export interface Season {
     air_date?: string
     episode_count?: number
     id?: number
@@ -173,4 +173,3 @@ interface Result {
     published_at?: string
     id?: string
 }
-export default Show

@@ -1,4 +1,4 @@
-interface Episode {
+export interface Episode {
     air_date?: string
     crew?: Crew[]
     episode_number?: number
@@ -56,5 +56,3 @@ interface Still {
     vote_count?: number
     width?: number
 }
-
-export default Episode
