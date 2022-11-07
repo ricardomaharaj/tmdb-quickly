@@ -1,15 +1,23 @@
-import { Link, useSearchParams } from 'react-router-dom'
-import { IMG_URLs } from './consts'
+import { useSearchParams } from 'react-router-dom'
 import { Fragment } from 'react'
 import { useSearchQuery } from './gql'
 import { setTitle } from './util'
+import { MovieCard } from './components/search/MovieCard'
+import { ShowCard } from './components/search/ShowCard'
+import { PersonCard } from './components/search/PersonCard'
+
+enum Tabs {
+    Movies = 'movie',
+    Shows = 'tv',
+    People = 'person'
+}
 
 export function Search() {
     setTitle()
 
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || 'movie'
+    let tab = params.get('tab') || Tabs.Movies
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
 
@@ -41,12 +49,12 @@ export function Search() {
     )
 
     const TABS = [
-        { name: 'MOVIES', val: 'movie' },
-        { name: 'SHOWS', val: 'tv' },
-        { name: 'PEOPLE', val: 'person' }
+        { name: 'MOVIES', val: Tabs.Movies },
+        { name: 'SHOWS', val: Tabs.Shows },
+        { name: 'PEOPLE', val: Tabs.People }
     ]
 
-    const MAX_OVERVIEW_LENGTH = 100
+    results = results?.filter((result) => result.media_type === tab)
 
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
@@ -61,10 +69,7 @@ export function Search() {
                 className='bg-slate-800 p-3 text-xl text-center rounded-xl outline-none'
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        setParams(
-                            { tab, query: e.currentTarget.value },
-                            { replace: true }
-                        )
+                        replaceSearchParams({ query: e.currentTarget.value })
                     }
                 }}
             />
@@ -90,59 +95,17 @@ export function Search() {
                     </>
                 ) : (
                     <>
-                        {results
-                            ?.filter((x) => x.media_type === tab)
-                            .map((x, i) => (
-                                <Link
-                                    to={`/${x.media_type}/${x.id}`}
-                                    className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                                    key={i}
-                                >
-                                    {(x.poster_path || x.profile_path) && (
-                                        <img
-                                            src={`${IMG_URLs.W94H141}${
-                                                x.poster_path || x.profile_path
-                                            }`}
-                                            className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                            width='94'
-                                            height='141'
-                                            loading='lazy'
-                                            alt=''
-                                        />
-                                    )}
-                                    <div>
-                                        {(x.release_date ||
-                                            x.first_air_date) && (
-                                            <div className='text-sm'>
-                                                {(
-                                                    x.release_date ||
-                                                    x.first_air_date
-                                                )?.substring(0, 4)}
-                                            </div>
-                                        )}
-                                        {(x.name || x.title) && (
-                                            <div>{x.name || x.title}</div>
-                                        )}
-                                        {x.overview && (
-                                            <div className='text-slate-400'>
-                                                {x.overview.length >
-                                                MAX_OVERVIEW_LENGTH
-                                                    ? x.overview
-                                                          .substring(
-                                                              0,
-                                                              MAX_OVERVIEW_LENGTH -
-                                                                  3
-                                                          )
-                                                          .padEnd(
-                                                              MAX_OVERVIEW_LENGTH,
-                                                              '.'
-                                                          )
-                                                    : x.overview}
-                                            </div>
-                                        )}
-                                    </div>
-                                </Link>
-                            ))}
+                        {results?.map((result, i) => {
+                            if (tab === Tabs.Movies) {
+                                return <MovieCard movie={result} key={i} />
+                            }
+                            if (tab === Tabs.Shows) {
+                                return <ShowCard show={result} key={i} />
+                            }
+                            if (tab === Tabs.People) {
+                                return <PersonCard person={result} key={i} />
+                            }
+                        })}
                     </>
                 )}
             </div>
