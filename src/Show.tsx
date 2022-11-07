@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { useParams, Link, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useShowQuery } from './gql'
+import { CastCard } from './components/show/CastCard'
+import { CrewCard } from './components/show/CrewCard'
+import { SeasonCard } from './components/show/SeasonCard'
 
 export function Show() {
     let [imageTab, setImageTab] = useState('POSTERS')
@@ -240,68 +243,7 @@ export function Show() {
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
-                            <Link
-                                to={`/person/${x.id}`}
-                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                                key={i}
-                            >
-                                {x.profile_path ? (
-                                    <img
-                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                        loading='lazy'
-                                        width='94'
-                                        height='141'
-                                        alt=''
-                                    />
-                                ) : (
-                                    <div className='bg-slate-900 rounded-xl mr-2'>
-                                        <svg
-                                            xmlns='http://www.w3.org/2000/svg'
-                                            width='16'
-                                            height='16'
-                                            fill='currentColor'
-                                            className='w-[94px] h-[141px] brightness-50'
-                                            viewBox='0 0 16 16'
-                                        >
-                                            <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
-                                        </svg>
-                                    </div>
-                                )}
-                                <div>
-                                    {x.name && <div>{x.name}</div>}
-                                    {x.roles && (
-                                        <div className='text-slate-400'>
-                                            {x.roles
-                                                ?.sort((a, b) =>
-                                                    a.episode_count! >
-                                                    b.episode_count!
-                                                        ? -1
-                                                        : 1
-                                                )
-                                                .map((x, i) => {
-                                                    if (i === 4)
-                                                        return (
-                                                            <div key={i}>
-                                                                ...
-                                                            </div>
-                                                        )
-                                                    if (i > 4) return
-                                                    return (
-                                                        <div key={i}>
-                                                            {`${x.character?.replaceAll(
-                                                                '(voice)',
-                                                                ''
-                                                            )} (${
-                                                                x.episode_count
-                                                            } Eps)`}
-                                                        </div>
-                                                    )
-                                                })}
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
+                            <CastCard cast={x} key={i} />
                         ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
@@ -350,54 +292,7 @@ export function Show() {
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
-                            <Link
-                                to={`/person/${x.id}`}
-                                className='bg-slate-800 flex flex-row rounded-xl p-2 hover:bg-slate-700'
-                                key={i}
-                            >
-                                {x.profile_path ? (
-                                    <img
-                                        src={`${IMG_URLs.W94H141}${x.profile_path}`}
-                                        className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                        loading='lazy'
-                                        width='94'
-                                        height='141'
-                                        alt=''
-                                    />
-                                ) : (
-                                    <div className='bg-slate-900 rounded-xl mr-2'>
-                                        <svg
-                                            xmlns='http://www.w3.org/2000/svg'
-                                            width='16'
-                                            height='16'
-                                            fill='currentColor'
-                                            className='w-[94px] h-[141px] brightness-50'
-                                            viewBox='0 0 16 16'
-                                        >
-                                            <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z' />
-                                        </svg>
-                                    </div>
-                                )}
-                                <div>
-                                    {x.name && <div>{x.name}</div>}
-                                    {x.jobs && (
-                                        <div className='text-slate-400'>
-                                            {x.jobs
-                                                ?.sort((a, b) =>
-                                                    a.episode_count! >
-                                                    b.episode_count!
-                                                        ? -1
-                                                        : 1
-                                                )
-                                                .map((x, i) => (
-                                                    <div
-                                                        key={i}
-                                                    >{`${x.job} (${x.episode_count} Eps)`}</div>
-                                                ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
+                            <CrewCard crew={x} key={i} />
                         ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
@@ -436,35 +331,7 @@ export function Show() {
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {show?.seasons &&
                             show?.seasons.map((x, i) => (
-                                <Link
-                                    to={`season/${x.season_number}`}
-                                    className='flex flex-row bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
-                                    key={i}
-                                >
-                                    {x.poster_path && (
-                                        <img
-                                            src={`${IMG_URLs.W94H141}${x.poster_path}`}
-                                            className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
-                                            loading='lazy'
-                                            width='94'
-                                            height='141'
-                                            alt=''
-                                        />
-                                    )}
-                                    <div>
-                                        {x.name && <div>{x.name}</div>}
-                                        {x.episode_count && (
-                                            <div className='text-slate-400'>
-                                                {`${x.episode_count} Episodes`}
-                                            </div>
-                                        )}
-                                        {x.air_date && (
-                                            <div className='text-slate-400'>
-                                                {toDateString(x.air_date)}
-                                            </div>
-                                        )}
-                                    </div>
-                                </Link>
+                                <SeasonCard season={x} key={i} />
                             ))}
                     </div>
                 </>
