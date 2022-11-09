@@ -7,11 +7,25 @@ import { CastCard } from './components/show/CastCard'
 import { CrewCard } from './components/show/CrewCard'
 import { SeasonCard } from './components/show/SeasonCard'
 
+enum Tabs {
+    Info = 'INFO',
+    Cast = 'CAST',
+    Crew = 'CREW',
+    Seasons = 'SEASONS',
+    Images = 'IMAGES',
+    Videos = 'VIDEOS'
+}
+
+enum ImageTabs {
+    Posters = 'POSTERS',
+    Backdrops = 'BACKDROPS'
+}
+
 export function Show() {
     let [imageTab, setImageTab] = useState('POSTERS')
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || 'INFO'
+    let tab = params.get('tab') || Tabs.Info
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
 
@@ -124,23 +138,19 @@ export function Show() {
                 </div>
             </div>
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {['INFO', 'CAST', 'CREW', 'SEASONS', 'IMAGES', 'VIDEOS'].map(
-                    (x, i) => (
-                        <button
-                            className={`${
-                                tab === x ? 'bg-slate-700' : 'bg-slate-800'
-                            } rounded-xl p-2 hover:bg-slate-600`}
-                            onClick={() =>
-                                replaceSearchParams({ tab: x, query })
-                            }
-                            key={i}
-                        >
-                            {x}
-                        </button>
-                    )
-                )}
+                {Object.values(Tabs).map((x, i) => (
+                    <button
+                        className={`${
+                            tab === x ? 'bg-slate-700' : 'bg-slate-800'
+                        } rounded-xl p-2 hover:bg-slate-600`}
+                        onClick={() => replaceSearchParams({ tab: x, query })}
+                        key={i}
+                    >
+                        {x}
+                    </button>
+                ))}
             </div>
-            {tab === 'INFO' && (
+            {tab === Tabs.Info && (
                 <>
                     {show?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -228,7 +238,7 @@ export function Show() {
                     </div>
                 </>
             )}
-            {tab === 'CAST' && (
+            {tab === Tabs.Cast && (
                 <>
                     <input
                         type='text'
@@ -277,7 +287,7 @@ export function Show() {
                     </div>
                 </>
             )}
-            {tab === 'CREW' && (
+            {tab === Tabs.Crew && (
                 <>
                     <input
                         type='text'
@@ -326,7 +336,7 @@ export function Show() {
                     </div>
                 </>
             )}
-            {tab === 'SEASONS' && (
+            {tab === Tabs.Seasons && (
                 <>
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {show?.seasons &&
@@ -336,10 +346,10 @@ export function Show() {
                     </div>
                 </>
             )}
-            {tab === 'IMAGES' && (
+            {tab === Tabs.Images && (
                 <>
                     <div className='flex flex-row space-x-2'>
-                        {['POSTERS', 'BACKDROPS'].map((x, i) => (
+                        {Object.values(ImageTabs).map((x, i) => (
                             <button
                                 className={`${
                                     imageTab === x
@@ -353,7 +363,7 @@ export function Show() {
                             </button>
                         ))}
                     </div>
-                    {imageTab === 'POSTERS' && (
+                    {imageTab === ImageTabs.Posters && (
                         <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                             {show?.images?.posters
                                 ?.filter(
@@ -376,7 +386,7 @@ export function Show() {
                                 ))}
                         </div>
                     )}
-                    {imageTab === 'BACKDROPS' && (
+                    {imageTab === ImageTabs.Backdrops && (
                         <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                             {show?.images?.backdrops
                                 ?.filter(
@@ -401,7 +411,7 @@ export function Show() {
                     )}
                 </>
             )}
-            {tab === 'VIDEOS' && (
+            {tab === Tabs.Videos && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {show?.videos?.results?.map((x, i) => (
                         <div

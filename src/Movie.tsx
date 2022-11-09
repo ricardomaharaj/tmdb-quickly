@@ -16,11 +16,24 @@ const RELEASE_TYPES = [
     'TV'
 ]
 
+enum Tabs {
+    Info = 'INFO',
+    Cast = 'CAST',
+    Crew = 'CREW',
+    Images = 'IMAGES',
+    Videos = 'VIDEOS'
+}
+
+enum ImageTabs {
+    Posters = 'POSTERS',
+    Backdrops = 'BACKDROPS'
+}
+
 export function Movie() {
     let [imageTab, setImageTab] = useState('POSTERS')
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || 'INFO'
+    let tab = params.get('tab') || Tabs.Info
     let query = params.get('query') || ''
     let page = parseInt(params.get('page') || '1')
 
@@ -104,7 +117,7 @@ export function Movie() {
                 </div>
             </div>
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {['INFO', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) => (
+                {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
@@ -116,7 +129,7 @@ export function Movie() {
                     </button>
                 ))}
             </div>
-            {tab === 'INFO' && (
+            {tab === Tabs.Info && (
                 <>
                     {movie?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -224,7 +237,7 @@ export function Movie() {
                     </div>
                 </>
             )}
-            {tab === 'CAST' && (
+            {tab === Tabs.Cast && (
                 <>
                     <input
                         type='text'
@@ -273,7 +286,7 @@ export function Movie() {
                     </div>
                 </>
             )}
-            {tab === 'CREW' && (
+            {tab === Tabs.Crew && (
                 <>
                     <input
                         type='text'
@@ -322,10 +335,10 @@ export function Movie() {
                     </div>
                 </>
             )}
-            {tab === 'IMAGES' && (
+            {tab === Tabs.Images && (
                 <>
                     <div className='flex flex-row space-x-2'>
-                        {['POSTERS', 'BACKDROPS'].map((x, i) => (
+                        {Object.values(ImageTabs).map((x, i) => (
                             <button
                                 className={`${
                                     imageTab === x
@@ -339,7 +352,7 @@ export function Movie() {
                             </button>
                         ))}
                     </div>
-                    {imageTab === 'POSTERS' && (
+                    {imageTab === ImageTabs.Posters && (
                         <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                             {movie?.images?.posters
                                 ?.filter(
@@ -362,7 +375,7 @@ export function Movie() {
                                 ))}
                         </div>
                     )}
-                    {imageTab === 'BACKDROPS' && (
+                    {imageTab === ImageTabs.Backdrops && (
                         <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                             {movie?.images?.backdrops
                                 ?.filter(
@@ -387,7 +400,7 @@ export function Movie() {
                     )}
                 </>
             )}
-            {tab === 'VIDEOS' && (
+            {tab === Tabs.Videos && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {movie?.videos?.results?.map((x, i) => (
                         <div
