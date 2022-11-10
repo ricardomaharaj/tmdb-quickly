@@ -13,6 +13,16 @@ export function Episode() {
     let { data, fetching, error } = res
     let episode = data?.episode
 
+    let generateEpisodeShorthand = (
+        seasonNum?: number,
+        episodeNum?: number
+    ) => {
+        let x = ''
+        if (seasonNum) x += `S${seasonNum.toString().padStart(2, '0')}`
+        if (episodeNum) x += `E${episodeNum.toString().padStart(2, '0')}`
+        return x
+    }
+
     if (fetching) return LOAD_SILHOUETTE
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
@@ -26,19 +36,10 @@ export function Episode() {
             >
                 <div className='flex flex-col bg-black bg-opacity-50 space-y-2 rounded-xl p-10 xl:p-20'>
                     <div>
-                        {`
-                    ${
-                        episode?.season_number
-                            ? 'S' + `${episode?.season_number}`.padStart(2, '0')
-                            : ''
-                    }
-                    ${
-                        episode?.episode_number
-                            ? 'E' +
-                              `${episode?.episode_number}`.padStart(2, '0')
-                            : ''
-                    }
-                    `}
+                        {generateEpisodeShorthand(
+                            episode?.season_number,
+                            episode?.episode_number
+                        )}
                     </div>
                     <div>{episode?.name ? episode?.name : ''}</div>
                     <div>
