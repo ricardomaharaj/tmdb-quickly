@@ -2,11 +2,16 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useSeasonQuery } from './gql'
+enum Tabs {
+    Episodes = 'EPISODES',
+    Images = 'IMAGES',
+    Videos = 'VIDEOS'
+}
 
 export function Season() {
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || 'EPISODES'
+    let tab = params.get('tab') || Tabs.Episodes
 
     let { id, season_number } = useParams()
     let [res] = useSeasonQuery({ id, season_number })
@@ -46,7 +51,7 @@ export function Season() {
                 </div>
             </div>
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {['EPISODES', 'IMAGES', 'VIDEOS'].map((x, i) => (
+                {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
@@ -58,16 +63,7 @@ export function Season() {
                     </button>
                 ))}
             </div>
-            {tab === 'INFO' && (
-                <>
-                    {season?.overview && (
-                        <div className='bg-slate-800 rounded-xl p-4'>
-                            {season.overview}
-                        </div>
-                    )}
-                </>
-            )}
-            {tab === 'EPISODES' && (
+            {tab === Tabs.Episodes && (
                 <>
                     <div className='flex flex-col space-y-2'>
                         {season?.episodes?.map((x, i) => (
@@ -122,7 +118,7 @@ export function Season() {
                     </div>
                 </>
             )}
-            {tab === 'IMAGES' && (
+            {tab === Tabs.Images && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {season?.images?.posters
                         ?.filter(
@@ -144,7 +140,7 @@ export function Season() {
                         ))}
                 </div>
             )}
-            {tab === 'VIDEOS' && (
+            {tab === Tabs.Videos && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {season?.videos?.results?.map((x, i) => (
                         <div
