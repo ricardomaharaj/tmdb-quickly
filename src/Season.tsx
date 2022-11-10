@@ -1,7 +1,9 @@
-import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { runtimeCalc, toDateString } from './util'
+import { useParams, useSearchParams } from 'react-router-dom'
+import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useSeasonQuery } from './gql'
+import { EpisodeCard } from './components/season/EpisodeCard'
+
 enum Tabs {
     Episodes = 'EPISODES',
     Images = 'IMAGES',
@@ -67,53 +69,7 @@ export function Season() {
                 <>
                     <div className='flex flex-col space-y-2'>
                         {season?.episodes?.map((x, i) => (
-                            <Link
-                                to={`episode/${x.episode_number}`}
-                                className='bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
-                                key={i}
-                            >
-                                <div className='flex flex-col md:flex-row'>
-                                    {x.still_path && (
-                                        <img
-                                            src={`${IMG_URLs.W227H127}${x.still_path}`}
-                                            className='rounded-xl mb-2 md:mb-0 md:mr-2 max-w-[227px] max-h-[127px]'
-                                            loading='lazy'
-                                            width='227'
-                                            height='127'
-                                            alt=''
-                                        />
-                                    )}
-                                    <div className='flex flex-col'>
-                                        <span>
-                                            {`
-                                            ${
-                                                x.episode_number
-                                                    ? x.episode_number
-                                                    : ''
-                                            }
-                                            ${x.name ? ' | ' + x.name : ''}
-                                            ${
-                                                x.air_date
-                                                    ? ' | ' +
-                                                      toDateString(x.air_date)
-                                                    : ''
-                                            }
-                                            ${
-                                                x.runtime
-                                                    ? ' | ' +
-                                                      runtimeCalc(x.runtime)
-                                                    : ''
-                                            }
-                                        `}
-                                        </span>
-                                        {x.overview && (
-                                            <div className='text-slate-400'>
-                                                {x.overview}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </Link>
+                            <EpisodeCard episode={x} key={i} />
                         ))}
                     </div>
                 </>

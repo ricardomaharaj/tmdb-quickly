@@ -11,7 +11,7 @@ export interface Season {
     videos?: Videos
 }
 
-interface Episode {
+export interface Episode {
     air_date?: string
     episode_number?: number
     id?: number
