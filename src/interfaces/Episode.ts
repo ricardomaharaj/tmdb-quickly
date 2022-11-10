@@ -15,7 +15,7 @@ export interface Episode {
     images?: Images
 }
 
-interface Crew {
+export interface Crew {
     job?: string
     department?: string
     credit_id?: string
@@ -29,7 +29,7 @@ interface Crew {
     profile_path?: null | string
 }
 
-interface GuestStar {
+export interface GuestStar {
     character?: string
     credit_id?: string
     order?: number
