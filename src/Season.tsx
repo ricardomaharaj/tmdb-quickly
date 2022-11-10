@@ -45,7 +45,7 @@ export function Season() {
                             <div>{`${season.episodes.length} Episodes`}</div>
                         )}
                         {season?.air_date && (
-                            <div>{`${toDateString(season.air_date)}`}</div>
+                            <div>{toDateString(season.air_date)}</div>
                         )}
                     </div>
                 </div>
