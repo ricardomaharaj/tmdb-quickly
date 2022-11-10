@@ -2,11 +2,17 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useEpisodeQuery } from './gql'
+enum Tabs {
+    Info = 'INFO',
+    Guests = 'GUESTS',
+    Crew = 'CREW',
+    Images = 'IMAGES'
+}
 
 export function Episode() {
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || 'INFO'
+    let tab = params.get('tab') || Tabs.Info
 
     let { id, season_number, episode_number } = useParams()
     let [res] = useEpisodeQuery({ id, season_number, episode_number })
@@ -50,7 +56,7 @@ export function Episode() {
                 </div>
             </div>
             <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                {['INFO', 'GUESTS', 'CREW', 'IMAGES'].map((x, i) => (
+                {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
@@ -62,7 +68,7 @@ export function Episode() {
                     </button>
                 ))}
             </div>
-            {tab === 'INFO' && (
+            {tab === Tabs.Info && (
                 <>
                     {episode?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
@@ -71,7 +77,7 @@ export function Episode() {
                     )}
                 </>
             )}
-            {tab === 'GUESTS' && (
+            {tab === Tabs.Guests && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.guest_stars?.map((x, i) => (
                         <Link
@@ -114,7 +120,7 @@ export function Episode() {
                     ))}
                 </div>
             )}
-            {tab === 'CREW' && (
+            {tab === Tabs.Crew && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.crew?.map((x, i) => (
                         <Link
@@ -157,7 +163,7 @@ export function Episode() {
                     ))}
                 </div>
             )}
-            {tab === 'IMAGES' && (
+            {tab === Tabs.Images && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.images?.stills?.map((x, i) => (
                         <a
