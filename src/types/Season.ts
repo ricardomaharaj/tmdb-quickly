@@ -1,3 +1,5 @@
+import { Image, VideoResult } from './Shared'
+
 export interface Season {
     _id?: string
     air_date?: string
@@ -11,7 +13,7 @@ export interface Season {
     videos?: Videos
 }
 
-export interface Episode {
+interface Episode {
     air_date?: string
     episode_number?: number
     id?: number
@@ -24,11 +26,11 @@ export interface Episode {
     still_path?: string
     vote_average?: number
     vote_count?: number
-    crew?: Crew[]
-    guest_stars?: GuestStar[]
+    crew?: Credit[]
+    guest_stars?: Credit[]
 }
 
-interface Crew {
+interface Credit {
     job?: string
     department?: string
     credit_id?: string
@@ -40,49 +42,14 @@ interface Crew {
     original_name?: string
     popularity?: number
     profile_path?: string
-}
-
-interface GuestStar {
     character?: string
-    credit_id?: string
     order?: number
-    adult?: boolean
-    gender?: number
-    id?: number
-    known_for_department?: string
-    name?: string
-    original_name?: string
-    popularity?: number
-    profile_path?: string
 }
 
 interface Images {
-    posters?: Poster[]
-}
-
-interface Poster {
-    aspect_ratio?: number
-    height?: number
-    iso_639_1?: string
-    file_path?: string
-    vote_average?: number
-    vote_count?: number
-    width?: number
+    posters?: Image[]
 }
 
 interface Videos {
-    results?: Result[]
-}
-
-interface Result {
-    iso_639_1?: string
-    iso_3166_1?: string
-    name?: string
-    key?: string
-    site?: string
-    size?: number
-    type?: string
-    official?: boolean
-    published_at?: string
-    id?: string
+    results?: VideoResult[]
 }

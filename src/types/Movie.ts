@@ -1,6 +1,16 @@
+import {
+    Genre,
+    Image,
+    ProductionCompany,
+    ProductionCountry,
+    SpokenLanguage,
+    VideoResult
+} from './Shared'
+
 export interface Movie {
     adult?: boolean
     backdrop_path?: string
+    belongs_to_collection?: BelongsToCollection
     budget?: number
     genres?: Genre[]
     homepage?: string
@@ -29,12 +39,19 @@ export interface Movie {
     release_dates?: ReleaseDates
 }
 
-interface Credits {
-    cast?: Cast[]
-    crew?: Crew[]
+interface BelongsToCollection {
+    id?: number
+    name?: string
+    poster_path?: string
+    backdrop_path?: string
 }
 
-export interface Cast {
+interface Credits {
+    cast?: Credit[]
+    crew?: Credit[]
+}
+
+interface Credit {
     adult?: boolean
     gender?: number
     id?: number
@@ -47,62 +64,14 @@ export interface Cast {
     character?: string
     credit_id?: string
     order?: number
-}
-
-export interface Crew {
-    adult?: boolean
-    gender?: number
-    id?: number
-    known_for_department?: string
-    name?: string
-    original_name?: string
-    popularity?: number
-    profile_path?: string
-    credit_id?: string
     department?: string
     job?: string
 }
 
-interface Genre {
-    id?: number
-    name?: string
-}
-
 interface Images {
-    backdrops?: Backdrop[]
-    posters?: Poster[]
-}
-
-interface Backdrop {
-    aspect_ratio?: number
-    height?: number
-    iso_639_1?: string
-    file_path?: string
-    vote_average?: number
-    vote_count?: number
-    width?: number
-}
-
-interface Poster {
-    aspect_ratio?: number
-    height?: number
-    iso_639_1?: string
-    file_path?: string
-    vote_average?: number
-    vote_count?: number
-    width?: number
-}
-
-interface ProductionCompany {
-    id?: number
-    logo_path?: string
-    name?: string
-    origin_country?: string
-}
-
-interface ProductionCountry {
-    iso_3166_1?: string
-    name?: string
+    backdrops?: Image[]
+    logos?: Image[]
+    posters?: Image[]
 }
 
 interface ReleaseDates {
@@ -122,25 +91,6 @@ interface ReleaseDate {
     type?: number
 }
 
-interface SpokenLanguage {
-    english_name?: string
-    iso_639_1?: string
-    name?: string
-}
-
 interface Videos {
-    results?: VideosResult[]
-}
-
-interface VideosResult {
-    iso_639_1?: string
-    iso_3166_1?: string
-    name?: string
-    key?: string
-    site?: string
-    size?: number
-    type?: string
-    official?: boolean
-    published_at?: string
-    id?: string
+    results?: VideoResult[]
 }

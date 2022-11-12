@@ -1,8 +1,10 @@
+import { Image } from './Shared'
+
 export interface Episode {
     air_date?: string
-    crew?: Crew[]
+    crew?: Credit[]
     episode_number?: number
-    guest_stars?: GuestStar[]
+    guest_stars?: Credit[]
     name?: string
     overview?: string
     id?: number
@@ -15,7 +17,7 @@ export interface Episode {
     images?: Images
 }
 
-export interface Crew {
+interface Credit {
     job?: string
     department?: string
     credit_id?: string
@@ -26,33 +28,11 @@ export interface Crew {
     name?: string
     original_name?: string
     popularity?: number
-    profile_path?: null | string
-}
-
-export interface GuestStar {
+    profile_path?: string
     character?: string
-    credit_id?: string
     order?: number
-    adult?: boolean
-    gender?: number
-    id?: number
-    known_for_department?: string
-    name?: string
-    original_name?: string
-    popularity?: number
-    profile_path?: null | string
 }
 
 interface Images {
-    stills?: Still[]
-}
-
-interface Still {
-    aspect_ratio?: number
-    height?: number
-    iso_639_1?: null
-    file_path?: string
-    vote_average?: number
-    vote_count?: number
-    width?: number
+    stills?: Image[]
 }
