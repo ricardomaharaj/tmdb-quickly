@@ -91,11 +91,13 @@ export function Season() {
                                 className='bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
                                 key={i}
                             >
-                                <img
-                                    src={`${IMG_URLs.W500}${x.still_path}`}
-                                    className='rounded-xl mb-2'
-                                    alt=''
-                                />
+                                {x.still_path && (
+                                    <img
+                                        src={`${IMG_URLs.W500}${x.still_path}`}
+                                        className='rounded-xl mb-2'
+                                        alt=''
+                                    />
+                                )}
                                 <div className='flex flex-row space-x-2'>
                                     {generateEpisodeHeader({
                                         number: x.episode_number,
