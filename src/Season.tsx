@@ -30,10 +30,10 @@ export function Season() {
     }) => {
         const { number, name, air_date, runtime } = episode
         let x = ''
-        if (number) x += `${number} | `
-        if (name) x += `${name} | `
-        if (air_date) x += `${toDateString(air_date)} | `
-        if (runtime) x += `${runtimeCalc(runtime)}`
+        if (number) x += `${number}`
+        if (name) x += ` | ${name}`
+        if (air_date) x += ` | ${toDateString(air_date)}`
+        if (runtime) x += ` | ${runtimeCalc(runtime)}`
         return x
     }
 
