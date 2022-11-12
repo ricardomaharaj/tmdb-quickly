@@ -1,10 +1,8 @@
 import { useSearchParams } from 'react-router-dom'
 import { Fragment } from 'react'
 import { useSearchQuery } from './gql'
-import { setTitle } from './util'
-import { MovieCard } from './components/search/MovieCard'
-import { ShowCard } from './components/search/ShowCard'
-import { PersonCard } from './components/search/PersonCard'
+import { overviewTrimmer, setTitle, toDateString } from './util'
+import { Card } from './components/Card'
 
 enum Tabs {
     Movies = 'movie',
@@ -95,17 +93,27 @@ export function Search() {
                     </>
                 ) : (
                     <>
-                        {results?.map((result, i) => {
-                            if (tab === Tabs.Movies) {
-                                return <MovieCard movie={result} key={i} />
-                            }
-                            if (tab === Tabs.Shows) {
-                                return <ShowCard show={result} key={i} />
-                            }
-                            if (tab === Tabs.People) {
-                                return <PersonCard person={result} key={i} />
-                            }
-                        })}
+                        {results?.map((x, i) => (
+                            <Card
+                                image={x.poster_path || x.profile_path}
+                                primary={x.title || x.name}
+                                secondary={
+                                    x.media_type === 'person'
+                                        ? ''
+                                        : overviewTrimmer(x.overview)
+                                }
+                                tertiary={
+                                    x.media_type === 'person'
+                                        ? ''
+                                        : toDateString(
+                                              x.release_date || x.first_air_date
+                                          )
+                                }
+                                variant={tab as Tabs}
+                                href={`/${x.media_type}/${x.id}`}
+                                key={i}
+                            />
+                        ))}
                     </>
                 )}
             </div>

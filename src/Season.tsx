@@ -1,8 +1,7 @@
-import { useParams, useSearchParams } from 'react-router-dom'
-import { toDateString } from './util'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { runtimeCalc, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useSeasonQuery } from './gql'
-import { EpisodeCard } from './components/season/EpisodeCard'
 
 enum Tabs {
     Episodes = 'EPISODES',
@@ -11,14 +10,32 @@ enum Tabs {
 }
 
 export function Season() {
-    let [params, setParams] = useSearchParams()
+    const [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || Tabs.Episodes
+    const tab = params.get('tab') || Tabs.Episodes
 
-    let { id, season_number } = useParams()
-    let [res] = useSeasonQuery({ id, season_number })
-    let { data, fetching, error } = res
-    let season = data?.season
+    const replaceSearchParams = (update: any) =>
+        setParams({ tab, ...update }, { replace: true })
+
+    const { id, season_number } = useParams()
+    const [res] = useSeasonQuery({ id, season_number })
+    const { data, fetching, error } = res
+    const season = data?.season
+
+    const generateEpisodeHeader = (episode: {
+        number?: number
+        name?: string
+        air_date?: string
+        runtime?: number
+    }) => {
+        const { number, name, air_date, runtime } = episode
+        let x = ''
+        if (number) x += `${number} | `
+        if (name) x += `${name} | `
+        if (air_date) x += `${toDateString(air_date)} | `
+        if (runtime) x += `${runtimeCalc(runtime)}`
+        return x
+    }
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -58,7 +75,7 @@ export function Season() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => setParams({ tab: x }, { replace: true })}
+                        onClick={() => replaceSearchParams({ tab: x })}
                         key={i}
                     >
                         {x}
@@ -67,9 +84,32 @@ export function Season() {
             </div>
             {tab === Tabs.Episodes && (
                 <>
-                    <div className='flex flex-col space-y-2'>
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {season?.episodes?.map((x, i) => (
-                            <EpisodeCard episode={x} key={i} />
+                            <Link
+                                to={`episode/${x.episode_number}`}
+                                className='bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
+                                key={i}
+                            >
+                                <img
+                                    src={`${IMG_URLs.W500}${x.still_path}`}
+                                    className='rounded-xl mb-2'
+                                    alt=''
+                                />
+                                <div className='flex flex-row space-x-2'>
+                                    {generateEpisodeHeader({
+                                        number: x.episode_number,
+                                        name: x.name,
+                                        air_date: x.air_date,
+                                        runtime: x.runtime
+                                    })}
+                                </div>
+                                {x.overview && (
+                                    <div className='flex flex-row text-slate-400'>
+                                        {x.overview}
+                                    </div>
+                                )}
+                            </Link>
                         ))}
                     </div>
                 </>

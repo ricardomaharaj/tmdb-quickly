@@ -1,6 +1,7 @@
 import { APP_NAME } from './consts'
 
-export function toDateString(date: string) {
+export function toDateString(date?: string) {
+    if (!date) return ''
     if (date.length > 10) {
         date = date.substring(0, 10)
     }
@@ -12,8 +13,8 @@ export function runtimeCalc(runtime: number) {
         return '1h'
     }
     if (runtime > 60) {
-        let minutes = runtime % 60
-        let hours = (runtime - minutes) / 60
+        const minutes = runtime % 60
+        const hours = (runtime - minutes) / 60
         return `${hours}h${minutes}m`
     }
     return `${runtime}m`
@@ -31,7 +32,8 @@ export function grabYear(date: string) {
     return date.substring(0, 4)
 }
 
-export function overviewTrimmer(overview: string) {
+export function overviewTrimmer(overview?: string) {
+    if (!overview) return
     const MaxLength = 100
     if (overview.length > MaxLength) {
         return overview.substring(0, MaxLength - 3).padEnd(MaxLength, '.')

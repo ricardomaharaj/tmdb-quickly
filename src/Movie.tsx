@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { runtimeCalc, setTitle, toDateString } from './util'
+import { removeVoiceTag, runtimeCalc, setTitle, toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useMovieQuery } from './gql'
-import { CastCard } from './components/movie/CastCard'
-import { CrewCard } from './components/movie/CrewCard'
+import { Card } from './components/Card'
 
 const RELEASE_TYPES = [
     '',
@@ -30,58 +29,58 @@ enum ImageTabs {
 }
 
 export function Movie() {
-    let [imageTab, setImageTab] = useState('POSTERS')
-    let [params, setParams] = useSearchParams()
+    const [imageTab, setImageTab] = useState('POSTERS')
+    const [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || Tabs.Info
-    let query = params.get('query') || ''
-    let page = parseInt(params.get('page') || '1')
+    const tab = params.get('tab') || Tabs.Info
+    const query = params.get('query') || ''
+    const page = parseInt(params.get('page') || '1')
 
-    let replaceSearchParams = (update: any) =>
+    const replaceSearchParams = (update: any) =>
         setParams({ tab, query, page, ...update }, { replace: true })
 
-    let { id } = useParams()
-    let [res] = useMovieQuery({ id: id! })
-    let { data, fetching, error } = res
-    let movie = data?.movie
+    const { id } = useParams()
+    const [res] = useMovieQuery({ id: id! })
+    const { data, fetching, error } = res
+    const movie = data?.movie
 
     setTitle(movie?.title)
 
-    let releaseDates = movie?.release_dates?.results?.filter(
+    const releaseDates = movie?.release_dates?.results?.filter(
         (x) => x?.iso_3166_1 === 'US'
     )[0]?.release_dates
 
-    let firstPage = page === 1
+    const firstPage = page === 1
 
-    let perPage = 9
-    let startPage = (page - 1) * perPage
-    let endPage = page * perPage
+    const perPage = 9
+    const startPage = (page - 1) * perPage
+    const endPage = page * perPage
 
-    let cast = movie?.credits?.cast
+    const cast = movie?.credits?.cast
         ?.filter((x) => {
-            let name = x.name?.toLowerCase()
-            let character = x.character?.toLowerCase()
-            let q = query.toLowerCase()
+            const name = x.name?.toLowerCase()
+            const character = x.character?.toLowerCase()
+            const q = query.toLowerCase()
             if (name?.includes(q)) return true
             if (character?.includes(q)) return true
             return false
         })
         .slice(startPage, endPage)
 
-    let lastCast = cast?.length! < perPage
+    const lastCast = cast?.length! < perPage
 
-    let crew = movie?.credits?.crew
+    const crew = movie?.credits?.crew
         ?.filter((x) => {
-            let name = x.name?.toLowerCase()
-            let job = x.job?.toLowerCase()
-            let q = query.toLowerCase()
+            const name = x.name?.toLowerCase()
+            const job = x.job?.toLowerCase()
+            const q = query.toLowerCase()
             if (name?.includes(q)) return true
             if (job?.includes(q)) return true
             return false
         })
         .slice(startPage, endPage)
 
-    let lastCrew = crew?.length! < perPage
+    const lastCrew = crew?.length! < perPage
 
     if (fetching) return LOAD_SILHOUETTE
 
@@ -108,7 +107,7 @@ export function Movie() {
                             <div>{movie.release_date.substring(0, 4)}</div>
                         )}
                         {movie?.title && (
-                            <div className='font-bold'>{movie?.title}</div>
+                            <div className='font-bold'>{movie.title}</div>
                         )}
                         {movie?.tagline && (
                             <div className='text-sm'>{movie.tagline}</div>
@@ -122,7 +121,9 @@ export function Movie() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => replaceSearchParams({ tab: x })}
+                        onClick={() =>
+                            replaceSearchParams({ tab: x, page: '1' })
+                        }
                         key={i}
                     >
                         {x}
@@ -246,13 +247,21 @@ export function Movie() {
                         placeholder='Search Cast'
                         onChange={(e) =>
                             replaceSearchParams({
-                                query: e.currentTarget.value
+                                query: e.currentTarget.value,
+                                page: '1'
                             })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {cast?.map((x, i) => (
-                            <CastCard person={x} key={i} />
+                            <Card
+                                image={x.profile_path}
+                                primary={x.name}
+                                secondary={removeVoiceTag(x.character!)}
+                                variant='person'
+                                href={`/person/${x.id}`}
+                                key={i}
+                            />
                         ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
@@ -295,13 +304,21 @@ export function Movie() {
                         placeholder='Search Crew'
                         onChange={(e) =>
                             replaceSearchParams({
-                                query: e.currentTarget.value
+                                query: e.currentTarget.value,
+                                page: '1'
                             })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                         {crew?.map((x, i) => (
-                            <CrewCard person={x} key={i} />
+                            <Card
+                                image={x.profile_path}
+                                primary={x.name}
+                                secondary={x.job}
+                                variant='person'
+                                href={`/person/${x.id}`}
+                                key={i}
+                            />
                         ))}
                     </div>
                     <div className='flex flex-row space-x-2'>

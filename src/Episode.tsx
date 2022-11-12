@@ -2,8 +2,7 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
 import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
 import { useEpisodeQuery } from './gql'
-import { GuestCard } from './components/episode/GuestCard'
-import { CrewCard } from './components/episode/CrewCard'
+import { Card } from './components/Card'
 
 enum Tabs {
     Info = 'INFO',
@@ -13,16 +12,19 @@ enum Tabs {
 }
 
 export function Episode() {
-    let [params, setParams] = useSearchParams()
+    const [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || Tabs.Info
+    const tab = params.get('tab') || Tabs.Info
 
-    let { id, season_number, episode_number } = useParams()
-    let [res] = useEpisodeQuery({ id, season_number, episode_number })
-    let { data, fetching, error } = res
-    let episode = data?.episode
+    const { id, season_number, episode_number } = useParams()
+    const [res] = useEpisodeQuery({ id, season_number, episode_number })
+    const { data, fetching, error } = res
+    const episode = data?.episode
 
-    let generateEpisodeShorthand = (
+    const replaceSearchParams = (update: any) =>
+        setParams({ tab, ...update }, { replace: true })
+
+    const generateEpisodeShorthand = (
         seasonNum?: number,
         episodeNum?: number
     ) => {
@@ -62,7 +64,7 @@ export function Episode() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() => setParams({ tab: x }, { replace: true })}
+                        onClick={() => replaceSearchParams({ tab: x })}
                         key={i}
                     >
                         {x}
@@ -81,14 +83,28 @@ export function Episode() {
             {tab === Tabs.Guests && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.guest_stars?.map((x, i) => (
-                        <GuestCard guest={x} key={i} />
+                        <Card
+                            image={x.profile_path}
+                            primary={x.name}
+                            secondary={x.character}
+                            variant='person'
+                            href={`/person/${x.id}`}
+                            key={i}
+                        />
                     ))}
                 </div>
             )}
             {tab === Tabs.Crew && (
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.crew?.map((x, i) => (
-                        <CrewCard crew={x} key={i} />
+                        <Card
+                            image={x.profile_path}
+                            primary={x.name}
+                            secondary={x.job}
+                            variant='person'
+                            href={`/person/${x.id}`}
+                            key={i}
+                        />
                     ))}
                 </div>
             )}
