@@ -23,14 +23,14 @@ export function Season() {
     const season = data?.season
 
     const generateEpisodeHeader = (episode: {
-        number?: number
+        episode_number?: number
         name?: string
         air_date?: string
         runtime?: number
     }) => {
-        const { number, name, air_date, runtime } = episode
+        const { episode_number, name, air_date, runtime } = episode
         let x = ''
-        if (number) x += `${number}`
+        if (episode_number) x += `${episode_number}`
         if (name) x += ` | ${name}`
         if (air_date) x += ` | ${toDateString(air_date)}`
         if (runtime) x += ` | ${runtimeCalc(runtime)}`
@@ -84,33 +84,26 @@ export function Season() {
             </div>
             {tab === Tabs.Episodes && (
                 <>
-                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                    <div className='flex flex-col space-y-2'>
                         {season?.episodes?.map((x, i) => (
                             <Link
+                                className={`flex flex-col md:flex-row rounded-xl p-2 bg-slate-800 hover:bg-slate-700`}
                                 to={`episode/${x.episode_number}`}
-                                className='bg-slate-800 rounded-xl p-2 hover:bg-slate-700'
                                 key={i}
                             >
-                                {x.still_path && (
-                                    <img
-                                        src={`${IMG_URLs.W500}${x.still_path}`}
-                                        className='rounded-xl mb-2'
-                                        alt=''
-                                    />
-                                )}
-                                <div className='flex flex-row space-x-2'>
-                                    {generateEpisodeHeader({
-                                        number: x.episode_number,
-                                        name: x.name,
-                                        air_date: x.air_date,
-                                        runtime: x.runtime
-                                    })}
-                                </div>
-                                {x.overview && (
-                                    <div className='flex flex-row text-slate-400'>
+                                <img
+                                    src={IMG_URLs.W227H127 + x.still_path}
+                                    className='rounded-xl mb-2 md:mb-0 md:mr-2 self-center max-w-[227px] max-h-[127px]'
+                                    alt=''
+                                />
+                                <div className='flex flex-col'>
+                                    <div className='text-center md:text-left'>
+                                        {generateEpisodeHeader(x)}
+                                    </div>
+                                    <div className='text-center md:text-left text-slate-400'>
                                         {x.overview}
                                     </div>
-                                )}
+                                </div>
                             </Link>
                         ))}
                     </div>
