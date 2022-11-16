@@ -91,11 +91,13 @@ export function Season() {
                                 to={`episode/${x.episode_number}`}
                                 key={i}
                             >
-                                <img
-                                    src={IMG_URLs.W227H127 + x.still_path}
-                                    className='rounded-xl mb-2 md:mb-0 md:mr-2 self-center max-w-[227px] max-h-[127px]'
-                                    alt=''
-                                />
+                                {x.still_path && (
+                                    <img
+                                        src={IMG_URLs.W227H127 + x.still_path}
+                                        className='rounded-xl mb-2 md:mb-0 md:mr-2 self-center max-w-[227px] max-h-[127px]'
+                                        alt=''
+                                    />
+                                )}
                                 <div className='flex flex-col'>
                                     <div className='text-center md:text-left'>
                                         {generateEpisodeHeader(x)}
