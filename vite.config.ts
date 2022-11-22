@@ -23,13 +23,13 @@ export default defineConfig({
                     },
                     {
                         src: 'logo192.png',
-                        type: 'image/png',
-                        sizes: '192x192'
+                        sizes: '192x192',
+                        type: 'image/png'
                     },
                     {
                         src: 'logo512.png',
-                        type: 'image/png',
-                        sizes: '512x512'
+                        sizes: '512x512',
+                        type: 'image/png'
                     }
                 ],
                 start_url: '.',
