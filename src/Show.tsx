@@ -380,7 +380,7 @@ export function Show() {
                                             ? toDateString(x.air_date)
                                             : ''
                                     }
-                                    variant='person'
+                                    variant='tv'
                                     href={`season/${x.season_number}`}
                                     key={i}
                                 />
