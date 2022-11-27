@@ -13,25 +13,25 @@ enum Tabs {
 export function Search() {
     setTitle()
 
-    let [params, setParams] = useSearchParams()
+    const [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || Tabs.Movies
-    let query = params.get('query') || ''
-    let page = parseInt(params.get('page') || '1')
+    const tab = params.get('tab') || Tabs.Movies
+    const query = params.get('query') || ''
+    const page = parseInt(params.get('page') || '1')
 
-    let replaceSearchParams = (update: any) =>
+    const replaceSearchParams = (update: any) =>
         setParams({ tab, query, page, ...update }, { replace: true })
 
-    let [res] = useSearchQuery({
+    const [res] = useSearchQuery({
         query,
         page: page.toString()
     })
-    let { data, fetching, error } = res
+    const { data, fetching, error } = res
 
     let results = data?.search?.results
-    let maxPages = data?.search?.total_pages
-    let firstPage = page === 1
-    let lastPage = page === maxPages
+    const maxPages = data?.search?.total_pages
+    const firstPage = page === 1
+    const lastPage = page === maxPages
 
     const load_card_silohette = (
         <>
