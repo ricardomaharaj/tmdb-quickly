@@ -67,8 +67,6 @@ export function Show() {
         })
         .slice(startPage, endPage)
 
-    const lastCast = cast?.length! < perPage
-
     const crew = show?.aggregate_credits?.crew
         ?.sort((a, b) =>
             a.total_episode_count! > b.total_episode_count! ? -1 : 1
@@ -88,8 +86,6 @@ export function Show() {
             return false
         })
         .slice(startPage, endPage)
-
-    const lastCrew = crew?.length! < perPage
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -141,9 +137,7 @@ export function Show() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() =>
-                            replaceSearchParams({ tab: x, page: '1' })
-                        }
+                        onClick={() => replaceSearchParams({ tab: x, page: 1 })}
                         key={i}
                     >
                         {x}
@@ -238,39 +232,57 @@ export function Show() {
                     </div>
                 </>
             )}
-            {tab === Tabs.Cast && (
+            {[Tabs.Cast, Tabs.Crew].includes(tab as Tabs) && (
                 <>
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
                         defaultValue={query}
-                        placeholder='Search Cast'
+                        placeholder='Search'
                         onChange={(e) =>
                             replaceSearchParams({
                                 query: e.currentTarget.value,
-                                page: '1'
+                                page: 1
                             })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                        {cast?.map((x, i) => (
-                            <Card
-                                image={x.profile_path}
-                                primary={x.name}
-                                secondary={x?.roles
-                                    ?.map(
-                                        (role) =>
-                                            `${removeVoiceTag(
-                                                role.character!
-                                            )} (${role.episode_count} Eps)`
-                                    )
-                                    .slice(0, 3)
-                                    .join(' | ')}
-                                variant='person'
-                                href={`/person/${x.id}`}
-                                key={i}
-                            />
-                        ))}
+                        {tab === Tabs.Cast &&
+                            cast?.map((x, i) => (
+                                <Card
+                                    image={x.profile_path}
+                                    primary={x.name}
+                                    secondary={x?.roles
+                                        ?.map(
+                                            (role) =>
+                                                `${removeVoiceTag(
+                                                    role.character!
+                                                )} (${role.episode_count} Eps)`
+                                        )
+                                        .slice(0, 3)
+                                        .join(' | ')}
+                                    variant='person'
+                                    href={`/person/${x.id}`}
+                                    key={i}
+                                />
+                            ))}
+                        {tab === Tabs.Crew &&
+                            crew?.map((x, i) => (
+                                <Card
+                                    image={x.profile_path}
+                                    primary={x.name}
+                                    secondary={x.jobs
+                                        ?.map(
+                                            (job) =>
+                                                `${job.job} (${job.episode_count} Eps)`
+                                        )
+                                        .slice(0, 3)
+                                        .join(' | ')}
+                                    variant='person'
+                                    href={`/person/${x.id}`}
+                                    key={i}
+                                />
+                            ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
                         <button
@@ -288,75 +300,7 @@ export function Show() {
                         </button>
                         <div className='p-2'>{page}</div>
                         <button
-                            className={`${
-                                lastCast
-                                    ? 'text-slate-400'
-                                    : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2`}
-                            disabled={lastCast}
-                            onClick={() =>
-                                replaceSearchParams({ page: page + 1 })
-                            }
-                        >
-                            NEXT
-                        </button>
-                    </div>
-                </>
-            )}
-            {tab === Tabs.Crew && (
-                <>
-                    <input
-                        type='text'
-                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        defaultValue={query}
-                        placeholder='Search Crew'
-                        onChange={(e) =>
-                            replaceSearchParams({
-                                query: e.currentTarget.value,
-                                page: '1'
-                            })
-                        }
-                    />
-                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                        {crew?.map((x, i) => (
-                            <Card
-                                image={x.profile_path}
-                                primary={x.name}
-                                secondary={x.jobs
-                                    ?.map(
-                                        (job) =>
-                                            `${job.job} (${job.episode_count} Eps)`
-                                    )
-                                    .slice(0, 3)
-                                    .join(' | ')}
-                                variant='person'
-                                href={`/person/${x.id}`}
-                                key={i}
-                            />
-                        ))}
-                    </div>
-                    <div className='flex flex-row space-x-2'>
-                        <button
-                            className={`${
-                                firstPage
-                                    ? 'text-slate-400'
-                                    : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2`}
-                            disabled={firstPage}
-                            onClick={() =>
-                                replaceSearchParams({ page: page - 1 })
-                            }
-                        >
-                            BACK
-                        </button>
-                        <div className='p-2'>{page}</div>
-                        <button
-                            className={`${
-                                lastCrew
-                                    ? 'text-slate-400'
-                                    : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2`}
-                            disabled={lastCrew}
+                            className='bg-slate-800 hover:bg-slate-600 rounded-xl p-2'
                             onClick={() =>
                                 replaceSearchParams({ page: page + 1 })
                             }

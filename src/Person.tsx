@@ -92,8 +92,6 @@ export function Person() {
         )
         .slice(startPage, endPage)
 
-    const lastCast = cast?.length! < perPage
-
     const crew = person?.combined_credits?.crew
         ?.filter((x) => x.media_type === creditsFilter)
         .filter((x) => {
@@ -111,8 +109,6 @@ export function Person() {
                 : 1
         )
         .slice(startPage, endPage)
-
-    const lastCrew = crew?.length! < perPage
 
     if (fetching) return LOAD_SILHOUETTE
     if (error)
@@ -156,16 +152,14 @@ export function Person() {
                         className={`${
                             tab === x ? 'bg-slate-700' : 'bg-slate-800'
                         } rounded-xl p-2 hover:bg-slate-600`}
-                        onClick={() =>
-                            replaceSearchParams({ tab: x, page: '1' })
-                        }
+                        onClick={() => replaceSearchParams({ tab: x, page: 1 })}
                         key={i}
                     >
                         {x}
                     </button>
                 ))}
             </div>
-            {tab === 'BIO' && (
+            {tab === Tabs.Bio && (
                 <>
                     {person?.biography && (
                         <div className='bg-slate-800 rounded-xl p-3 space-y-2'>
@@ -174,7 +168,7 @@ export function Person() {
                     )}
                 </>
             )}
-            {tab === 'CAST' && (
+            {[Tabs.Cast, Tabs.Crew].includes(tab as Tabs) && (
                 <>
                     <div className='flex flex-row space-x-2'>
                         {Object.values(CreditsTab).map((x, i) => (
@@ -187,7 +181,7 @@ export function Person() {
                                 onClick={() =>
                                     replaceSearchParams({
                                         creditsTab: x,
-                                        page: '1'
+                                        page: 1
                                     })
                                 }
                                 key={i}
@@ -199,29 +193,53 @@ export function Person() {
                     <input
                         type='text'
                         className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        placeholder='Search Cast Credits'
+                        placeholder='Search'
                         defaultValue={query}
                         onChange={(e) =>
                             replaceSearchParams({
                                 query: e.currentTarget.value,
-                                page: '1'
+                                page: 1
                             })
                         }
                     />
                     <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                        {cast?.map((x, i) => (
-                            <Card
-                                image={x.poster_path}
-                                primary={x.name || x.title}
-                                secondary={x.character}
-                                tertiary={toDateString(
-                                    x.first_air_date || x.release_date
-                                )}
-                                variant={x.media_type === 'tv' ? 'tv' : 'movie'}
-                                href={`/${x.media_type}/${x.id}`}
-                                key={i}
-                            />
-                        ))}
+                        {tab === Tabs.Cast &&
+                            cast?.map((x, i) => (
+                                <Card
+                                    image={x.poster_path}
+                                    primary={x.name || x.title}
+                                    secondary={x.character}
+                                    tertiary={toDateString(
+                                        x.first_air_date || x.release_date
+                                    )}
+                                    variant={
+                                        x.media_type === 'tv' ? 'tv' : 'movie'
+                                    }
+                                    href={`/${x.media_type}/${x.id}`}
+                                    key={i}
+                                />
+                            ))}
+                        {tab === Tabs.Crew &&
+                            crew?.map((x, i) => (
+                                <Card
+                                    image={x.poster_path}
+                                    primary={x.name || x.title}
+                                    secondary={x.job}
+                                    tertiary={
+                                        x.first_air_date || x.release_date
+                                            ? toDateString(
+                                                  x.first_air_date! ||
+                                                      x.release_date!
+                                              )
+                                            : ''
+                                    }
+                                    variant={
+                                        x.media_type === 'tv' ? 'tv' : 'movie'
+                                    }
+                                    href={`/${x.media_type}/${x.id}`}
+                                    key={i}
+                                />
+                            ))}
                     </div>
                     <div className='flex flex-row space-x-2'>
                         <button
@@ -239,12 +257,7 @@ export function Person() {
                         </button>
                         <div className='p-2'>{page}</div>
                         <button
-                            className={`${
-                                lastCast
-                                    ? 'text-slate-400'
-                                    : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2`}
-                            disabled={lastCast}
+                            className='bg-slate-800 hover:bg-slate-600 rounded-xl p-2'
                             onClick={() =>
                                 replaceSearchParams({ page: page + 1 })
                             }
@@ -254,91 +267,7 @@ export function Person() {
                     </div>
                 </>
             )}
-            {tab === 'CREW' && (
-                <>
-                    <div className='flex flex-row space-x-2'>
-                        {Object.values(CreditsTab).map((x, i) => (
-                            <button
-                                className={`${
-                                    creditsTab === x
-                                        ? 'bg-slate-700'
-                                        : 'bg-slate-800'
-                                } rounded-xl p-2 hover:bg-slate-600`}
-                                onClick={() =>
-                                    replaceSearchParams({
-                                        creditsTab: x,
-                                        page: '1'
-                                    })
-                                }
-                                key={i}
-                            >
-                                {x}
-                            </button>
-                        ))}
-                    </div>
-                    <input
-                        type='text'
-                        className='bg-slate-800 rounded-xl p-2 w-full outline-none'
-                        placeholder='Search Crew Credits'
-                        defaultValue={query}
-                        onChange={(e) =>
-                            replaceSearchParams({
-                                query: e.currentTarget.value
-                            })
-                        }
-                    />
-                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                        {crew?.map((x, i) => (
-                            <Card
-                                image={x.poster_path}
-                                primary={x.name || x.title}
-                                secondary={x.job}
-                                tertiary={
-                                    x.first_air_date || x.release_date
-                                        ? toDateString(
-                                              x.first_air_date! ||
-                                                  x.release_date!
-                                          )
-                                        : ''
-                                }
-                                variant={x.media_type === 'tv' ? 'tv' : 'movie'}
-                                href={`/${x.media_type}/${x.id}`}
-                                key={i}
-                            />
-                        ))}
-                    </div>
-                    <div className='flex flex-row space-x-2'>
-                        <button
-                            className={`${
-                                firstPage
-                                    ? 'text-slate-400'
-                                    : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2`}
-                            disabled={firstPage}
-                            onClick={() =>
-                                replaceSearchParams({ page: page - 1 })
-                            }
-                        >
-                            BACK
-                        </button>
-                        <div className='p-2'>{page}</div>
-                        <button
-                            className={`${
-                                lastCrew
-                                    ? 'text-slate-400'
-                                    : 'bg-slate-800 hover:bg-slate-600'
-                            } rounded-xl p-2`}
-                            disabled={lastCrew}
-                            onClick={() =>
-                                replaceSearchParams({ page: page + 1 })
-                            }
-                        >
-                            NEXT
-                        </button>
-                    </div>
-                </>
-            )}
-            {tab === 'IMAGES' && (
+            {tab === Tabs.Images && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {person?.images?.profiles?.map((x, i) => (
                         <a
