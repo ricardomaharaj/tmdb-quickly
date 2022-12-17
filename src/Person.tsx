@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom'
 import { setTitle, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
+import { imageUrls, loadSilhouette } from './consts'
 import { usePersonQuery } from './gql'
 import { Card } from './components/Card'
 
@@ -31,8 +31,7 @@ export function Person() {
         )
 
     const { id } = useParams()
-    const [res] = usePersonQuery({ id: id! })
-    const { data, fetching, error } = res
+    const { data, loading, error } = usePersonQuery({ id })
     const person = data?.person
 
     setTitle(person?.name)
@@ -110,7 +109,7 @@ export function Person() {
         )
         .slice(startPage, endPage)
 
-    if (fetching) return LOAD_SILHOUETTE
+    if (loading) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
@@ -118,7 +117,7 @@ export function Person() {
             <div className='flex flex-row bg-slate-800 rounded-xl p-2'>
                 {person?.profile_path && (
                     <img
-                        src={`${IMG_URLs.W150H225}${person?.profile_path}`}
+                        src={`${imageUrls.W150H225}${person?.profile_path}`}
                         className='rounded-xl mr-2 max-w-[150px] max-h-[225px]'
                         width='150'
                         height='225'
@@ -271,13 +270,13 @@ export function Person() {
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {person?.images?.profiles?.map((x, i) => (
                         <a
-                            href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                            href={`${imageUrls.ORIGINAL}${x.file_path}`}
                             target='_blank'
                             rel='noopener noreferrer'
                             key={i}
                         >
                             <img
-                                src={`${IMG_URLs.W500}${x.file_path}`}
+                                src={`${imageUrls.W500}${x.file_path}`}
                                 loading='lazy'
                                 alt=''
                             />

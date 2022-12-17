@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { removeVoiceTag, runtimeCalc, setTitle, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
+import { imageUrls, loadSilhouette } from './consts'
 import { useShowQuery } from './gql'
 import { Card } from './components/Card'
 
@@ -31,9 +31,8 @@ export function Show() {
         setParams({ tab, query, page, ...update }, { replace: true })
 
     const { id } = useParams()
-    const [res] = useShowQuery({ id: id! })
-    const { data, fetching, error } = res
-    const show = data?.show
+    let { data, loading, error } = useShowQuery({ id })
+    let show = data?.show
 
     setTitle(show?.name)
 
@@ -48,9 +47,6 @@ export function Show() {
     const endPage = page * perPage
 
     const cast = show?.aggregate_credits?.cast
-        ?.sort((a, b) =>
-            a.total_episode_count! > b.total_episode_count! ? -1 : 1
-        )
         ?.filter((x) => {
             const q = query.toLowerCase()
 
@@ -65,12 +61,9 @@ export function Show() {
 
             return false
         })
-        .slice(startPage, endPage)
+        ?.slice(startPage, endPage)
 
     const crew = show?.aggregate_credits?.crew
-        ?.sort((a, b) =>
-            a.total_episode_count! > b.total_episode_count! ? -1 : 1
-        )
         ?.filter((x) => {
             const q = query.toLowerCase()
 
@@ -85,9 +78,9 @@ export function Show() {
 
             return false
         })
-        .slice(startPage, endPage)
+        ?.slice(startPage, endPage)
 
-    if (fetching) return LOAD_SILHOUETTE
+    if (loading) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
@@ -95,13 +88,13 @@ export function Show() {
             <div
                 className='bg-cover bg-center rounded-xl'
                 style={{
-                    backgroundImage: `url(${IMG_URLs.W500}${show?.backdrop_path})`
+                    backgroundImage: `url(${imageUrls.W500}${show?.backdrop_path})`
                 }}
             >
                 <div className='flex flex-row p-2 xl:p-10 rounded-xl backdrop-brightness-50'>
                     {show?.poster_path && (
                         <img
-                            src={`${IMG_URLs.W150H225}${show.poster_path}`}
+                            src={`${imageUrls.W150H225}${show.poster_path}`}
                             className='rounded-xl mr-2 max-w-[150px] max-h-[225px]'
                             width='150'
                             height='225'
@@ -358,13 +351,13 @@ export function Show() {
                                 )
                                 ?.map((x, i) => (
                                     <a
-                                        href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                                        href={`${imageUrls.ORIGINAL}${x.file_path}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
                                         key={i}
                                     >
                                         <img
-                                            src={`${IMG_URLs.W500}${x.file_path}`}
+                                            src={`${imageUrls.W500}${x.file_path}`}
                                             loading='lazy'
                                             alt=''
                                         />
@@ -381,13 +374,13 @@ export function Show() {
                                 )
                                 ?.map((x, i) => (
                                     <a
-                                        href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                                        href={`${imageUrls.ORIGINAL}${x.file_path}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
                                         key={i}
                                     >
                                         <img
-                                            src={`${IMG_URLs.W500}${x.file_path}`}
+                                            src={`${imageUrls.W500}${x.file_path}`}
                                             loading='lazy'
                                             alt=''
                                         />

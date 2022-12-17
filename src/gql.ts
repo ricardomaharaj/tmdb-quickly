@@ -1,4 +1,4 @@
-import { gql, useQuery } from 'urql'
+import { gql, useQuery } from '@apollo/client'
 import { Search } from './types/Search'
 import { Movie } from './types/Movie'
 import { Show } from './types/Show'
@@ -6,71 +6,104 @@ import { Person } from './types/Person'
 import { Season } from './types/Season'
 import { Episode } from './types/Episode'
 
-export function useSearchQuery(variables: { query: string; page: string }) {
-    return useQuery<{ search: Search }>({
-        query: gql`
+interface SearchQueryRes {
+    search: Search
+}
+interface SearchQueryVars {
+    query: string
+    page: string
+}
+export function useSearchQuery(variables: SearchQueryVars) {
+    return useQuery<SearchQueryRes, SearchQueryVars>(
+        gql`
             query ($query: String, $page: String) {
                 search(query: $query, page: $page)
             }
         `,
-        variables
-    })
+        { variables }
+    )
 }
 
-export function useMovieQuery(variables: { id: String }) {
-    return useQuery<{ movie: Movie }>({
-        query: gql`
+interface MovieQueryRes {
+    movie: Movie
+}
+interface MovieQueryVars {
+    id?: string
+}
+export function useMovieQuery(variables: MovieQueryVars) {
+    return useQuery<MovieQueryRes, MovieQueryVars>(
+        gql`
             query ($id: ID) {
                 movie(id: $id)
             }
         `,
-        variables
-    })
+        { variables }
+    )
 }
 
-export function useShowQuery(variables: { id: string }) {
-    return useQuery<{ show: Show }>({
-        query: gql`
+interface ShowQueryRes {
+    show: Show
+}
+interface ShowQueryVars {
+    id?: string
+}
+export function useShowQuery(variables: ShowQueryVars) {
+    return useQuery<ShowQueryRes, ShowQueryVars>(
+        gql`
             query ($id: ID) {
                 show(id: $id)
             }
         `,
-        variables
-    })
+        { variables }
+    )
 }
 
-export function usePersonQuery(variables: { id: string }) {
-    return useQuery<{ person: Person }>({
-        query: gql`
+interface PersonQueryRes {
+    person: Person
+}
+interface PersonQueryVars {
+    id?: string
+}
+export function usePersonQuery(variables: PersonQueryVars) {
+    return useQuery<PersonQueryRes, PersonQueryVars>(
+        gql`
             query ($id: ID) {
                 person(id: $id)
             }
         `,
-        variables
-    })
+        { variables }
+    )
 }
 
-export function useSeasonQuery(variables: {
+interface SeasonQueryRes {
+    season: Season
+}
+interface SeasonQueryVars {
     id?: string
     season_number?: string
-}) {
-    return useQuery<{ season: Season }>({
-        query: gql`
+}
+export function useSeasonQuery(variables: SeasonQueryVars) {
+    return useQuery<SeasonQueryRes, SeasonQueryVars>(
+        gql`
             query ($id: ID, $season_number: String) {
                 season(id: $id, season_number: $season_number)
             }
         `,
-        variables
-    })
+        { variables }
+    )
 }
 
-export function useEpisodeQuery(variables: {
+interface EpisodeQueryRes {
+    episode: Episode
+}
+interface EpisodeQueryVars {
     id?: string
     season_number?: string
-    episode_number?: String
-}) {
-    return useQuery<{ episode: Episode }>({
-        query: gql`
+    episode_number?: string
+}
+export function useEpisodeQuery(variables: EpisodeQueryVars) {
+    return useQuery<EpisodeQueryRes, EpisodeQueryVars>(
+        gql`
             query ($id: ID, $season_number: String, $episode_number: String) {
                 episode(
                     id: $id
@@ -79,6 +112,6 @@ export function useEpisodeQuery(variables: {
                 )
             }
         `,
-        variables
-    })
+        { variables }
+    )
 }

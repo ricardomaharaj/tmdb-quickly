@@ -1,6 +1,6 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { runtimeCalc, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
+import { imageUrls, loadSilhouette } from './consts'
 import { useSeasonQuery } from './gql'
 
 enum Tabs {
@@ -18,8 +18,7 @@ export function Season() {
         setParams({ tab, ...update }, { replace: true })
 
     const { id, season_number } = useParams()
-    const [res] = useSeasonQuery({ id, season_number })
-    const { data, fetching, error } = res
+    const { data, loading, error } = useSeasonQuery({ id, season_number })
     const season = data?.season
 
     const generateEpisodeHeader = (episode: {
@@ -37,7 +36,7 @@ export function Season() {
         return x
     }
 
-    if (fetching) return LOAD_SILHOUETTE
+    if (loading) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
@@ -45,13 +44,13 @@ export function Season() {
             <div
                 className='bg-cover bg-center rounded-xl'
                 style={{
-                    backgroundImage: `url(${IMG_URLs.W500}${season?.poster_path})`
+                    backgroundImage: `url(${imageUrls.W500}${season?.poster_path})`
                 }}
             >
                 <div className='flex flex-row p-2 xl:p-10 rounded-xl backdrop-brightness-50'>
                     {season?.poster_path && (
                         <img
-                            src={`${IMG_URLs.W150H225}${season.poster_path}`}
+                            src={`${imageUrls.W150H225}${season.poster_path}`}
                             className='rounded-xl mr-2 max-w-[150px] max-h-[225px]'
                             width='150'
                             height='225'
@@ -93,7 +92,7 @@ export function Season() {
                             >
                                 {x.still_path && (
                                     <img
-                                        src={IMG_URLs.W227H127 + x.still_path}
+                                        src={imageUrls.W227H127 + x.still_path}
                                         className='rounded-xl mb-2 md:mb-0 md:mr-2 self-center max-w-[227px] max-h-[127px]'
                                         alt=''
                                     />
@@ -119,13 +118,13 @@ export function Season() {
                         )
                         ?.map((x, i) => (
                             <a
-                                href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                                href={`${imageUrls.ORIGINAL}${x.file_path}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 key={i}
                             >
                                 <img
-                                    src={`${IMG_URLs.W500}${x.file_path}`}
+                                    src={`${imageUrls.W500}${x.file_path}`}
                                     loading='lazy'
                                     alt=''
                                 />

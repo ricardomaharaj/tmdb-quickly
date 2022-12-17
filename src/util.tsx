@@ -1,4 +1,4 @@
-import { APP_NAME } from './consts'
+import { appName } from './consts'
 
 export function toDateString(date?: string) {
     if (!date) return ''
@@ -22,9 +22,9 @@ export function runtimeCalc(runtime: number) {
 
 export function setTitle(title?: string) {
     if (title) {
-        document.title = `${title} | ${APP_NAME}`
+        document.title = `${title} | ${appName}`
     } else {
-        document.title = APP_NAME
+        document.title = appName
     }
 }
 

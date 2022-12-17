@@ -1,4 +1,4 @@
-import * as Urql from 'urql'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { Search } from './Search'
 import { Movie } from './Movie'
@@ -7,17 +7,17 @@ import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
 
-const url =
+const uri =
     process.env.NODE_ENV === 'production'
         ? 'https://r8r-gql.herokuapp.com/'
         : 'http://localhost:4000/'
 
-const UrqlClient = Urql.createClient({ url })
+const apolloClient = new ApolloClient({ uri, cache: new InMemoryCache() })
 
 export function App() {
     return (
-        <BrowserRouter>
-            <Urql.Provider value={UrqlClient}>
+        <ApolloProvider client={apolloClient}>
+            <BrowserRouter>
                 <div className='container mx-auto'>
                     <div className='flex flex-col m-2 space-y-2'>
                         <Link
@@ -47,7 +47,7 @@ export function App() {
                         </Routes>
                     </div>
                 </div>
-            </Urql.Provider>
-        </BrowserRouter>
+            </BrowserRouter>
+        </ApolloProvider>
     )
 }

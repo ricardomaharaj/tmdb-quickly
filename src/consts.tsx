@@ -1,4 +1,4 @@
-export const IMG_URLs = {
+export const imageUrls = {
     ORIGINAL: 'https://image.tmdb.org/t/p/original',
     W500: 'https://image.tmdb.org/t/p/w500',
     W94H141: 'https://www.themoviedb.org/t/p/w94_and_h141_bestv2',
@@ -6,7 +6,7 @@ export const IMG_URLs = {
     W227H127: 'https://www.themoviedb.org/t/p/w227_and_h127_bestv2'
 }
 
-export const LOAD_SILHOUETTE = (
+export const loadSilhouette = (
     <div className='bg-slate-800 rounded-xl'>
         <div className='flex flex-row p-2 xl:p-10'>
             <div className='bg-slate-700 mr-2 rounded-xl w-[150px] h-[225px]'></div>
@@ -19,4 +19,4 @@ export const LOAD_SILHOUETTE = (
     </div>
 )
 
-export const APP_NAME = 'TMDB Quickly'
+export const appName = 'TMDB Quickly'

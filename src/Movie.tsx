@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { removeVoiceTag, runtimeCalc, setTitle, toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
+import { imageUrls, loadSilhouette } from './consts'
 import { useMovieQuery } from './gql'
 import { Card } from './components/Card'
 
@@ -40,8 +40,7 @@ export function Movie() {
         setParams({ tab, query, page, ...update }, { replace: true })
 
     const { id } = useParams()
-    const [res] = useMovieQuery({ id: id! })
-    const { data, fetching, error } = res
+    const { data, loading, error } = useMovieQuery({ id })
     const movie = data?.movie
 
     setTitle(movie?.title)
@@ -78,7 +77,7 @@ export function Movie() {
         })
         .slice(startPage, endPage)
 
-    if (fetching) return LOAD_SILHOUETTE
+    if (loading) return loadSilhouette
 
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
@@ -87,12 +86,12 @@ export function Movie() {
             <div
                 className='bg-cover bg-center rounded-xl'
                 style={{
-                    backgroundImage: `url(${IMG_URLs.W500}${movie?.backdrop_path})`
+                    backgroundImage: `url(${imageUrls.W500}${movie?.backdrop_path})`
                 }}
             >
                 <div className='p-2 xl:p-10 backdrop-brightness-50 rounded-xl flex flex-row'>
                     <img
-                        src={`${IMG_URLs.W150H225}/${movie?.poster_path}`}
+                        src={`${imageUrls.W150H225}/${movie?.poster_path}`}
                         className='max-w-[150px] max-h-[225px] rounded-xl mr-2'
                         width='150'
                         height='225'
@@ -322,13 +321,13 @@ export function Movie() {
                                 )
                                 ?.map((x, i) => (
                                     <a
-                                        href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                                        href={`${imageUrls.ORIGINAL}${x.file_path}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
                                         key={i}
                                     >
                                         <img
-                                            src={`${IMG_URLs.W500}${x.file_path}`}
+                                            src={`${imageUrls.W500}${x.file_path}`}
                                             loading='lazy'
                                             alt=''
                                         />
@@ -345,13 +344,13 @@ export function Movie() {
                                 )
                                 ?.map((x, i) => (
                                     <a
-                                        href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                                        href={`${imageUrls.ORIGINAL}${x.file_path}`}
                                         target='_blank'
                                         rel='noopener noreferrer'
                                         key={i}
                                     >
                                         <img
-                                            src={`${IMG_URLs.W500}${x.file_path}`}
+                                            src={`${imageUrls.W500}${x.file_path}`}
                                             loading='lazy'
                                             alt=''
                                         />

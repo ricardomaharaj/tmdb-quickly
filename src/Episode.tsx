@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom'
 import { toDateString } from './util'
-import { IMG_URLs, LOAD_SILHOUETTE } from './consts'
+import { imageUrls, loadSilhouette } from './consts'
 import { useEpisodeQuery } from './gql'
 import { Card } from './components/Card'
 
@@ -17,8 +17,11 @@ export function Episode() {
     const tab = params.get('tab') || Tabs.Info
 
     const { id, season_number, episode_number } = useParams()
-    const [res] = useEpisodeQuery({ id, season_number, episode_number })
-    const { data, fetching, error } = res
+    const { data, loading, error } = useEpisodeQuery({
+        id,
+        season_number,
+        episode_number
+    })
     const episode = data?.episode
 
     const replaceSearchParams = (update: any) =>
@@ -34,7 +37,7 @@ export function Episode() {
         return x
     }
 
-    if (fetching) return LOAD_SILHOUETTE
+    if (loading) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
@@ -42,7 +45,7 @@ export function Episode() {
             <div
                 className='bg-cover bg-center rounded-xl'
                 style={{
-                    backgroundImage: `url(${IMG_URLs.W500}${episode?.still_path})`
+                    backgroundImage: `url(${imageUrls.W500}${episode?.still_path})`
                 }}
             >
                 <div className='flex flex-col bg-black bg-opacity-50 space-y-2 rounded-xl p-10 xl:p-20'>
@@ -112,13 +115,13 @@ export function Episode() {
                 <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
                     {episode?.images?.stills?.map((x, i) => (
                         <a
-                            href={`${IMG_URLs.ORIGINAL}${x.file_path}`}
+                            href={`${imageUrls.ORIGINAL}${x.file_path}`}
                             target='_blank'
                             rel='noopener noreferrer'
                             key={i}
                         >
                             <img
-                                src={`${IMG_URLs.W500}${x.file_path}`}
+                                src={`${imageUrls.W500}${x.file_path}`}
                                 loading='lazy'
                                 alt=''
                             />
