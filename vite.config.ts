@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
@@ -8,8 +8,8 @@ export default defineConfig({
         VitePWA({
             manifest: {
                 name: 'TMDB Quickly',
-                short_name: 'TMDB Quickly',
-                description: 'TMDB Quickly',
+                short_name: 'TMDBQ',
+                description: 'A TMDB client using React and PWA',
                 icons: [
                     {
                         src: 'logo16.png',
@@ -33,7 +33,6 @@ export default defineConfig({
                     }
                 ],
                 start_url: '.',
-                display: 'standalone',
                 theme_color: '#000000',
                 background_color: '#000000'
             },
