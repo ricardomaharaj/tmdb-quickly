@@ -22,10 +22,12 @@ export function Search() {
     const replaceSearchParams = (update: any) =>
         setParams({ tab, query, page, ...update }, { replace: true })
 
-    const { data, loading, error } = useSearchQuery({
+    const [res] = useSearchQuery({
         query,
         page: page.toString()
     })
+
+    const { data, fetching, error } = res
 
     let results = data?.search?.results
     const maxPages = data?.search?.total_pages
@@ -84,7 +86,7 @@ export function Search() {
                 ))}
             </div>
             <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                {loading ? (
+                {fetching ? (
                     <>
                         {new Array(9).fill(load_card_silohette).map((x, i) => (
                             <Fragment key={i}>{x}</Fragment>

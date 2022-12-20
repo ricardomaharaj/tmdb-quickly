@@ -18,7 +18,8 @@ export function Season() {
         setParams({ tab, ...update }, { replace: true })
 
     const { id, season_number } = useParams()
-    const { data, loading, error } = useSeasonQuery({ id, season_number })
+    const [res] = useSeasonQuery({ id, season_number })
+    const { data, fetching, error } = res
     const season = data?.season
 
     const generateEpisodeHeader = (episode: {
@@ -36,7 +37,7 @@ export function Season() {
         return x
     }
 
-    if (loading) return loadSilhouette
+    if (fetching) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (

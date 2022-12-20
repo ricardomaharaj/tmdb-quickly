@@ -31,7 +31,8 @@ export function Show() {
         setParams({ tab, query, page, ...update }, { replace: true })
 
     const { id } = useParams()
-    let { data, loading, error } = useShowQuery({ id })
+    const [res] = useShowQuery({ id })
+    const { data, fetching, error } = res
     let show = data?.show
 
     setTitle(show?.name)
@@ -80,7 +81,7 @@ export function Show() {
         })
         ?.slice(startPage, endPage)
 
-    if (loading) return loadSilhouette
+    if (fetching) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (

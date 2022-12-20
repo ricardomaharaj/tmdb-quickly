@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery } from 'urql'
 import { Search } from './types/Search'
 import { Movie } from './types/Movie'
 import { Show } from './types/Show'
@@ -14,14 +14,14 @@ interface SearchQueryVars {
     page: string
 }
 export function useSearchQuery(variables: SearchQueryVars) {
-    return useQuery<SearchQueryRes, SearchQueryVars>(
-        gql`
+    return useQuery<SearchQueryRes, SearchQueryVars>({
+        query: gql`
             query ($query: String, $page: String) {
                 search(query: $query, page: $page)
             }
         `,
-        { variables }
-    )
+        variables
+    })
 }
 
 interface MovieQueryRes {
@@ -31,14 +31,14 @@ interface MovieQueryVars {
     id?: string
 }
 export function useMovieQuery(variables: MovieQueryVars) {
-    return useQuery<MovieQueryRes, MovieQueryVars>(
-        gql`
+    return useQuery<MovieQueryRes, MovieQueryVars>({
+        query: gql`
             query ($id: ID) {
                 movie(id: $id)
             }
         `,
-        { variables }
-    )
+        variables
+    })
 }
 
 interface ShowQueryRes {
@@ -48,14 +48,14 @@ interface ShowQueryVars {
     id?: string
 }
 export function useShowQuery(variables: ShowQueryVars) {
-    return useQuery<ShowQueryRes, ShowQueryVars>(
-        gql`
+    return useQuery<ShowQueryRes, ShowQueryVars>({
+        query: gql`
             query ($id: ID) {
                 show(id: $id)
             }
         `,
-        { variables }
-    )
+        variables
+    })
 }
 
 interface PersonQueryRes {
@@ -65,14 +65,14 @@ interface PersonQueryVars {
     id?: string
 }
 export function usePersonQuery(variables: PersonQueryVars) {
-    return useQuery<PersonQueryRes, PersonQueryVars>(
-        gql`
+    return useQuery<PersonQueryRes, PersonQueryVars>({
+        query: gql`
             query ($id: ID) {
                 person(id: $id)
             }
         `,
-        { variables }
-    )
+        variables
+    })
 }
 
 interface SeasonQueryRes {
@@ -83,14 +83,14 @@ interface SeasonQueryVars {
     season_number?: string
 }
 export function useSeasonQuery(variables: SeasonQueryVars) {
-    return useQuery<SeasonQueryRes, SeasonQueryVars>(
-        gql`
+    return useQuery<SeasonQueryRes, SeasonQueryVars>({
+        query: gql`
             query ($id: ID, $season_number: String) {
                 season(id: $id, season_number: $season_number)
             }
         `,
-        { variables }
-    )
+        variables
+    })
 }
 
 interface EpisodeQueryRes {
@@ -102,8 +102,8 @@ interface EpisodeQueryVars {
     episode_number?: string
 }
 export function useEpisodeQuery(variables: EpisodeQueryVars) {
-    return useQuery<EpisodeQueryRes, EpisodeQueryVars>(
-        gql`
+    return useQuery<EpisodeQueryRes, EpisodeQueryVars>({
+        query: gql`
             query ($id: ID, $season_number: String, $episode_number: String) {
                 episode(
                     id: $id
@@ -112,6 +112,6 @@ export function useEpisodeQuery(variables: EpisodeQueryVars) {
                 )
             }
         `,
-        { variables }
-    )
+        variables
+    })
 }

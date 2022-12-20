@@ -40,7 +40,8 @@ export function Movie() {
         setParams({ tab, query, page, ...update }, { replace: true })
 
     const { id } = useParams()
-    const { data, loading, error } = useMovieQuery({ id })
+    const [res] = useMovieQuery({ id })
+    const { data, fetching, error } = res
     const movie = data?.movie
 
     setTitle(movie?.title)
@@ -77,7 +78,7 @@ export function Movie() {
         })
         .slice(startPage, endPage)
 
-    if (loading) return loadSilhouette
+    if (fetching) return loadSilhouette
 
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>

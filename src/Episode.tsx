@@ -17,11 +17,12 @@ export function Episode() {
     const tab = params.get('tab') || Tabs.Info
 
     const { id, season_number, episode_number } = useParams()
-    const { data, loading, error } = useEpisodeQuery({
+    const [res] = useEpisodeQuery({
         id,
         season_number,
         episode_number
     })
+    const { data, fetching, error } = res
     const episode = data?.episode
 
     const replaceSearchParams = (update: any) =>
@@ -37,7 +38,7 @@ export function Episode() {
         return x
     }
 
-    if (loading) return loadSilhouette
+    if (fetching) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (

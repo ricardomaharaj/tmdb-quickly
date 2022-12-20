@@ -31,7 +31,8 @@ export function Person() {
         )
 
     const { id } = useParams()
-    const { data, loading, error } = usePersonQuery({ id })
+    const [res] = usePersonQuery({ id })
+    const { data, fetching, error } = res
     const person = data?.person
 
     setTitle(person?.name)
@@ -109,7 +110,7 @@ export function Person() {
         )
         .slice(startPage, endPage)
 
-    if (loading) return loadSilhouette
+    if (fetching) return loadSilhouette
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
