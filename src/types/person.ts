@@ -1,4 +1,4 @@
-import { ExternalIDS, Image } from './Shared'
+import { ExternalIDS, Image } from './shared'
 
 export interface Person {
     adult?: boolean

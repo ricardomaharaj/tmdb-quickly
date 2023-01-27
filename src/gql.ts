@@ -1,10 +1,10 @@
 import { gql, useQuery } from 'urql'
-import { Search } from './types/Search'
-import { Movie } from './types/Movie'
-import { Show } from './types/Show'
-import { Person } from './types/Person'
-import { Season } from './types/Season'
-import { Episode } from './types/Episode'
+import { Search } from './types/search'
+import { Movie } from './types/movie'
+import { Show } from './types/show'
+import { Person } from './types/person'
+import { Season } from './types/season'
+import { Episode } from './types/episode'
 
 interface SearchQueryRes {
     search: Search

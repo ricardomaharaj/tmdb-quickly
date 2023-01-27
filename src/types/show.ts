@@ -6,7 +6,7 @@ import {
     ProductionCountry,
     SpokenLanguage,
     VideoResult
-} from './Shared'
+} from './shared'
 
 export interface Show {
     adult?: boolean

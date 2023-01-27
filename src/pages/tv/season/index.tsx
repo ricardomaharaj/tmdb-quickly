@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { runtimeCalc, toDateString } from './util'
-import { imageUrls, loadSilhouette } from './consts'
-import { useSeasonQuery } from './gql'
+import { runtimeCalc, toDateString } from '../../../util'
+import { imageUrls, loadSilhouette } from '../../../consts'
+import { useSeasonQuery } from '../../../gql'
 
 enum Tabs {
     Episodes = 'EPISODES',
@@ -48,7 +48,7 @@ export function Season() {
                     backgroundImage: `url(${imageUrls.W500}${season?.poster_path})`
                 }}
             >
-                <div className='flex flex-row p-2 xl:p-10 rounded-xl backdrop-brightness-50'>
+                <div className='row p-2 xl:p-10 rounded-xl backdrop-brightness-50'>
                     {season?.poster_path && (
                         <img
                             src={`${imageUrls.W150H225}${season.poster_path}`}
@@ -58,7 +58,7 @@ export function Season() {
                             alt=''
                         />
                     )}
-                    <div className='flex flex-col space-y-1'>
+                    <div className='col space-y-1'>
                         {season?.name && <div>{season.name}</div>}
                         {season?.episodes?.length && (
                             <div>{`${season.episodes.length} Episodes`}</div>
@@ -69,7 +69,7 @@ export function Season() {
                     </div>
                 </div>
             </div>
-            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
+            <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
                 {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${
@@ -84,10 +84,10 @@ export function Season() {
             </div>
             {tab === Tabs.Episodes && (
                 <>
-                    <div className='flex flex-col space-y-2'>
+                    <div className='col space-y-2'>
                         {season?.episodes?.map((x, i) => (
                             <Link
-                                className={`flex flex-col md:flex-row rounded-xl p-2 bg-slate-800 hover:bg-slate-700`}
+                                className={`col md:flex-row rounded-xl p-2 bg-slate-800 hover:bg-slate-700`}
                                 to={`episode/${x.episode_number}`}
                                 key={i}
                             >
@@ -98,7 +98,7 @@ export function Season() {
                                         alt=''
                                     />
                                 )}
-                                <div className='flex flex-col'>
+                                <div className='col'>
                                     <div className='text-center md:text-left'>
                                         {generateEpisodeHeader(x)}
                                     </div>
@@ -137,7 +137,7 @@ export function Season() {
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
                     {season?.videos?.results?.map((x, i) => (
                         <div
-                            className='flex flex-col bg-slate-800 rounded-xl hover:bg-slate-700'
+                            className='col bg-slate-800 rounded-xl hover:bg-slate-700'
                             key={i}
                         >
                             <a
@@ -152,7 +152,7 @@ export function Season() {
                                     alt=''
                                 />
                             </a>
-                            <div className='flex flex-col m-2'>
+                            <div className='col m-2'>
                                 <div>{x.name}</div>
                                 <div className='text-slate-400'>
                                     {toDateString(x.published_at!)}

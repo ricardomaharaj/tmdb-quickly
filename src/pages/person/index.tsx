@@ -1,8 +1,8 @@
 import { useParams, useSearchParams } from 'react-router-dom'
-import { setTitle, toDateString } from './util'
-import { imageUrls, loadSilhouette } from './consts'
-import { usePersonQuery } from './gql'
-import { Card } from './components/Card'
+import { setTitle, toDateString } from '../../util'
+import { imageUrls, loadSilhouette } from '../../consts'
+import { usePersonQuery } from '../../gql'
+import { Card } from '../../comps/card'
 
 enum Tabs {
     Bio = 'BIO',
@@ -115,7 +115,7 @@ export function Person() {
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
         <>
-            <div className='flex flex-row bg-slate-800 rounded-xl p-2'>
+            <div className='row bg-slate-800 rounded-xl p-2'>
                 {person?.profile_path && (
                     <img
                         src={`${imageUrls.W150H225}${person?.profile_path}`}
@@ -125,7 +125,7 @@ export function Person() {
                         alt=''
                     />
                 )}
-                <div className='flex flex-col space-y-1'>
+                <div className='col space-y-1'>
                     <div>{person?.name}</div>
                     {person?.birthday && (
                         <div>{`Born: ${toDateString(person.birthday)}`}</div>
@@ -146,7 +146,7 @@ export function Person() {
                         )}
                 </div>
             </div>
-            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
+            <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
                 {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${
@@ -170,7 +170,7 @@ export function Person() {
             )}
             {[Tabs.Cast, Tabs.Crew].includes(tab as Tabs) && (
                 <>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='row space-x-2'>
                         {Object.values(CreditsTab).map((x, i) => (
                             <button
                                 className={`${
@@ -241,7 +241,7 @@ export function Person() {
                                 />
                             ))}
                     </div>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='row space-x-2'>
                         <button
                             className={`${
                                 firstPage

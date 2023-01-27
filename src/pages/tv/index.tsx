@@ -1,24 +1,15 @@
 import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { removeVoiceTag, runtimeCalc, setTitle, toDateString } from './util'
-import { imageUrls, loadSilhouette } from './consts'
-import { useMovieQuery } from './gql'
-import { Card } from './components/Card'
-
-const RELEASE_TYPES = [
-    '',
-    'Premiere',
-    'Theatrical (limited)',
-    'Theatrical',
-    'Digital',
-    'Physical',
-    'TV'
-]
+import { removeVoiceTag, runtimeCalc, setTitle, toDateString } from '../../util'
+import { imageUrls, loadSilhouette } from '../../consts'
+import { useShowQuery } from '../../gql'
+import { Card } from '../../comps/card'
 
 enum Tabs {
     Info = 'INFO',
     Cast = 'CAST',
     Crew = 'CREW',
+    Seasons = 'SEASONS',
     Images = 'IMAGES',
     Videos = 'VIDEOS'
 }
@@ -28,7 +19,7 @@ enum ImageTabs {
     Backdrops = 'BACKDROPS'
 }
 
-export function Movie() {
+export function Show() {
     const [imageTab, setImageTab] = useState('POSTERS')
     const [params, setParams] = useSearchParams()
 
@@ -40,15 +31,15 @@ export function Movie() {
         setParams({ tab, query, page, ...update }, { replace: true })
 
     const { id } = useParams()
-    const [res] = useMovieQuery({ id })
+    const [res] = useShowQuery({ id })
     const { data, fetching, error } = res
-    const movie = data?.movie
+    let show = data?.show
 
-    setTitle(movie?.title)
+    setTitle(show?.name)
 
-    const releaseDates = movie?.release_dates?.results?.filter(
-        (x) => x?.iso_3166_1 === 'US'
-    )[0]?.release_dates
+    const startYear = show?.first_air_date?.substring(0, 4)
+    const endYear = show?.last_air_date?.substring(0, 4)
+    const showOver = show?.status === 'Ended' || show?.status === 'Canceled'
 
     const firstPage = page === 1
 
@@ -56,30 +47,41 @@ export function Movie() {
     const startPage = (page - 1) * perPage
     const endPage = page * perPage
 
-    const cast = movie?.credits?.cast
+    const cast = show?.aggregate_credits?.cast
         ?.filter((x) => {
-            const name = x.name?.toLowerCase()
-            const character = x.character?.toLowerCase()
             const q = query.toLowerCase()
-            if (name?.includes(q)) return true
-            if (character?.includes(q)) return true
-            return false
-        })
-        .slice(startPage, endPage)
 
-    const crew = movie?.credits?.crew
-        ?.filter((x) => {
-            const name = x.name?.toLowerCase()
-            const job = x.job?.toLowerCase()
-            const q = query.toLowerCase()
+            // forEach does not work in this case
+            for (let i = 0; i < x?.roles?.length!; i++) {
+                const character = x?.roles?.[i]?.character?.toLowerCase()
+                if (character?.includes(q)) return true
+            }
+
+            const name = x?.name?.toLowerCase()
             if (name?.includes(q)) return true
-            if (job?.includes(q)) return true
+
             return false
         })
-        .slice(startPage, endPage)
+        ?.slice(startPage, endPage)
+
+    const crew = show?.aggregate_credits?.crew
+        ?.filter((x) => {
+            const q = query.toLowerCase()
+
+            // forEach does not work in this case
+            for (let i = 0; i < x?.jobs?.length!; i++) {
+                const job = x?.jobs?.[i]?.job?.toLowerCase()
+                if (job?.includes(q)) return true
+            }
+
+            const name = x?.name?.toLowerCase()
+            if (name?.includes(q)) return true
+
+            return false
+        })
+        ?.slice(startPage, endPage)
 
     if (fetching) return loadSilhouette
-
     if (error)
         return <div className='bg-red-700 rounded-xl p-4'>{error.message}</div>
     return (
@@ -87,31 +89,43 @@ export function Movie() {
             <div
                 className='bg-cover bg-center rounded-xl'
                 style={{
-                    backgroundImage: `url(${imageUrls.W500}${movie?.backdrop_path})`
+                    backgroundImage: `url(${imageUrls.W500}${show?.backdrop_path})`
                 }}
             >
-                <div className='p-2 xl:p-10 backdrop-brightness-50 rounded-xl flex flex-row'>
-                    <img
-                        src={`${imageUrls.W150H225}/${movie?.poster_path}`}
-                        className='max-w-[150px] max-h-[225px] rounded-xl mr-2'
-                        width='150'
-                        height='225'
-                        alt=''
-                    />
+                <div className='row p-2 xl:p-10 rounded-xl backdrop-brightness-50'>
+                    {show?.poster_path && (
+                        <img
+                            src={`${imageUrls.W150H225}${show.poster_path}`}
+                            className='rounded-xl mr-2 max-w-[150px] max-h-[225px]'
+                            width='150'
+                            height='225'
+                            alt=''
+                        />
+                    )}
                     <div className='space-y-1'>
-                        {movie?.release_date && (
-                            <div>{movie.release_date.substring(0, 4)}</div>
+                        <div>
+                            {startYear && <span>{startYear}</span>}
+                            {endYear && (
+                                <>
+                                    {showOver && startYear !== endYear && (
+                                        <span>{` - ${endYear}`}</span>
+                                    )}
+                                </>
+                            )}
+                            {show?.status === 'Returning Series' && (
+                                <span>{' - '}</span>
+                            )}
+                        </div>
+                        {show?.name && (
+                            <div className='font-semibold'>{show.name}</div>
                         )}
-                        {movie?.title && (
-                            <div className='font-bold'>{movie.title}</div>
-                        )}
-                        {movie?.tagline && (
-                            <div className='text-sm'>{movie.tagline}</div>
+                        {show?.tagline && (
+                            <div className='text-sm'>{show?.tagline}</div>
                         )}
                     </div>
                 </div>
             </div>
-            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
+            <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
                 {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${
@@ -126,79 +140,64 @@ export function Movie() {
             </div>
             {tab === Tabs.Info && (
                 <>
-                    {movie?.overview && (
+                    {show?.overview && (
                         <div className='bg-slate-800 rounded-xl p-4'>
-                            {movie.overview}
+                            {show?.overview}
                         </div>
                     )}
                     <div className='bg-slate-800 rounded-xl p-4'>
-                        {movie?.status && <div>Status: {movie?.status}</div>}
-                        {movie?.runtime
-                            ? movie.runtime > 0 && (
+                        {show?.status && <div>{`Status: ${show.status}`}</div>}
+                        {show?.type && <div>{`Show Type: ${show.type}`}</div>}
+                        {show?.episode_run_time
+                            ? show.episode_run_time[0] > 0 && (
                                   <div>
-                                      {`Runtime: ${runtimeCalc(movie.runtime)}`}
+                                      {`Runtime: ${runtimeCalc(
+                                          show.episode_run_time[0]
+                                      )}`}
                                   </div>
                               )
                             : null}
-                        {movie?.budget
-                            ? movie.budget > 0 && (
+                        {show?.number_of_seasons
+                            ? show.number_of_seasons > 0 && (
+                                  <div>{`Seasons: ${show?.number_of_seasons}`}</div>
+                              )
+                            : null}
+                        {show?.number_of_episodes
+                            ? show.number_of_episodes > 0 && (
                                   <div>
-                                      {`Budget: \$${movie.budget.toLocaleString()}`}
+                                      {`Episodes: ${show?.number_of_episodes}`}
                                   </div>
                               )
                             : null}
-                        {movie?.revenue
-                            ? movie.revenue > 0 && (
-                                  <div>
-                                      {`Revenue: \$${movie.revenue.toLocaleString()}`}
-                                  </div>
-                              )
-                            : null}
-                        {movie?.budget && movie.revenue
-                            ? movie.budget > 0 &&
-                              movie.revenue > 0 && (
-                                  <div>
-                                      {`Earnings: \$${(
-                                          movie.revenue - movie.budget
-                                      ).toLocaleString()}`}
-                                  </div>
-                              )
-                            : null}
-                        {movie?.original_language && (
-                            <div>
-                                {`Original Language: ${movie?.original_language}`}
-                            </div>
-                        )}
-                        {movie?.original_title && (
-                            <div>{`Original Title: ${movie?.original_title}`}</div>
-                        )}
-                        {movie?.imdb_id && (
+                        {show?.external_ids?.imdb_id && (
                             <div>
                                 <a
-                                    className='underline'
+                                    href={`https://www.imdb.com/title/${show.external_ids.imdb_id}`}
                                     target='_blank'
                                     rel='noopener noreferrer'
-                                    href={`https://www.imdb.com/title/${movie.imdb_id}`}
+                                    className='underline'
                                 >
                                     IMDB
                                 </a>
-                                <span>{` ID: ${movie.imdb_id}`}</span>
+                                <span>
+                                    {` ID: ${show.external_ids.imdb_id}`}
+                                </span>
                             </div>
                         )}
                         <div>
                             <a
-                                className='underline'
+                                href={`https://www.themoviedb.org/tv/${show?.id}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                href={`https://www.themoviedb.org/movie/${movie?.id}`}
+                                className='underline'
                             >
                                 TMDB
                             </a>
                             <span>{` ID: ${id}`}</span>
                         </div>
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                        {movie?.genres?.map((x, i) => (
+                    <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
+                        {show?.genres?.map((x, i) => (
                             <div
                                 className='bg-slate-800 rounded-xl p-2'
                                 key={i}
@@ -207,21 +206,16 @@ export function Movie() {
                             </div>
                         ))}
                     </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                        {releaseDates?.map((x, i) => (
+                    <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
+                        {show?.networks?.map((x, i) => (
                             <div
                                 className='bg-slate-800 rounded-xl p-2 text-sm'
                                 key={i}
                             >
-                                {x.type && <div>{RELEASE_TYPES[x.type]}</div>}
-                                {x.release_date && (
-                                    <div>{toDateString(x.release_date)}</div>
-                                )}
+                                {x.name}
                             </div>
                         ))}
-                    </div>
-                    <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
-                        {movie?.production_companies?.map((x, i) => (
+                        {show?.production_companies?.map((x, i) => (
                             <div
                                 className='bg-slate-800 rounded-xl p-2 text-sm'
                                 key={i}
@@ -252,7 +246,15 @@ export function Movie() {
                                 <Card
                                     image={x.profile_path}
                                     primary={x.name}
-                                    secondary={removeVoiceTag(x.character!)}
+                                    secondary={x?.roles
+                                        ?.map(
+                                            (role) =>
+                                                `${removeVoiceTag(
+                                                    role.character!
+                                                )} (${role.episode_count} Eps)`
+                                        )
+                                        .slice(0, 3)
+                                        .join(' | ')}
                                     variant='person'
                                     href={`/person/${x.id}`}
                                     key={i}
@@ -263,14 +265,20 @@ export function Movie() {
                                 <Card
                                     image={x.profile_path}
                                     primary={x.name}
-                                    secondary={x.job}
+                                    secondary={x.jobs
+                                        ?.map(
+                                            (job) =>
+                                                `${job.job} (${job.episode_count} Eps)`
+                                        )
+                                        .slice(0, 3)
+                                        .join(' | ')}
                                     variant='person'
                                     href={`/person/${x.id}`}
                                     key={i}
                                 />
                             ))}
                     </div>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='row space-x-2'>
                         <button
                             className={`${
                                 firstPage
@@ -296,9 +304,31 @@ export function Movie() {
                     </div>
                 </>
             )}
+            {tab === Tabs.Seasons && (
+                <>
+                    <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
+                        {show?.seasons &&
+                            show?.seasons.map((x, i) => (
+                                <Card
+                                    image={x.poster_path}
+                                    primary={x.name}
+                                    secondary={`${x.episode_count} Episodes`}
+                                    tertiary={
+                                        x.air_date
+                                            ? toDateString(x.air_date)
+                                            : ''
+                                    }
+                                    variant='tv'
+                                    href={`season/${x.season_number}`}
+                                    key={i}
+                                />
+                            ))}
+                    </div>
+                </>
+            )}
             {tab === Tabs.Images && (
                 <>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='row space-x-2'>
                         {Object.values(ImageTabs).map((x, i) => (
                             <button
                                 className={`${
@@ -315,7 +345,7 @@ export function Movie() {
                     </div>
                     {imageTab === ImageTabs.Posters && (
                         <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
-                            {movie?.images?.posters
+                            {show?.images?.posters
                                 ?.filter(
                                     ({ iso_639_1 }) =>
                                         iso_639_1 === 'en' || !iso_639_1
@@ -338,7 +368,7 @@ export function Movie() {
                     )}
                     {imageTab === ImageTabs.Backdrops && (
                         <div className='grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
-                            {movie?.images?.backdrops
+                            {show?.images?.backdrops
                                 ?.filter(
                                     ({ iso_639_1 }) =>
                                         iso_639_1 === 'en' || !iso_639_1
@@ -363,15 +393,15 @@ export function Movie() {
             )}
             {tab === Tabs.Videos && (
                 <div className='grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4'>
-                    {movie?.videos?.results?.map((x, i) => (
+                    {show?.videos?.results?.map((x, i) => (
                         <div
-                            className='flex flex-col bg-slate-800 rounded-xl hover:bg-slate-700'
+                            className='col bg-slate-800 rounded-xl hover:bg-slate-700'
                             key={i}
                         >
                             <a
+                                href={`https://www.youtube.com/watch?v=${x.key}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
-                                href={`https://www.youtube.com/watch?v=${x.key}`}
                             >
                                 <img
                                     src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
@@ -379,15 +409,15 @@ export function Movie() {
                                     loading='lazy'
                                     alt=''
                                 />
-                                <div className='flex flex-col m-2'>
-                                    <span>{x.name}</span>
-                                    {x.published_at && (
-                                        <span className='text-slate-400'>
-                                            {toDateString(x.published_at)}
-                                        </span>
-                                    )}
-                                </div>
                             </a>
+                            <div className='col m-2'>
+                                <span>{x.name}</span>
+                                {x.published_at && (
+                                    <span className='text-slate-400'>
+                                        {toDateString(x.published_at)}
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>

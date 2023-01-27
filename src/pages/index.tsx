@@ -1,8 +1,8 @@
 import { useSearchParams } from 'react-router-dom'
 import { Fragment } from 'react'
-import { useSearchQuery } from './gql'
-import { overviewTrimmer, setTitle, toDateString } from './util'
-import { Card } from './components/Card'
+import { useSearchQuery } from '../gql'
+import { overviewTrimmer, setTitle, toDateString } from '../util'
+import { Card } from '../comps/card'
 
 enum Tabs {
     Movies = 'movie',
@@ -10,7 +10,7 @@ enum Tabs {
     People = 'person'
 }
 
-export function Search() {
+export function Home() {
     setTitle()
 
     const [params, setParams] = useSearchParams()
@@ -36,9 +36,9 @@ export function Search() {
 
     const load_card_silohette = (
         <>
-            <div className='flex flex-row bg-slate-800 rounded-xl'>
+            <div className='row bg-slate-800 rounded-xl'>
                 <div className='bg-slate-700 rounded-xl m-2 w-[94px] h-[141px]'></div>
-                <div className='flex flex-col mt-2 space-y-2'>
+                <div className='col mt-2 space-y-2'>
                     <div className='bg-slate-700 rounded-xl p-2 w-[150px]'></div>
                     <div className='bg-slate-700 rounded-xl p-2 w-[100px]'></div>
                     <div className='bg-slate-700 rounded-xl p-2 w-[50px]'></div>
@@ -72,7 +72,7 @@ export function Search() {
                     }
                 }}
             />
-            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
+            <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
                 {TABS.map((x, i) => (
                     <button
                         className={`${
@@ -119,7 +119,7 @@ export function Search() {
                 )}
             </div>
             {query && (
-                <div className='flex flex-row space-x-2'>
+                <div className='row space-x-2'>
                     <button
                         className={`${
                             firstPage

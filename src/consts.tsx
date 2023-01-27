@@ -8,9 +8,9 @@ export const imageUrls = {
 
 export const loadSilhouette = (
     <div className='bg-slate-800 rounded-xl'>
-        <div className='flex flex-row p-2 xl:p-10'>
+        <div className='row p-2 xl:p-10'>
             <div className='bg-slate-700 mr-2 rounded-xl w-[150px] h-[225px]'></div>
-            <div className='flex flex-col space-y-2'>
+            <div className='col space-y-2'>
                 <div className='bg-slate-700 w-[150px] p-2 rounded-xl' />
                 <div className='bg-slate-700 w-[100px] p-2 rounded-xl' />
                 <div className='bg-slate-700 w-[50px]  p-2 rounded-xl' />

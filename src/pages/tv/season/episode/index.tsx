@@ -1,8 +1,8 @@
 import { useParams, useSearchParams } from 'react-router-dom'
-import { toDateString } from './util'
-import { imageUrls, loadSilhouette } from './consts'
-import { useEpisodeQuery } from './gql'
-import { Card } from './components/Card'
+import { toDateString } from '../../../../util'
+import { imageUrls, loadSilhouette } from '../../../../consts'
+import { useEpisodeQuery } from '../../../../gql'
+import { Card } from '../../../../comps/card'
 
 enum Tabs {
     Info = 'INFO',
@@ -49,7 +49,7 @@ export function Episode() {
                     backgroundImage: `url(${imageUrls.W500}${episode?.still_path})`
                 }}
             >
-                <div className='flex flex-col bg-black bg-opacity-50 space-y-2 rounded-xl p-10 xl:p-20'>
+                <div className='col bg-black bg-opacity-50 space-y-2 rounded-xl p-10 xl:p-20'>
                     <div>
                         {generateEpisodeShorthand(
                             episode?.season_number,
@@ -62,7 +62,7 @@ export function Episode() {
                     </div>
                 </div>
             </div>
-            <div className='flex flex-row space-x-2 overflow-scroll md:overflow-hidden'>
+            <div className='row space-x-2 overflow-scroll md:overflow-hidden'>
                 {Object.values(Tabs).map((x, i) => (
                     <button
                         className={`${

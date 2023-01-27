@@ -8,6 +8,18 @@
     font-family: 'Ubuntu', sans-serif;
 }
 
+.row {
+    @apply flex flex-row;
+}
+
+.col {
+    @apply flex flex-col;
+}
+
 body {
-    @apply bg-slate-900 text-white;
+    @apply bg-slate-900 text-white container mx-auto;
+}
+
+#root {
+    @apply col m-2 space-y-2;
 }

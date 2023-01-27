@@ -1,33 +1,20 @@
-import { Image, VideoResult } from './Shared'
+import { Image } from './shared'
 
-export interface Season {
-    _id?: string
+export interface Episode {
     air_date?: string
-    episodes?: Episode[]
-    name?: string
-    overview?: string
-    id?: number
-    poster_path?: string
-    season_number?: number
-    images?: Images
-    videos?: Videos
-}
-
-interface Episode {
-    air_date?: string
+    crew?: Credit[]
     episode_number?: number
-    id?: number
+    guest_stars?: Credit[]
     name?: string
     overview?: string
+    id?: number
     production_code?: string
     runtime?: number
     season_number?: number
-    show_id?: number
     still_path?: string
     vote_average?: number
     vote_count?: number
-    crew?: Credit[]
-    guest_stars?: Credit[]
+    images?: Images
 }
 
 interface Credit {
@@ -47,9 +34,5 @@ interface Credit {
 }
 
 interface Images {
-    posters?: Image[]
-}
-
-interface Videos {
-    results?: VideoResult[]
+    stills?: Image[]
 }

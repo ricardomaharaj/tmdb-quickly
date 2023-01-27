@@ -1,5 +1,5 @@
-import { Poster } from './Poster'
-import { Filler } from './Filler'
+import { Poster } from './poster'
+import { Filler } from './filler'
 import { Link } from 'react-router-dom'
 
 type Props = {
@@ -16,12 +16,12 @@ export function Card(props: Props) {
     return (
         <Link
             to={href || '/'}
-            className='flex flex-row bg-slate-800 hover:bg-slate-700 rounded-xl p-2'
+            className='row bg-slate-800 hover:bg-slate-700 rounded-xl p-2'
         >
-            <div className='flex flex-col'>
+            <div className='col'>
                 {image ? <Poster src={image} /> : <Filler variant={variant} />}
             </div>
-            <div className='flex flex-col'>
+            <div className='col'>
                 {primary && <div>{primary}</div>}
                 {tertiary && <div className='text-slate-400'>{tertiary}</div>}
                 {secondary && <div className='text-slate-400'>{secondary}</div>}
