@@ -18,7 +18,6 @@ export function Search() {
 
   const tab = params.get('tab') || Tabs.Movies
   const query = params.get('query') || ''
-  const year = parseInt(params.get('year') || '0')
   const page = parseInt(params.get('page') || '1')
 
   const replaceSearchParams = (update: any) =>
