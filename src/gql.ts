@@ -7,111 +7,111 @@ import { Season } from './types/season'
 import { Episode } from './types/episode'
 
 interface SearchQueryRes {
-    search: Search
+  search: Search
 }
 interface SearchQueryVars {
-    query: string
-    page: string
+  query: string
+  page: string
 }
 export function useSearchQuery(variables: SearchQueryVars) {
-    return useQuery<SearchQueryRes, SearchQueryVars>({
-        query: gql`
-            query ($query: String, $page: String) {
-                search(query: $query, page: $page)
-            }
-        `,
-        variables
-    })
+  return useQuery<SearchQueryRes, SearchQueryVars>({
+    query: gql`
+      query ($query: String, $page: String) {
+        search(query: $query, page: $page)
+      }
+    `,
+    variables
+  })
 }
 
 interface MovieQueryRes {
-    movie: Movie
+  movie: Movie
 }
 interface MovieQueryVars {
-    id?: string
+  id?: string
 }
 export function useMovieQuery(variables: MovieQueryVars) {
-    return useQuery<MovieQueryRes, MovieQueryVars>({
-        query: gql`
-            query ($id: ID) {
-                movie(id: $id)
-            }
-        `,
-        variables
-    })
+  return useQuery<MovieQueryRes, MovieQueryVars>({
+    query: gql`
+      query ($id: ID) {
+        movie(id: $id)
+      }
+    `,
+    variables
+  })
 }
 
 interface ShowQueryRes {
-    show: Show
+  show: Show
 }
 interface ShowQueryVars {
-    id?: string
+  id?: string
 }
 export function useShowQuery(variables: ShowQueryVars) {
-    return useQuery<ShowQueryRes, ShowQueryVars>({
-        query: gql`
-            query ($id: ID) {
-                show(id: $id)
-            }
-        `,
-        variables
-    })
+  return useQuery<ShowQueryRes, ShowQueryVars>({
+    query: gql`
+      query ($id: ID) {
+        show(id: $id)
+      }
+    `,
+    variables
+  })
 }
 
 interface PersonQueryRes {
-    person: Person
+  person: Person
 }
 interface PersonQueryVars {
-    id?: string
+  id?: string
 }
 export function usePersonQuery(variables: PersonQueryVars) {
-    return useQuery<PersonQueryRes, PersonQueryVars>({
-        query: gql`
-            query ($id: ID) {
-                person(id: $id)
-            }
-        `,
-        variables
-    })
+  return useQuery<PersonQueryRes, PersonQueryVars>({
+    query: gql`
+      query ($id: ID) {
+        person(id: $id)
+      }
+    `,
+    variables
+  })
 }
 
 interface SeasonQueryRes {
-    season: Season
+  season: Season
 }
 interface SeasonQueryVars {
-    id?: string
-    season_number?: string
+  id?: string
+  season_number?: string
 }
 export function useSeasonQuery(variables: SeasonQueryVars) {
-    return useQuery<SeasonQueryRes, SeasonQueryVars>({
-        query: gql`
-            query ($id: ID, $season_number: String) {
-                season(id: $id, season_number: $season_number)
-            }
-        `,
-        variables
-    })
+  return useQuery<SeasonQueryRes, SeasonQueryVars>({
+    query: gql`
+      query ($id: ID, $season_number: String) {
+        season(id: $id, season_number: $season_number)
+      }
+    `,
+    variables
+  })
 }
 
 interface EpisodeQueryRes {
-    episode: Episode
+  episode: Episode
 }
 interface EpisodeQueryVars {
-    id?: string
-    season_number?: string
-    episode_number?: string
+  id?: string
+  season_number?: string
+  episode_number?: string
 }
 export function useEpisodeQuery(variables: EpisodeQueryVars) {
-    return useQuery<EpisodeQueryRes, EpisodeQueryVars>({
-        query: gql`
-            query ($id: ID, $season_number: String, $episode_number: String) {
-                episode(
-                    id: $id
-                    season_number: $season_number
-                    episode_number: $episode_number
-                )
-            }
-        `,
-        variables
-    })
+  return useQuery<EpisodeQueryRes, EpisodeQueryVars>({
+    query: gql`
+      query ($id: ID, $season_number: String, $episode_number: String) {
+        episode(
+          id: $id
+          season_number: $season_number
+          episode_number: $episode_number
+        )
+      }
+    `,
+    variables
+  })
 }

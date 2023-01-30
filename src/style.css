@@ -5,21 +5,65 @@
 @tailwind utilities;
 
 * {
-    font-family: 'Ubuntu', sans-serif;
+  font-family: 'Ubuntu', sans-serif;
 }
 
-.row {
-    @apply flex flex-row;
-}
-
-.col {
-    @apply flex flex-col;
-}
-
-body {
-    @apply bg-slate-900 text-white container mx-auto;
-}
-
-#root {
+@layer base {
+  body {
+    @apply container mx-auto bg-slate-900 text-white;
+  }
+  #root {
     @apply col m-2 space-y-2;
+  }
+  button {
+    @apply bg-slate-800 p-2 rounded-xl hover:bg-slate-600 disabled:bg-slate-900 disabled:text-slate-600 disabled:hover:bg-slate-900;
+  }
+  a {
+    @apply bg-slate-800 p-2 rounded-xl hover:bg-slate-700;
+  }
+  input {
+    @apply bg-slate-800 p-2 rounded-xl outline-none;
+  }
+}
+
+@layer components {
+  .blur-bg {
+    @apply row p-2 rounded-xl backdrop-brightness-50 backdrop-blur-sm md:backdrop-blur xl:p-10;
+  }
+  .bubble {
+    @apply bg-slate-800 p-4 rounded-xl;
+  }
+  .tag {
+    @apply bg-slate-800 p-2 rounded-xl;
+  }
+  .grid123 {
+    @apply grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3;
+  }
+  .grid234 {
+    @apply grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4;
+  }
+  .scroll-row {
+    @apply row space-x-2 overflow-scroll md:overflow-hidden;
+  }
+  .sel {
+    @apply bg-slate-700;
+  }
+  .subtext {
+    @apply text-slate-400;
+  }
+  .err {
+    @apply bg-red-700 p-4 rounded-xl;
+  }
+  .plain {
+    @apply bg-inherit p-0 rounded-none hover:bg-inherit;
+  }
+}
+
+@layer utilities {
+  .row {
+    @apply flex flex-row;
+  }
+  .col {
+    @apply flex flex-col;
+  }
 }
