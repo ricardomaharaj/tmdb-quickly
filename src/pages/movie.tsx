@@ -148,7 +148,7 @@ export function Movie() {
             {movie?.imdb_id && (
               <div>
                 <a
-                  className='underline'
+                  className='plain font-bold'
                   target='_blank'
                   rel='noopener noreferrer'
                   href={`https://www.imdb.com/title/${movie.imdb_id}`}
@@ -160,7 +160,7 @@ export function Movie() {
             )}
             <div>
               <a
-                className='underline'
+                className='plain font-bold'
                 target='_blank'
                 rel='noopener noreferrer'
                 href={`https://www.themoviedb.org/movie/${movie?.id}`}

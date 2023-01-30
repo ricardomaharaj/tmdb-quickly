@@ -168,7 +168,7 @@ export function Show() {
                   href={`https://www.imdb.com/title/${show.external_ids.imdb_id}`}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='underline'
+                  className='plain font-bold'
                 >
                   IMDB
                 </a>
@@ -180,7 +180,7 @@ export function Show() {
                 href={`https://www.themoviedb.org/tv/${show?.id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='underline'
+                className='plain font-bold'
               >
                 TMDB
               </a>
