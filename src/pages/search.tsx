@@ -49,7 +49,7 @@ export function Search() {
     <>
       <input
         type='text'
-        className='text-center text-xl p-3'
+        className='input p-3 text-center text-xl'
         id='query'
         placeholder='SEARCH'
         defaultValue={query}
@@ -61,10 +61,10 @@ export function Search() {
           }
         }}
       />
-      <div className='scroll-row'>
+      <div className='row scroll-hide space-x-2'>
         {TABS.map((x, i) => (
           <button
-            className={`${tab === x.val && 'sel'}`}
+            className={`btn ${tab === x.val && 'sel'}`}
             onClick={() => replaceSearchParams({ tab: x.val })}
             key={i}
           >
@@ -107,8 +107,9 @@ export function Search() {
         )}
       </div>
       {query && (
-        <div className='scroll-row'>
+        <div className='row scroll-hide space-x-2'>
           <button
+            className='btn'
             disabled={firstPage}
             onClick={() => replaceSearchParams({ page: page - 1 })}
           >
@@ -116,6 +117,7 @@ export function Search() {
           </button>
           <div className='p-2'>{page}</div>
           <button
+            className='btn'
             disabled={lastPage}
             onClick={() => replaceSearchParams({ page: page + 1 })}
           >

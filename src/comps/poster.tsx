@@ -10,7 +10,7 @@ export function Poster(props: Props) {
   return (
     <img
       src={`${imageUrls.W94H141}${src}`}
-      className='rounded-xl mr-2 max-w-[94px] max-h-[141px]'
+      className='mr-2 max-h-[141px] max-w-[94px] rounded-xl'
       loading='lazy'
       width={94}
       height={141}

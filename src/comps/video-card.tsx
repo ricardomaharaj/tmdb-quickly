@@ -15,7 +15,7 @@ export function VideoCard(props: Props) {
       href={`https://www.youtube.com/watch?v=${video.key}`}
       target='_blank'
       rel='noopener noreferrer'
-      className='col p-0'
+      className='link col p-0'
     >
       <img
         src={`https://i.ytimg.com/vi/${video.key}/hqdefault.jpg`}

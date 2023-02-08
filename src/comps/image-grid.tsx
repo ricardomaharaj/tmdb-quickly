@@ -29,7 +29,7 @@ export function ImageGrid(props: Props) {
               href={`${imageUrls.ORIGINAL}${x.file_path}`}
               target='_blank'
               rel='noopener noreferrer'
-              className='bg-slate-900 hover:bg-slate-900 p-0'
+              className='bg-slate-900 p-0 hover:bg-slate-900'
               key={i}
             >
               <img

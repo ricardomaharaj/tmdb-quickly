@@ -8,25 +8,25 @@ export const imageUrls = {
 }
 
 export const loadSilhouette = (
-  <div className='bg-slate-800 rounded-xl'>
+  <div className='rounded-xl bg-slate-800'>
     <div className='row p-2 xl:p-10'>
-      <div className='bg-slate-700 rounded-xl mr-2 w-[94px] h-[141px] md:w-[150px] md:h-[225px]'></div>
+      <div className='mr-2 h-[141px] w-[94px] rounded-xl bg-slate-700 md:h-[225px] md:w-[150px]'></div>
       <div className='col space-y-2'>
-        <div className='bg-slate-700 w-[150px] p-2 rounded-xl' />
-        <div className='bg-slate-700 w-[100px] p-2 rounded-xl' />
-        <div className='bg-slate-700 w-[50px]  p-2 rounded-xl' />
+        <div className='w-[150px] rounded-xl bg-slate-700 p-2' />
+        <div className='w-[100px] rounded-xl bg-slate-700 p-2' />
+        <div className='w-[50px] rounded-xl  bg-slate-700 p-2' />
       </div>
     </div>
   </div>
 )
 
 export const posterCardSilhouette = (
-  <div className='row bg-slate-800 rounded-xl'>
-    <div className='bg-slate-700 rounded-xl m-2 w-[94px] h-[141px]'></div>
+  <div className='row rounded-xl bg-slate-800'>
+    <div className='m-2 h-[141px] w-[94px] rounded-xl bg-slate-700'></div>
     <div className='col mt-2 space-y-2'>
-      <div className='bg-slate-700 rounded-xl p-2 w-[150px]'></div>
-      <div className='bg-slate-700 rounded-xl p-2 w-[100px]'></div>
-      <div className='bg-slate-700 rounded-xl p-2 w-[50px]'></div>
+      <div className='w-[150px] rounded-xl bg-slate-700 p-2'></div>
+      <div className='w-[100px] rounded-xl bg-slate-700 p-2'></div>
+      <div className='w-[50px] rounded-xl bg-slate-700 p-2'></div>
     </div>
   </div>
 )

@@ -34,9 +34,8 @@ export function Show() {
     setParams({ tab, query, page, ...update }, { replace: true })
 
   const { id } = useParams()
-  const [res] = useShowQuery({ id })
-  const { data, fetching, error } = res
-  let show = data?.show
+  const { data, fetching, error } = useShowQuery({ id })[0]
+  const show = data?.show
 
   setTitle(show?.name)
 
@@ -88,7 +87,7 @@ export function Show() {
 
   const castOrCrewTab = tab === Tabs.Cast || tab === Tabs.Crew
 
-  let networksAndCompanies = show?.networks?.map((x) => x.name)
+  const networksAndCompanies = show?.networks?.map((x) => x.name)
   show?.production_companies?.forEach(({ name }) => {
     if (networksAndCompanies?.indexOf(name) === -1) {
       networksAndCompanies.push(name)
@@ -102,12 +101,12 @@ export function Show() {
   return (
     <>
       <div
-        className='bg-cover bg-center rounded-xl'
+        className='rounded-xl bg-cover bg-center'
         style={{
           backgroundImage: `url(${imageUrls.W500}${show?.backdrop_path})`
         }}
       >
-        <div className='blur-bg'>
+        <div className='row blur-bg'>
           {show?.poster_path && (
             <AdaptablePoster poster_path={show?.poster_path} />
           )}
@@ -128,10 +127,10 @@ export function Show() {
           </div>
         </div>
       </div>
-      <div className='scroll-row'>
+      <div className='row scroll-hide space-x-2'>
         {Object.values(Tabs).map((x, i) => (
           <button
-            className={`${tab === x && 'sel'}`}
+            className={`btn ${tab === x && 'sel'}`}
             onClick={() => replaceSearchParams({ tab: x, page: 1 })}
             key={i}
           >
@@ -168,7 +167,7 @@ export function Show() {
                   href={`https://www.imdb.com/title/${show.external_ids.imdb_id}`}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='plain font-bold'
+                  className='underline'
                 >
                   IMDB
                 </a>
@@ -180,21 +179,21 @@ export function Show() {
                 href={`https://www.themoviedb.org/tv/${show?.id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='plain font-bold'
+                className='underline'
               >
                 TMDB
               </a>
               <span>{` ID: ${id}`}</span>
             </div>
           </div>
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             {show?.genres?.map((x, i) => (
               <div className='tag' key={i}>
                 {x.name}
               </div>
             ))}
           </div>
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             {networksAndCompanies?.map((x, i) => (
               <div className='tag text-sm' key={i}>
                 {x}
@@ -207,6 +206,7 @@ export function Show() {
         <>
           <input
             type='text'
+            className='input'
             defaultValue={query}
             placeholder='Search'
             onChange={(e) =>
@@ -251,15 +251,19 @@ export function Show() {
                 />
               ))}
           </div>
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             <button
+              className='btn'
               disabled={firstPage}
               onClick={() => replaceSearchParams({ page: page - 1 })}
             >
               BACK
             </button>
             <div className='p-2'>{page}</div>
-            <button onClick={() => replaceSearchParams({ page: page + 1 })}>
+            <button
+              className='btn'
+              onClick={() => replaceSearchParams({ page: page + 1 })}
+            >
               NEXT
             </button>
           </div>
@@ -285,10 +289,10 @@ export function Show() {
       )}
       {tab === Tabs.Images && (
         <>
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             {Object.values(ImageTabs).map((x, i) => (
               <button
-                className={`${imageTab === x && 'sel'}`}
+                className={`btn ${imageTab === x && 'sel'}`}
                 onClick={() => setImageTab(x)}
                 key={i}
               >

@@ -23,8 +23,7 @@ export function Season() {
 
   const { id, season_number } = useParams()
   const show = useShowQuery({ id })[0].data?.show
-  const [res] = useSeasonQuery({ id, season_number })
-  const { data, fetching, error } = res
+  const { data, fetching, error } = useSeasonQuery({ id, season_number })[0]
   const season = data?.season
 
   if (fetching) return loadSilhouette
@@ -34,18 +33,18 @@ export function Season() {
   return (
     <>
       <div
-        className='bg-cover bg-center rounded-xl'
+        className='rounded-xl bg-cover bg-center'
         style={{
           backgroundImage: `url(${imageUrls.W500}${show?.backdrop_path})`
         }}
       >
-        <div className='blur-bg'>
+        <div className='row blur-bg'>
           {season?.poster_path && (
             <AdaptablePoster poster_path={season?.poster_path} />
           )}
           <div className='col space-y-1'>
             {show?.name && (
-              <Link className='font-bold plain' to={`/tv/${id}`}>
+              <Link className='font-bold' to={`/tv/${id}`}>
                 {show?.name}
               </Link>
             )}
@@ -57,10 +56,10 @@ export function Season() {
           </div>
         </div>
       </div>
-      <div className='scroll-row'>
+      <div className='row scroll-hide space-x-2'>
         {Object.values(Tabs).map((x, i) => (
           <button
-            className={`${tab === x && 'sel'}`}
+            className={`btn ${tab === x && 'sel'}`}
             onClick={() => replaceSearchParams({ tab: x })}
             key={i}
           >

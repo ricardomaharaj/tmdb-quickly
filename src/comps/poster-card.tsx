@@ -14,7 +14,7 @@ type Props = {
 export function PosterCard(props: Props) {
   const { image, primary, secondary, variant, tertiary, href } = props
   return (
-    <Link to={href || '/'} className='row p-2 rounded-xl'>
+    <Link to={href || '/'} className='link row rounded-xl p-2'>
       <div className='col'>
         {image ? <Poster src={image} /> : <Filler variant={variant} />}
       </div>

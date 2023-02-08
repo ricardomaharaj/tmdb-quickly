@@ -19,12 +19,11 @@ export function Episode() {
 
   const { id, season_number, episode_number } = useParams()
   const show = useShowQuery({ id })[0].data?.show
-  const [res] = useEpisodeQuery({
+  const { data, fetching, error } = useEpisodeQuery({
     id,
     season_number,
     episode_number
-  })
-  const { data, fetching, error } = res
+  })[0]
   const episode = data?.episode
 
   const replaceSearchParams = (update: any) =>
@@ -37,20 +36,20 @@ export function Episode() {
   return (
     <>
       <div
-        className='bg-cover bg-center rounded-xl'
+        className='rounded-xl bg-cover bg-center'
         style={{
           backgroundImage: `url(${imageUrls.W500}${episode?.still_path})`
         }}
       >
-        <div className='col space-y-2 p-10 rounded-xl backdrop-brightness-50 backdrop-blur-sm md:backdrop-blur xl:p-20'>
+        <div className='col space-y-2 rounded-xl p-10 backdrop-blur-sm backdrop-brightness-50 md:backdrop-blur xl:p-20'>
           {show?.name && (
-            <Link className='font-bold plain' to={`/tv/${id}`}>
+            <Link className='font-bold' to={`/tv/${id}`}>
               {show?.name}
             </Link>
           )}
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             <Link
-              className='font-bold plain'
+              className='font-bold'
               to={`/tv/${id}/season/${season_number}`}
             >
               Season {season_number}
@@ -61,10 +60,10 @@ export function Episode() {
           {episode?.air_date && <div>{toDateString(episode.air_date)}</div>}
         </div>
       </div>
-      <div className='scroll-row'>
+      <div className='row scroll-hide space-x-2'>
         {Object.values(Tabs).map((x, i) => (
           <button
-            className={`${tab === x && 'sel'}`}
+            className={`btn ${tab === x && 'sel'}`}
             onClick={() => replaceSearchParams({ tab: x })}
             key={i}
           >

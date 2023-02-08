@@ -6,6 +6,7 @@
 
 * {
   font-family: 'Ubuntu', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @layer base {
@@ -15,35 +16,36 @@
   #root {
     @apply col m-2 space-y-2;
   }
-  button {
-    @apply bg-slate-800 p-2 rounded-xl hover:bg-slate-600 disabled:bg-slate-900 disabled:text-slate-600 disabled:hover:bg-slate-900;
-  }
-  a {
-    @apply bg-slate-800 p-2 rounded-xl hover:bg-slate-700;
-  }
-  input {
-    @apply bg-slate-800 p-2 rounded-xl outline-none;
-  }
 }
 
 @layer components {
+  .btn {
+    @apply rounded-xl bg-slate-800 p-2 hover:bg-slate-600 disabled:bg-slate-900 disabled:text-slate-600 disabled:hover:bg-slate-900;
+  }
+  .link {
+    @apply rounded-xl bg-slate-800 p-2 hover:bg-slate-700;
+  }
+  .input {
+    @apply rounded-xl bg-slate-800 p-2 outline-none;
+  }
+  /*  */
   .blur-bg {
-    @apply row p-2 rounded-xl backdrop-brightness-50 backdrop-blur-sm md:backdrop-blur xl:p-10;
+    @apply rounded-xl p-2 backdrop-blur-sm backdrop-brightness-50 md:backdrop-blur xl:p-10;
   }
   .bubble {
-    @apply bg-slate-800 p-4 rounded-xl;
+    @apply rounded-xl bg-slate-800 p-4;
   }
   .tag {
-    @apply bg-slate-800 p-2 rounded-xl;
+    @apply rounded-xl bg-slate-800 p-2;
   }
   .grid123 {
-    @apply grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-3;
+    @apply grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3;
   }
   .grid234 {
-    @apply grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-4;
+    @apply grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4;
   }
-  .scroll-row {
-    @apply row space-x-2 overflow-scroll md:overflow-hidden;
+  .scroll-hide {
+    @apply overflow-scroll md:overflow-hidden;
   }
   .sel {
     @apply bg-slate-700;
@@ -52,10 +54,7 @@
     @apply text-slate-400;
   }
   .err {
-    @apply bg-red-700 p-4 rounded-xl;
-  }
-  .plain {
-    @apply bg-inherit p-0 rounded-none hover:bg-inherit;
+    @apply rounded-xl bg-red-700 p-4;
   }
 }
 

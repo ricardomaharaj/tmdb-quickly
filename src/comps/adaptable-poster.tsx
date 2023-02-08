@@ -11,18 +11,18 @@ export function AdaptablePoster(props: Props) {
     <>
       <img
         src={`${imageUrls.W94H141}${poster_path}`}
-        className='rounded-xl mr-2 max-w-[94px] max-h-[141px] md:hidden'
+        className='mr-2 max-h-[141px] max-w-[94px] rounded-xl md:hidden'
         loading='lazy'
-        width='94'
-        height='141'
+        width={94}
+        height={141}
         alt=''
       />
       <img
         src={`${imageUrls.W150H225}${poster_path}`}
-        className='rounded-xl mr-2 max-w-[150px] max-h-[225px] hidden md:block'
+        className='mr-2 hidden max-h-[225px] max-w-[150px] rounded-xl md:block'
         loading='lazy'
-        width='150'
-        height='225'
+        width={150}
+        height={225}
         alt=''
       />
     </>

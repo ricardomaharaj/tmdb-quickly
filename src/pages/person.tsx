@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom'
 import { setTitle, toDateString } from '../util'
-import { imageUrls, loadSilhouette } from '../consts'
+import { loadSilhouette } from '../consts'
 import { usePersonQuery } from '../gql'
 import { PosterCard } from '../comps/poster-card'
 import { AdaptablePoster } from '../comps/adaptable-poster'
@@ -30,8 +30,7 @@ export function Person() {
     setParams({ tab, creditsTab, query, page, ...update }, { replace: true })
 
   const { id } = useParams()
-  const [res] = usePersonQuery({ id })
-  const { data, fetching, error } = res
+  const { data, fetching, error } = usePersonQuery({ id })[0]
   const person = data?.person
 
   setTitle(person?.name)
@@ -135,10 +134,10 @@ export function Person() {
             )}
         </div>
       </div>
-      <div className='scroll-row'>
+      <div className='row scroll-hide space-x-2'>
         {Object.values(Tabs).map((x, i) => (
           <button
-            className={`${tab === x && 'sel'}`}
+            className={`btn ${tab === x && 'sel'}`}
             onClick={() => replaceSearchParams({ tab: x, page: 1 })}
             key={i}
           >
@@ -157,10 +156,10 @@ export function Person() {
       )}
       {castOrCrewTab && (
         <>
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             {Object.values(CreditsTab).map((x, i) => (
               <button
-                className={`${creditsTab === x && 'sel'}`}
+                className={`btn ${creditsTab === x && 'sel'}`}
                 onClick={() =>
                   replaceSearchParams({
                     creditsTab: x,
@@ -175,6 +174,7 @@ export function Person() {
           </div>
           <input
             type='text'
+            className='input'
             placeholder='Search'
             defaultValue={query}
             onChange={(e) =>
@@ -214,15 +214,19 @@ export function Person() {
                 />
               ))}
           </div>
-          <div className='scroll-row'>
+          <div className='row scroll-hide space-x-2'>
             <button
+              className='btn'
               disabled={firstPage}
               onClick={() => replaceSearchParams({ page: page - 1 })}
             >
               BACK
             </button>
             <div className='p-2'>{page}</div>
-            <button onClick={() => replaceSearchParams({ page: page + 1 })}>
+            <button
+              className='btn'
+              onClick={() => replaceSearchParams({ page: page + 1 })}
+            >
               NEXT
             </button>
           </div>
