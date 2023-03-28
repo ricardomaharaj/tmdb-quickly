@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useSearchQuery } from '../gql'
 import { overviewTrimmer, setTitle, toDateString } from '../util'
 import { PosterCard } from '../comps/poster-card'
@@ -17,16 +17,24 @@ export function Search() {
   const [params, setParams] = useSearchParams()
 
   const tab = params.get('tab') || Tabs.Movies
-  const query = params.get('query') || ''
   const page = parseInt(params.get('page') || '1')
+
+  const [query, setQuery] = useState(params.get('query') || '')
+  const [debounce, setDebounce] = useState(params.get('query') || '')
+  const ref = useRef<NodeJS.Timeout>()
+
+  useEffect(() => {
+    ref.current = setTimeout(() => {
+      setDebounce(query)
+      replaceSearchParams({ query })
+    }, 500)
+    return () => clearTimeout(ref.current)
+  }, [query])
 
   const replaceSearchParams = (update: any) =>
     setParams({ tab, query, page, ...update }, { replace: true })
 
-  const [res] = useSearchQuery({
-    query,
-    page: page.toString()
-  })
+  const [res] = useSearchQuery({ query: debounce, page: `${page}` })
 
   const { data, fetching, error } = res
 
@@ -53,13 +61,7 @@ export function Search() {
         id='query'
         placeholder='SEARCH'
         defaultValue={query}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            replaceSearchParams({
-              query: e.currentTarget.value
-            })
-          }
-        }}
+        onChange={(e) => setQuery(e.target.value)}
       />
       <div className='row scroll-hide space-x-2'>
         {TABS.map((x, i) => (
@@ -94,7 +96,7 @@ export function Search() {
                 tertiary={
                   x.media_type === 'person'
                     ? ''
-                    : query
+                    : debounce
                     ? toDateString(x.release_date || x.first_air_date)
                     : ''
                 }
@@ -106,7 +108,7 @@ export function Search() {
           </>
         )}
       </div>
-      {query && (
+      {debounce && (
         <div className='row scroll-hide space-x-2'>
           <button
             className='btn'
