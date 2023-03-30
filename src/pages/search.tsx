@@ -20,21 +20,21 @@ export function Search() {
   const page = parseInt(params.get('page') || '1')
 
   const [query, setQuery] = useState(params.get('query') || '')
-  const [debounce, setDebounce] = useState(params.get('query') || '')
+  const [debouncedVal, setDebounceVal] = useState(params.get('query') || '')
   const ref = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     ref.current = setTimeout(() => {
-      setDebounce(query)
+      setQuery(debouncedVal)
       replaceSearchParams({ query })
     }, 500)
     return () => clearTimeout(ref.current)
-  }, [query])
+  }, [debouncedVal])
 
   const replaceSearchParams = (update: any) =>
     setParams({ tab, query, page, ...update }, { replace: true })
 
-  const [res] = useSearchQuery({ query: debounce, page: `${page}` })
+  const [res] = useSearchQuery({ query, page: `${page}` })
 
   const { data, fetching, error } = res
 
@@ -61,7 +61,7 @@ export function Search() {
         id='query'
         placeholder='SEARCH'
         defaultValue={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => setDebounceVal(e.target.value)}
       />
       <div className='row scroll-hide space-x-2'>
         {TABS.map((x, i) => (
@@ -96,7 +96,7 @@ export function Search() {
                 tertiary={
                   x.media_type === 'person'
                     ? ''
-                    : debounce
+                    : query
                     ? toDateString(x.release_date || x.first_air_date)
                     : ''
                 }
@@ -108,7 +108,7 @@ export function Search() {
           </>
         )}
       </div>
-      {debounce && (
+      {query && (
         <div className='row scroll-hide space-x-2'>
           <button
             className='btn'
