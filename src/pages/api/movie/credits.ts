@@ -3,12 +3,8 @@ import { tmdbApi } from '@/util/tmdb-api'
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === 'GET') {
-    const { query, page } = req.query as Record<string, string>
-    if (!query) {
-      const x = await tmdbApi.trending()
-      return res.json(x)
-    }
-    const x = await tmdbApi.search({ query, page })
+    const id = req.query.id as string
+    const x = await tmdbApi.movie.credits({ id })
     return res.json(x)
   }
   return res.status(501).send('501')

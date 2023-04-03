@@ -4,7 +4,7 @@ export interface Movie {
     budget?:                number;
     genres?:                Genre[];
     homepage?:              string;
-    id?:                    number;
+    id:                     number;
     imdb_id?:               string;
     original_language?:     string;
     original_title?:        string;
@@ -46,4 +46,39 @@ interface SpokenLanguage {
     english_name?: string;
     iso_639_1?:    string;
     name?:         string;
+}
+
+export interface MovieCredits {
+    id?:   number;
+    cast?: Cast[];
+    crew?: Crew[];
+}
+
+interface Cast {
+    adult?:                boolean;
+    gender?:               number;
+    id?:                   number;
+    known_for_department?: string;
+    name?:                 string;
+    original_name?:        string;
+    popularity?:           number;
+    profile_path?:         null | string;
+    cast_id?:              number;
+    character?:            string;
+    credit_id?:            string;
+    order?:                number;
+}
+
+interface Crew {
+    adult?:                boolean;
+    gender?:               number;
+    id?:                   number;
+    known_for_department?: string;
+    name?:                 string;
+    original_name?:        string;
+    popularity?:           number;
+    profile_path?:         null | string;
+    credit_id?:            string;
+    department?:           string;
+    job?:                  string;
 }
