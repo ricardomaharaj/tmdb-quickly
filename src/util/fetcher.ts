@@ -1,7 +1,7 @@
-type Params = Record<string, string>
+type Params = Record<string, string | number>
 
 export class Fetcher {
-  baseUrl = ""
+  baseUrl = ''
   params?: Params
   constructor(baseUrl: string, params?: Params) {
     this.baseUrl = baseUrl
@@ -12,15 +12,12 @@ export class Fetcher {
     const allParams = { ...this.params, ...params }
     if (allParams) {
       Object.keys(allParams).forEach((key, i) => {
-        if (i === 0) {
-          url += `?`
-        } else {
-          url += `&`
-        }
-        url += `${key}=${allParams[key]}`
+        url += `${i === 0 ? '?' : '&'}${key}=${allParams[key]}`
       })
     }
-    const x = await fetch(url).then((x) => x.json())
+    const x = await fetch(url, { cache: 'force-cache' }).then((res) =>
+      res.json()
+    )
     return x as T
   }
 }
