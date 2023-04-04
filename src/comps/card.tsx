@@ -1,5 +1,6 @@
 import { imageUrls } from '@/consts'
 import Link from 'next/link'
+import { UrlObject } from 'url'
 
 export type CardVariant = 'tv' | 'movie' | 'person'
 
@@ -8,11 +9,11 @@ interface Props {
   primary?: string
   secondary?: string
   tertiary?: string
-  path?: string
   variant?: CardVariant
+  href: UrlObject | string
 }
 export default function Card(props: Props) {
-  const { img, primary, secondary, tertiary, path, variant } = props
+  const { img, primary, secondary, tertiary, href, variant } = props
 
   let icon = 'bi-question'
   if (variant === 'tv') icon = 'bi-tv'
@@ -20,7 +21,7 @@ export default function Card(props: Props) {
   if (variant === 'person') icon = 'bi-person'
 
   return (
-    <Link href={path ?? '/'} className='row'>
+    <Link href={href} className='row'>
       <div className='col mr-2'>
         {img ? (
           <img
@@ -33,7 +34,7 @@ export default function Card(props: Props) {
         ) : (
           <div className='col h-[141px] w-[94px] justify-center bg-black'>
             <div className='row justify-center'>
-              <i className={`bi ${icon} text-8xl`} />
+              <i className={`bi ${icon} text-6xl text-white`} />
             </div>
           </div>
         )}
