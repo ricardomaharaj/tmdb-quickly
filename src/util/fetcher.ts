@@ -1,23 +1,21 @@
-type Params = Record<string, string | number>
-
+interface FetcherOptions extends RequestInit {
+  params?: Record<string, string | number | undefined>
+}
 export class Fetcher {
-  baseUrl = ''
-  params?: Params
-  constructor(baseUrl: string, params?: Params) {
-    this.baseUrl = baseUrl
-    this.params = params
+  url: string
+  opts?: FetcherOptions
+  constructor({ url, opts }: { url: string; opts?: FetcherOptions }) {
+    this.url = url
+    this.opts = opts
   }
-  async get<T>(path: string, params?: Params) {
-    let url = `${this.baseUrl}${path}`
-    const allParams = { ...this.params, ...params }
-    if (allParams) {
-      Object.keys(allParams).forEach((key, i) => {
-        url += `${i === 0 ? '?' : '&'}${key}=${allParams[key]}`
-      })
-    }
-    const x = await fetch(url, { cache: 'force-cache' }).then((res) =>
-      res.json()
-    )
-    return x as T
+  async get(path: string, opts?: FetcherOptions) {
+    let url = `${this.url}${path}`
+    const params = { ...this.opts?.params, ...opts?.params }
+    Object.keys(params).forEach((key, i) => {
+      url += `${i === 0 ? '?' : '&'}${key}=${params[key]}`
+    })
+    const x = await fetch(url, { cache: 'force-cache', ...this.opts, ...opts })
+    const y = await x.json()
+    return y
   }
 }

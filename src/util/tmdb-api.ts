@@ -1,32 +1,95 @@
-import { SearchResults } from '@/types/search-results'
-import { Movie, MovieCredits } from '@/types/movie'
-import { TV } from '@/types/tv'
+import { CrewMember, MovieCredits } from '@/types/movie-credits'
 import { Fetcher } from '@/util/fetcher'
 
-const api_key = process.env.TMDB!
+const tmdbFetcher = new Fetcher({
+  url: 'https://api.themoviedb.org/3/',
+  opts: { params: { api_key: process.env.TMDB! } },
+})
 
-const tmdbFetcher = new Fetcher('https://api.themoviedb.org/3/', { api_key })
+type StrNum = string | number
+
+async function search({ query, page }: { query: string; page: StrNum }) {
+  if (!query) {
+    return await tmdbFetcher.get('trending/all/week')
+  } else {
+    return await tmdbFetcher.get('search/multi', {
+      params: { query, page },
+    })
+  }
+}
+
+async function movie({ id }: { id: StrNum }) {
+  return await tmdbFetcher.get(`movie/${id}`)
+}
+
+async function movieCredits({ id }: { id: StrNum }) {
+  let credits: MovieCredits = await tmdbFetcher.get(`movie/${id}/credits`)
+
+  let oldCrew = credits.crew
+  let newCrew: CrewMember[] = []
+
+  oldCrew?.forEach((oldCrewMember) => {
+    const i = newCrew.findIndex(
+      (newCrewMember) => newCrewMember.id === oldCrewMember.id
+    )
+    if (i === -1) newCrew.push(oldCrewMember)
+    else newCrew[i].job += ` | ${oldCrewMember.job}`
+  })
+
+  credits.crew = newCrew
+  return credits
+}
+
+async function tv({ id }: { id: StrNum }) {
+  return await tmdbFetcher.get(`tv/${id}`)
+}
+
+async function tvCredits({ id }: { id: StrNum }) {
+  return await tmdbFetcher.get(`tv/${id}/aggregate_credits`)
+}
+
+async function season({ id, season }: { id: StrNum; season: StrNum }) {
+  return await tmdbFetcher.get(`tv/${id}/season/${season}`)
+}
+
+async function seasonCredits({ id, season }: { id: StrNum; season: StrNum }) {
+  return await tmdbFetcher.get(`tv/${id}/season/${season}/aggregate_credits`)
+}
+
+async function episode({
+  id,
+  season,
+  episode,
+}: {
+  id: StrNum
+  season: StrNum
+  episode: StrNum
+}) {
+  return await tmdbFetcher.get(`tv/${id}/season/${season}/episode/${episode}`)
+}
+
+async function episodeCredits({
+  id,
+  season,
+  episode,
+}: {
+  id: StrNum
+  season: StrNum
+  episode: StrNum
+}) {
+  return await tmdbFetcher.get(
+    `tv/${id}/season/${season}/episode/${episode}/credits`
+  )
+}
 
 export const tmdbApi = {
-  trending: async () => {
-    return await tmdbFetcher.get<SearchResults>('trending/all/week')
-  },
-  search: async (args: { query: string; page: string }) => {
-    const { query, page } = args
-    return await tmdbFetcher.get<SearchResults>('search/multi', { query, page })
-  },
-  getMovie: async (args: { id: string }) => {
-    const { id } = args
-    return await tmdbFetcher.get<Movie>(`movie/${id}`)
-  },
-  movie: {
-    credits: async (args: { id: string }) => {
-      const { id } = args
-      return await tmdbFetcher.get<MovieCredits>(`movie/${id}/credits`)
-    },
-  },
-  tv: async (args: { id: string }) => {
-    const { id } = args
-    return await tmdbFetcher.get<TV>(`tv/${id}`)
-  },
+  search,
+  movie,
+  movieCredits,
+  tv,
+  tvCredits,
+  season,
+  seasonCredits,
+  episode,
+  episodeCredits,
 }
