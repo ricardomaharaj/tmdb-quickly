@@ -1,20 +1,22 @@
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+
 import Card from '@/comps/card'
-import { SearchResults } from '@/types/search-results'
 import { trimmer } from '@/util'
 import { api } from '@/util/local-api'
-import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+
+import { SearchResults } from '@/types/search'
 
 export default function Home() {
   const router = useRouter()
 
-  const query = (router.query.query as string) || ''
-  const page = parseInt(router.query.page as string) || 1
+  const query = (router.query.query as string | undefined) || ''
+  const page = parseInt((router.query.page as string | undefined) || '1')
 
   const { data: results } = useSearch({ query, page })
 
   function updateQueries(update: any) {
-    router.replace({ query: { query, page, ...update } })
+    router.replace({ pathname: '/', query: { query, page, ...update } })
   }
 
   const [debounce, setDebounce] = useState(query)
@@ -55,7 +57,7 @@ export default function Home() {
               primary={title || name}
               secondary={query && (release_date || first_air_date)}
               tertiary={overview && trimmer(overview)}
-              path={`${media_type}/${id}`}
+              href={`${media_type}/${id}`}
               key={`${media_type}/${id}`}
             />
           )
@@ -89,8 +91,8 @@ function useSearch(args: { query: string; page: number }) {
 
   useEffect(() => {
     api
-      .get<SearchResults>('search', { query, page })
-      .then((res) => setData(res))
+      .get('search', { params: { query, page } })
+      .then((x) => setData(x))
       .catch((e) => console.log(e))
   }, [query, page])
 
