@@ -1,0 +1,108 @@
+query Search($query: String, $page: Int) {
+  search(query: $query, page: $page) {
+    results {
+      id
+      title
+      overview
+      poster_path
+      media_type
+      release_date
+      name
+      first_air_date
+      profile_path
+    }
+    total_results
+    total_pages
+  }
+}
+
+query Movie($id: ID) {
+  movie(id: $id) {
+    backdrop_path
+    budget
+    genres {
+      name
+    }
+    overview
+    poster_path
+    production_companies {
+      name
+    }
+    release_date
+    revenue
+    runtime
+    status
+    tagline
+    title
+  }
+}
+
+query MovieCredits($id: ID) {
+  movie(id: $id) {
+    credits {
+      cast {
+        name
+        profile_path
+        id
+        character
+      }
+      crew {
+        id
+        name
+        profile_path
+        job
+      }
+    }
+  }
+}
+
+query TV($id: ID) {
+  tv(id: $id) {
+    backdrop_path
+    episode_run_time
+    first_air_date
+    genres {
+      name
+    }
+    last_air_date
+    name
+    networks {
+      name
+    }
+    number_of_episodes
+    number_of_seasons
+    overview
+    poster_path
+    production_companies {
+      name
+    }
+    status
+    tagline
+    type
+  }
+}
+
+query TVCredits($id: ID) {
+  tv(id: $id) {
+    aggregate_credits {
+      cast {
+        id
+        name
+        profile_path
+        roles {
+          character
+          episode_count
+        }
+      }
+      crew {
+        id
+        name
+        profile_path
+        jobs {
+          job
+          episode_count
+        }
+      }
+    }
+  }
+}
