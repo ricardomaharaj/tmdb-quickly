@@ -56,6 +56,33 @@ query MovieCredits($id: ID) {
   }
 }
 
+query MovieImages($id: ID) {
+  movie(id: $id) {
+    images {
+      posters {
+        iso_639_1
+        file_path
+      }
+      backdrops {
+        iso_639_1
+        file_path
+      }
+    }
+  }
+}
+
+query MovieVideos($id: ID) {
+  movie(id: $id) {
+    videos {
+      results {
+        type
+        key
+        name
+      }
+    }
+  }
+}
+
 query TV($id: ID) {
   tv(id: $id) {
     backdrop_path

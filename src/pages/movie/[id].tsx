@@ -62,6 +62,8 @@ export default function MoviePage() {
         </>
       )}
       {castOrCrewTab && <MovieCredits />}
+      {tab === Tabs.Images && <MovieImages id={id} />}
+      {tab === Tabs.Videos && <MovieVideos id={id} />}
     </>
   )
 }
