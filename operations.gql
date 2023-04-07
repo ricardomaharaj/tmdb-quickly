@@ -40,9 +40,9 @@ query MovieCredits($id: ID) {
   movie(id: $id) {
     credits {
       cast {
+        id
         name
         profile_path
-        id
         character
       }
       crew {

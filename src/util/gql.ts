@@ -500,7 +500,6 @@ export type MovieQuery = {
   __typename?: 'Query'
   movie?: {
     __typename?: 'Movie'
-    backdrop_path?: string | null
     budget?: number | null
     overview?: string | null
     poster_path?: string | null
@@ -530,9 +529,9 @@ export type MovieCreditsQuery = {
       __typename?: 'Credits'
       cast?: Array<{
         __typename?: 'Cast'
+        id?: number | null
         name?: string | null
         profile_path?: string | null
-        id?: number | null
         character?: string | null
       } | null> | null
       crew?: Array<{
@@ -546,6 +545,50 @@ export type MovieCreditsQuery = {
   } | null
 }
 
+export type MovieImagesQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']>
+}>
+
+export type MovieImagesQuery = {
+  __typename?: 'Query'
+  movie?: {
+    __typename?: 'Movie'
+    images?: {
+      __typename?: 'Images'
+      posters?: Array<{
+        __typename?: 'Image'
+        iso_639_1?: string | null
+        file_path?: string | null
+      } | null> | null
+      backdrops?: Array<{
+        __typename?: 'Image'
+        iso_639_1?: string | null
+        file_path?: string | null
+      } | null> | null
+    } | null
+  } | null
+}
+
+export type MovieVideosQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']>
+}>
+
+export type MovieVideosQuery = {
+  __typename?: 'Query'
+  movie?: {
+    __typename?: 'Movie'
+    videos?: {
+      __typename?: 'Videos'
+      results?: Array<{
+        __typename?: 'VideoResult'
+        type?: string | null
+        key?: string | null
+        name?: string | null
+      } | null> | null
+    } | null
+  } | null
+}
+
 export type TvQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>
 }>
@@ -554,7 +597,6 @@ export type TvQuery = {
   __typename?: 'Query'
   tv?: {
     __typename?: 'TV'
-    backdrop_path?: string | null
     episode_run_time?: Array<number | null> | null
     first_air_date?: string | null
     last_air_date?: string | null
@@ -645,7 +687,6 @@ export function useSearchQuery(
 export const MovieDocument = gql`
   query Movie($id: ID) {
     movie(id: $id) {
-      backdrop_path
       budget
       genres {
         name
@@ -678,9 +719,9 @@ export const MovieCreditsDocument = gql`
     movie(id: $id) {
       credits {
         cast {
+          id
           name
           profile_path
-          id
           character
         }
         crew {
@@ -702,10 +743,56 @@ export function useMovieCreditsQuery(
     ...options,
   })
 }
+export const MovieImagesDocument = gql`
+  query MovieImages($id: ID) {
+    movie(id: $id) {
+      images {
+        posters {
+          iso_639_1
+          file_path
+        }
+        backdrops {
+          iso_639_1
+          file_path
+        }
+      }
+    }
+  }
+`
+
+export function useMovieImagesQuery(
+  options?: Omit<Urql.UseQueryArgs<MovieImagesQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<MovieImagesQuery, MovieImagesQueryVariables>({
+    query: MovieImagesDocument,
+    ...options,
+  })
+}
+export const MovieVideosDocument = gql`
+  query MovieVideos($id: ID) {
+    movie(id: $id) {
+      videos {
+        results {
+          type
+          key
+          name
+        }
+      }
+    }
+  }
+`
+
+export function useMovieVideosQuery(
+  options?: Omit<Urql.UseQueryArgs<MovieVideosQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<MovieVideosQuery, MovieVideosQueryVariables>({
+    query: MovieVideosDocument,
+    ...options,
+  })
+}
 export const TvDocument = gql`
   query TV($id: ID) {
     tv(id: $id) {
-      backdrop_path
       episode_run_time
       first_air_date
       genres {
