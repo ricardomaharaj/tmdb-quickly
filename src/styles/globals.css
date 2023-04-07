@@ -6,6 +6,9 @@
 @tailwind utilities;
 
 @layer base {
+  ::-webkit-scrollbar {
+    display: none;
+  }
   * {
     -webkit-tap-highlight-color: transparent;
     font-family: 'Ubuntu', sans-serif;
