@@ -19,6 +19,9 @@
   .grid123 {
     @apply grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3;
   }
+  .grid234 {
+    @apply grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4;
+  }
 }
 
 @layer utilities {
