@@ -389,8 +389,8 @@ scalar Any
 
 type Query {
   search(query: String, page: Int): SearchResults
-  movie(id: ID): Movie
-  tv(id: ID): TV
-  season(id: ID, season: Int): Season
-  episode(id: ID, season: Int, episode: Int): Episode
+  movie(id: ID!): Movie
+  tv(id: ID!): TV
+  season(id: ID!, season: Int!): Season
+  episode(id: ID!, season: Int!, episode: Int!): Episode
 }
