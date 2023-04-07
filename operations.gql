@@ -18,7 +18,6 @@ query Search($query: String, $page: Int) {
 
 query Movie($id: ID) {
   movie(id: $id) {
-    backdrop_path
     budget
     genres {
       name
@@ -85,7 +84,6 @@ query MovieVideos($id: ID) {
 
 query TV($id: ID) {
   tv(id: $id) {
-    backdrop_path
     episode_run_time
     first_air_date
     genres {
