@@ -1,13 +1,31 @@
 import { useState } from 'react'
-import { useMovieVideosQuery } from '~/util/gql'
+import { gql, useQuery } from 'urql'
+
+import { Movie } from '~/types/tmdb'
+
+const movieVideosQuery = gql`
+  query MovieVideos($id: ID!) {
+    movie(id: $id) {
+      videos {
+        results {
+          key
+          name
+          type
+        }
+      }
+    }
+  }
+`
 
 export function MovieVideos(props: { id: string }) {
   const { id } = props
 
   const [filter, setFilter] = useState('')
 
-  const [{ data }] = useMovieVideosQuery({ variables: { id } })
-
+  const [{ data }] = useQuery<{ movie: Movie }>({
+    query: movieVideosQuery,
+    variables: { id },
+  })
   let videos = data?.movie?.videos?.results
   let types: string[] = []
 

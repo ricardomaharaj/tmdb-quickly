@@ -1,8 +1,31 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { gql, useQuery } from 'urql'
 
-import { Tabs } from '~/pages/movie/[id]'
-import { imageUrls } from '~/consts'
-import { useMovieCreditsQuery } from '~/util/gql'
+import { Img } from '~/comps/image'
+import { Tabs } from '~/pages/movie/[id]/index'
+import { Movie } from '~/types/tmdb'
+
+const movieCreditsQuery = gql`
+  query MovieCredits($id: ID!) {
+    movie(id: $id) {
+      credits {
+        cast {
+          character
+          id
+          name
+          profile_path
+        }
+        crew {
+          id
+          job
+          name
+          profile_path
+        }
+      }
+    }
+  }
+`
 
 export function MovieCredits() {
   const router = useRouter()
@@ -18,7 +41,10 @@ export function MovieCredits() {
     router.replace({ query: { id, query, page, tab, ...update } })
   }
 
-  const [{ data }] = useMovieCreditsQuery({ variables: { id } })
+  const [{ data }] = useQuery<{ movie: Movie }>({
+    query: movieCreditsQuery,
+    variables: { id },
+  })
   const credits = data?.movie?.credits
 
   const perPage = 9

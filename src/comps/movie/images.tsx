@@ -1,6 +1,25 @@
 import { useState } from 'react'
+import { gql, useQuery } from 'urql'
+
 import { imageUrls } from '~/consts'
-import { useMovieImagesQuery } from '~/util/gql'
+import { Movie } from '~/types/tmdb'
+
+const movieImagesQuery = gql`
+  query MovieImages($id: ID!) {
+    movie(id: $id) {
+      images {
+        backdrops {
+          file_path
+          iso_639_1
+        }
+        posters {
+          file_path
+          iso_639_1
+        }
+      }
+    }
+  }
+`
 
 enum Tabs {
   Posters = 'Posters',
@@ -11,7 +30,10 @@ export function MovieImages(props: { id: string }) {
   const { id } = props
   const [tab, setTab] = useState<Tabs>(Tabs.Posters)
 
-  const [{ data }] = useMovieImagesQuery({ variables: { id } })
+  const [{ data }] = useQuery<{ movie: Movie }>({
+    query: movieImagesQuery,
+    variables: { id },
+  })
   const posters = data?.movie?.images?.posters?.filter(
     (x) => x?.iso_639_1 === 'en' || !x?.iso_639_1
   )

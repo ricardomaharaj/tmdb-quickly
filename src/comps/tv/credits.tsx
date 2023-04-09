@@ -1,8 +1,37 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { gql, useQuery } from 'urql'
 
+import { Img } from '~/comps/image'
 import { Tabs } from '~/pages/tv/[id]'
-import { imageUrls } from '~/consts'
-import { useTvCreditsQuery } from '~/util/gql'
+import { TV } from '~/types/tmdb'
+
+const tvCreditsQuery = gql`
+  query TVCredits($id: ID!) {
+    tv(id: $id) {
+      aggregate_credits {
+        cast {
+          id
+          name
+          profile_path
+          roles {
+            character
+            episode_count
+          }
+        }
+        crew {
+          id
+          jobs {
+            episode_count
+            job
+          }
+          name
+          profile_path
+        }
+      }
+    }
+  }
+`
 
 export function TVCredits() {
   const router = useRouter()
@@ -17,7 +46,10 @@ export function TVCredits() {
     router.replace({ query: { id, query, page, tab, ...update } })
   }
 
-  const [{ data }] = useTvCreditsQuery({ variables: { id } })
+  const [{ data }] = useQuery<{ tv: TV }>({
+    query: tvCreditsQuery,
+    variables: { id },
+  })
   const credits = data?.tv?.aggregate_credits
 
   const perPage = 9
