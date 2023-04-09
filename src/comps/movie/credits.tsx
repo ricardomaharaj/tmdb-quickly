@@ -73,59 +73,53 @@ export function MovieCredits() {
       <div className='row'>
         <input
           type='text'
-          className='mt-2 w-full border-2 p-1 pl-2'
           placeholder='Filter'
+          className='w-full border-2 p-2 outline-none'
           defaultValue={query}
-          onChange={(e) => updateQueries({ query: e.target.value })}
+          onChange={(e) => updateQueries({ query: e.target.value, page: 1 })}
         />
       </div>
       <div className='grid123'>
         {tab === Tabs.Cast && (
           <>
             {cast?.map((x, i) => (
-              <div key={i} className='row'>
-                <div className='col'>
-                  <img src={`${imageUrls.w94h141}${x?.profile_path}`} alt='' />
+              <Link href={`/person/${x?.id}`} className='row' key={i}>
+                <div className='col mr-2'>
+                  <Img src={x?.profile_path} />
                 </div>
                 <div className='col'>
                   <div>{x?.name}</div>
                   <div>{x?.character}</div>
                 </div>
-              </div>
+              </Link>
             ))}
           </>
         )}
         {tab === Tabs.Crew && (
           <>
             {crew?.map((x, i) => (
-              <div key={i} className='row'>
-                <div className='col'>
-                  <img src={`${imageUrls.w94h141}${x?.profile_path}`} alt='' />
+              <Link href={`/person/${x?.id}`} className='row' key={i}>
+                <div className='col mr-2'>
+                  <Img src={x?.profile_path} />
                 </div>
                 <div className='col'>
                   <div>{x?.name}</div>
                   <div>{x?.job}</div>
                 </div>
-              </div>
+              </Link>
             ))}
           </>
         )}
       </div>
-      <div className='row justify-evenly pt-2'>
+      <div className='row space-x-4'>
         <button
           disabled={page <= 1}
           onClick={() => updateQueries({ page: page - 1 })}
-          className='px-8'
         >
-          {'<'}
+          BACK
         </button>
         <div>{page}</div>
-        <button
-          onClick={() => updateQueries({ page: page + 1 })}
-          className='px-8'
-        >
-          {'>'}
-        </button>
+        <button onClick={() => updateQueries({ page: page + 1 })}>NEXT</button>
       </div>
     </>
   )
