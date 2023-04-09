@@ -56,8 +56,22 @@ export function TVCredits() {
   const startPage = (page - 1) * perPage
   const endPage = page * perPage
 
-  const cast = credits?.cast?.slice(startPage, endPage)
-  const crew = credits?.crew?.slice(startPage, endPage)
+  const q = query.toLowerCase()
+
+  const cast = credits?.cast
+    ?.filter((x) => {
+      if (!q) return true
+      if (JSON.stringify(x).toLowerCase().includes(q)) return true
+      return false
+    })
+    ?.slice(startPage, endPage)
+  const crew = credits?.crew
+    ?.filter((x) => {
+      if (!q) return true
+      if (JSON.stringify(x).toLowerCase().includes(q)) return true
+      return false
+    })
+    ?.slice(startPage, endPage)
 
   return (
     <>
