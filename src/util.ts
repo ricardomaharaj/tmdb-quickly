@@ -1,3 +1,7 @@
+import { useEffect } from 'react'
+
+import { appName } from '~/consts'
+
 const maxLen = 90
 export function trimmer(str: string) {
   if (str.length > maxLen) {
@@ -5,4 +9,10 @@ export function trimmer(str: string) {
   } else {
     return str
   }
+}
+
+export function useTitle(title?: string | null) {
+  useEffect(() => {
+    document.title = title ? `${title} | ${appName}` : appName
+  }, [title])
 }

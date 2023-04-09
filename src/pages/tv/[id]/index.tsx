@@ -60,6 +60,8 @@ export default function MoviePage() {
   })
   const tv = data?.tv
 
+  useTitle(tv?.name)
+
   const castOrCrewTab = [Tabs.Cast, Tabs.Crew].includes(tab)
 
   return (

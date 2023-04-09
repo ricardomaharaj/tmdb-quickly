@@ -23,6 +23,7 @@ const searchQuery = gql`
 `
 
 export default function Home() {
+  useTitle()
   const router = useRouter()
 
   const queries = router.query as Record<string, string | undefined>
