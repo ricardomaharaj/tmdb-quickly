@@ -2,9 +2,25 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import { imageUrls } from '~/consts'
-import { trimmer } from '~/util'
-import { useSearchQuery } from '~/util/gql'
+const searchQuery = gql`
+  query Search($query: String, $page: Int) {
+    search(query: $query, page: $page) {
+      total_results
+      total_pages
+      results {
+        first_air_date
+        id
+        media_type
+        name
+        overview
+        poster_path
+        profile_path
+        release_date
+        title
+      }
+    }
+  }
+`
 
 export default function Home() {
   const router = useRouter()
@@ -18,7 +34,10 @@ export default function Home() {
     router.replace({ pathname: '/', query: { query, page, ...update } })
   }
 
-  const [{ data }] = useSearchQuery({ variables: { query, page } })
+  const [{ data }] = useQuery<{ search: SearchResults }>({
+    query: searchQuery,
+    variables: { query, page },
+  })
   const results = data?.search?.results
 
   const [debounce, setDebounce] = useState(query)

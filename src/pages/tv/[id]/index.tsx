@@ -1,8 +1,33 @@
 import { useRouter } from 'next/router'
 
 import { TVCredits } from '~/comps/tv/credits'
-import { imageUrls } from '~/consts'
-import { useTvQuery } from '~/util/gql'
+
+const tvQuery = gql`
+  query TV($id: ID!) {
+    tv(id: $id) {
+      episode_run_time
+      first_air_date
+      genres {
+        name
+      }
+      last_air_date
+      name
+      networks {
+        name
+      }
+      number_of_episodes
+      number_of_seasons
+      overview
+      poster_path
+      production_companies {
+        name
+      }
+      status
+      tagline
+      type
+    }
+  }
+`
 
 export enum Tabs {
   Info = 'Info',
@@ -29,7 +54,10 @@ export default function MoviePage() {
     })
   }
 
-  const [{ data }] = useTvQuery({ variables: { id } })
+  const [{ data }] = useQuery<{ tv: TV }>({
+    query: tvQuery,
+    variables: { id },
+  })
   const tv = data?.tv
 
   const castOrCrewTab = [Tabs.Cast, Tabs.Crew].includes(tab)
