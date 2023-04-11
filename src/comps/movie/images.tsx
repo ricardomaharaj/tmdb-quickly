@@ -35,10 +35,10 @@ export function MovieImages(props: { id: string }) {
     variables: { id },
   })
   const posters = data?.movie?.images?.posters?.filter(
-    (x) => x?.iso_639_1 === 'en' || !x?.iso_639_1
+    (x) => x?.iso_639_1 === 'en' || !x?.iso_639_1,
   )
   const backdrops = data?.movie?.images?.backdrops?.filter(
-    (x) => x?.iso_639_1 === 'en' || !x?.iso_639_1
+    (x) => x?.iso_639_1 === 'en' || !x?.iso_639_1,
   )
 
   return (
