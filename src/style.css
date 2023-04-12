@@ -10,8 +10,8 @@
   }
   a,
   button {
-  -webkit-tap-highlight-color: transparent;
-}
+    -webkit-tap-highlight-color: transparent;
+  }
   ::-webkit-scrollbar {
     @apply hidden lg:block;
   }
