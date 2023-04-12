@@ -1,6 +1,6 @@
-import { Poster } from './poster'
-import { Filler } from './filler-image'
 import { Link } from 'react-router-dom'
+import { Filler } from './filler-image'
+import { Poster } from './poster'
 
 type Props = {
   image?: string

@@ -1,9 +1,9 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { toDateString } from '../util'
+import { ImageGrid } from '../comps/image-grid'
+import { PosterCard } from '../comps/poster-card'
 import { imageUrls, loadSilhouette } from '../consts'
 import { useEpisodeQuery, useShowQuery } from '../gql'
-import { PosterCard } from '../comps/poster-card'
-import { ImageGrid } from '../comps/image-grid'
+import { toDateString } from '../util'
 
 enum Tabs {
   Info = 'INFO',

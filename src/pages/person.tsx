@@ -1,10 +1,10 @@
 import { useParams, useSearchParams } from 'react-router-dom'
-import { setTitle, toDateString } from '../util'
-import { loadSilhouette } from '../consts'
-import { usePersonQuery } from '../gql'
-import { PosterCard } from '../comps/poster-card'
 import { AdaptablePoster } from '../comps/adaptable-poster'
 import { ImageGrid } from '../comps/image-grid'
+import { PosterCard } from '../comps/poster-card'
+import { loadSilhouette } from '../consts'
+import { usePersonQuery } from '../gql'
+import { setTitle, toDateString } from '../util'
 
 enum Tabs {
   Bio = 'BIO',

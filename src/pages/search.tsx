@@ -1,9 +1,9 @@
-import { useSearchParams } from 'react-router-dom'
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { useSearchQuery } from '../gql'
-import { overviewTrimmer, setTitle, toDateString } from '../util'
+import { useSearchParams } from 'react-router-dom'
 import { PosterCard } from '../comps/poster-card'
 import { posterCardSilhouette } from '../consts'
+import { useSearchQuery } from '../gql'
+import { overviewTrimmer, setTitle, toDateString } from '../util'
 
 enum Tabs {
   Movies = 'movie',
@@ -62,6 +62,7 @@ export function Search() {
         defaultValue={query}
         onChange={(e) => setDebounceVal(e.target.value)}
       />
+
       <div className='row scroll-hide space-x-2'>
         {TABS.map((x, i) => (
           <button
@@ -107,6 +108,7 @@ export function Search() {
           </>
         )}
       </div>
+
       {query && (
         <div className='row scroll-hide space-x-2'>
           <button
