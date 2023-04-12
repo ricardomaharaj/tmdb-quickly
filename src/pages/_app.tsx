@@ -1,8 +1,8 @@
 import type { AppProps } from 'next/app'
-import '~/styles/globals.css'
+import * as Urql from 'urql'
 
 import { Header } from '~/comps/header'
-import * as Urql from 'urql'
+import '~/styles/globals.css'
 
 const url = '/api/gql'
 
@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Urql.Provider value={UrqlClient}>
-        <div className='col m-2'>
+        <div className='col m-2 space-y-2'>
           <Header />
           <Component {...pageProps} />
         </div>
