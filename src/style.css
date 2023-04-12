@@ -53,7 +53,7 @@
     @apply grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4;
   }
   .scroll-hide {
-    @apply overflow-scroll md:overflow-hidden;
+    @apply overflow-scroll lg:overflow-hidden;
   }
   .sel {
     @apply bg-slate-700;
