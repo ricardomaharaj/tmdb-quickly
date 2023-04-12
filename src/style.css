@@ -8,8 +8,12 @@
   font-family: 'Ubuntu', sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
-
-@layer base {
+  ::-webkit-scrollbar {
+    @apply hidden lg:block;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 hover:bg-slate-700;
+  }
   body {
     @apply container mx-auto bg-slate-900 text-white;
   }
