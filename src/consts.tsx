@@ -1,10 +1,10 @@
 export const imageUrls = {
   ORIGINAL: 'https://image.tmdb.org/t/p/original',
   W500: 'https://image.tmdb.org/t/p/w500',
-  W94H141: 'https://www.themoviedb.org/t/p/w94_and_h141_bestv2',
-  W150H225: 'https://www.themoviedb.org/t/p/w150_and_h225_bestv2',
-  W227H127: 'https://www.themoviedb.org/t/p/w227_and_h127_bestv2',
-  W640H360: 'https://www.themoviedb.org/t/p/w640_and_h360_bestv2'
+  W94H141: 'https://image.tmdb.org/t/p/w94_and_h141_bestv2',
+  W150H225: 'https://image.tmdb.org/t/p/w150_and_h225_bestv2',
+  W227H127: 'https://image.tmdb.org/t/p/w227_and_h127_bestv2',
+  W640H360: 'https://image.tmdb.org/t/p/w640_and_h360_bestv2'
 }
 
 export const loadSilhouette = (
