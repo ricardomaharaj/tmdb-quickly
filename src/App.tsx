@@ -14,12 +14,15 @@ const url =
     ? 'https://r8r-gql.herokuapp.com/'
     : 'http://localhost:4000/'
 
-const urqlClient = createUrqlClient({ url })
+const urqlClient = Urql.createClient({
+  url,
+  exchanges: [Urql.cacheExchange, Urql.fetchExchange]
+})
 
 export function App() {
   return (
     <BrowserRouter>
-      <UrqlProvider value={urqlClient}>
+      <Urql.Provider value={urqlClient}>
         <Header />
         <Routes>
           <Route path='/' element={<Search />} />
@@ -33,7 +36,7 @@ export function App() {
           <Route path='/person/:id' element={<Person />} />
           <Route path='*' element={<Search />} />
         </Routes>
-      </UrqlProvider>
+      </Urql.Provider>
     </BrowserRouter>
   )
 }
