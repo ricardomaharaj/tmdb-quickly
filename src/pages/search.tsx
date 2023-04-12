@@ -19,14 +19,13 @@ export function Search() {
   const tab = params.get('tab') || Tabs.Movies
   const page = parseInt(params.get('page') || '1')
 
-  const [query, setQuery] = useState(params.get('query') || '')
+  const query = params.get('query') || ''
   const [debouncedVal, setDebounceVal] = useState(params.get('query') || '')
   const ref = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     ref.current = setTimeout(() => {
-      setQuery(debouncedVal)
-      replaceSearchParams({ query })
+      replaceSearchParams({ query: debouncedVal })
     }, 500)
     return () => clearTimeout(ref.current)
   }, [debouncedVal])
