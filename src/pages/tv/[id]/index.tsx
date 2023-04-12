@@ -1,6 +1,13 @@
 import { useRouter } from 'next/router'
+import { gql, useQuery } from 'urql'
 
+import { Img } from '~/comps/image'
 import { TVCredits } from '~/comps/tv/credits'
+import { TVImages } from '~/comps/tv/images'
+import { TVSeasons } from '~/comps/tv/seasons'
+import { TVVideos } from '~/comps/tv/videos'
+import { TV } from '~/types/tmdb'
+import { useTitle } from '~/util'
 
 const tvQuery = gql`
   query TV($id: ID!) {
@@ -67,10 +74,11 @@ export default function MoviePage() {
   return (
     <>
       <div className='row'>
-        <div className='col'>
-          <img src={`${imageUrls.w94h141}${tv?.poster_path}`} alt='' />
+        <div className='col mr-2'>
+          <Img src={tv?.poster_path} />
         </div>
         <div className='col'>
+          <div>{tv?.first_air_date}</div>
           <div>{tv?.name}</div>
           <div>{tv?.tagline}</div>
         </div>
@@ -78,8 +86,8 @@ export default function MoviePage() {
       <div className='row space-x-4 overflow-scroll'>
         {Object.values(Tabs).map((x, i) => (
           <button
+            onClick={() => updateQueries({ tab: x, page: 1 })}
             className={`${tab === x && 'font-bold'}`}
-            onClick={() => updateQueries({ tab: x })}
             key={i}
           >
             {x.toUpperCase()}
@@ -89,21 +97,36 @@ export default function MoviePage() {
       {tab === Tabs.Info && (
         <>
           <div className='row'>
-            <div className=''>{tv?.overview}</div>
+            <div>{tv?.overview}</div>
           </div>
-
+          <div className='col'>
+            <div>Status: {tv?.status}</div>
+            <div>Type: {tv?.type}</div>
+            <div>Seasons: {tv?.number_of_seasons}</div>
+            <div>Episodes: {tv?.number_of_episodes}</div>
+            <div>Runtime: {tv?.episode_run_time?.[0]}m</div>
+            <div>First Aired: {tv?.first_air_date}</div>
+            <div>Last Aired: {tv?.last_air_date}</div>
+          </div>
+          <div className='row space-x-4 overflow-scroll'>
+            {tv?.genres?.map((x, i) => (
+              <div key={i}>{x.name}</div>
+            ))}
+          </div>
           <div className='row space-x-4 overflow-scroll'>
             {tv?.production_companies?.map((x, i) => (
-              <div key={i}>{x?.name}</div>
+              <div key={i}>{x.name}</div>
             ))}
             {tv?.networks?.map((x, i) => (
-              <div key={i}>{x?.name}</div>
+              <div key={i}>{x.name}</div>
             ))}
           </div>
         </>
       )}
       {castOrCrewTab && <TVCredits />}
-      {tab === Tabs.Seasons && <></>}
+      {tab === Tabs.Seasons && <TVSeasons id={id} />}
+      {tab === Tabs.Images && <TVImages id={id} />}
+      {tab === Tabs.Videos && <TVVideos id={id} />}
     </>
   )
 }
