@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect, useRef, useState } from 'react'
+import { gql, useQuery } from 'urql'
+
+import { Img } from '~/comps/image'
+import { SearchResults } from '~/types/tmdb'
+import { trimmer, useTitle } from '~/util'
 
 const searchQuery = gql`
   query Search($query: String, $page: Int) {
@@ -56,47 +61,36 @@ export default function Home() {
         <input
           type='text'
           placeholder='SEARCH'
+          className='w-full border-2 p-2 text-center text-xl outline-none'
           defaultValue={query}
-          className='w-full border-2 p-2 text-center outline-none'
           onChange={(e) => setDebounce(e.target.value)}
         />
       </div>
-      <div className='grid123 mt-2'>
-        {results?.map((x) => (
-          <Link
-            href={`${x?.media_type}/${x?.id}`}
-            key={`${x?.media_type}/${x?.id}`}
-            className='row'
-          >
-            <div className='col'>
-              <img
-                src={`${imageUrls.w94h141}${x?.poster_path || x?.profile_path}`}
-                className='mr-2 max-w-[94px]'
-                alt=''
-              />
+      <div className='grid123'>
+        {results?.map((x, i) => (
+          <Link href={`${x?.media_type}/${x?.id}`} className='row' key={i}>
+            <div className='col mr-2'>
+              <Img src={x?.poster_path || x?.profile_path} />
             </div>
             <div className='col'>
               {query && <div>{x?.release_date || x?.first_air_date}</div>}
               <div>{x?.title || x?.name}</div>
-              {x?.overview && <div>{trimmer(x?.overview)}</div>}
+              {x?.overview && <div>{trimmer(x.overview)}</div>}
             </div>
           </Link>
         ))}
       </div>
       {query && (
-        <div className='row justify-evenly py-2'>
+        <div className='row space-x-4'>
           <button
-            className='px-4'
+            disabled={page <= 1}
             onClick={() => updateQueries({ page: page - 1 })}
           >
-            {'<'}
+            BACK
           </button>
           <div>{page}</div>
-          <button
-            className='px-4'
-            onClick={() => updateQueries({ page: page + 1 })}
-          >
-            {'>'}
+          <button onClick={() => updateQueries({ page: page + 1 })}>
+            NEXT
           </button>
         </div>
       )}
