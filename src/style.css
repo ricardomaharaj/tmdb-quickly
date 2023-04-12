@@ -4,8 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  font-family: 'Ubuntu', sans-serif;
+@layer base {
+  html {
+    @apply font-["Ubuntu"];
+  }
+  a,
+  button {
   -webkit-tap-highlight-color: transparent;
 }
   ::-webkit-scrollbar {
