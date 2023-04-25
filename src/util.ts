@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { z } from 'zod'
 
 import { appName } from '~/consts'
 
@@ -15,4 +16,8 @@ export function useTitle(title?: string | null) {
   useEffect(() => {
     document.title = title ? `${title} | ${appName}` : appName
   }, [title])
+}
+
+export function zNumGt1(num?: number) {
+  return z.number().gt(1).safeParse(num).success
 }
