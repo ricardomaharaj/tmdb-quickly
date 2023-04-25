@@ -75,7 +75,7 @@ export default function Home() {
             <div className='col'>
               {query && <div>{x?.release_date || x?.first_air_date}</div>}
               <div>{x?.title || x?.name}</div>
-              {x?.overview && <div>{trimmer(x.overview)}</div>}
+              {x?.overview && <div className='line-clamp-2'>{x.overview}</div>}
             </div>
           </Link>
         ))}
