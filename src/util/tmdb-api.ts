@@ -1,4 +1,4 @@
-import { Fetcher } from './fetcher'
+import { Fetcher } from '~/util/fetcher'
 
 export const tmdbApi = new Fetcher({
   baseUrl: 'https://api.themoviedb.org/3/',
