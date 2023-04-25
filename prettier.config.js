@@ -5,4 +5,5 @@ module.exports = {
   jsxSingleQuote: true,
   trailingComma: 'all',
   plugins: ['prettier-plugin-tailwindcss', 'prettier-plugin-organize-imports'],
+  organizeImportsSkipDestructiveCodeActions: true,
 }
