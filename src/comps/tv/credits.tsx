@@ -1,10 +1,9 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { gql, useQuery } from 'urql'
 
 import { Img } from '~/comps/image'
-import { Tabs } from '~/pages/tv/[id]'
 import { TV } from '~/types/tmdb'
+import { Props } from '~/types/tv'
 
 const tvCreditsQuery = gql`
   query TVCredits($id: ID!) {
@@ -33,18 +32,8 @@ const tvCreditsQuery = gql`
   }
 `
 
-export function TVCredits() {
-  const router = useRouter()
-  const queries = router.query as Record<string, string | undefined>
-
-  const id = queries.id!
-  const query = queries.query || ''
-  const page = parseInt(queries.page || '1')
-  const tab = (queries.tab as Tabs) || Tabs.Cast
-
-  const updateQueries = (update: any) => {
-    router.replace({ query: { id, query, page, tab, ...update } })
-  }
+export function TVCredits(props: Props) {
+  const { id, query, page, tab, updateQueries } = props
 
   const [{ data }] = useQuery<{ tv: TV }>({
     query: tvCreditsQuery,

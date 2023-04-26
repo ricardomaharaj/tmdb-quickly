@@ -1,9 +1,8 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { gql, useQuery } from 'urql'
 
 import { Img } from '~/comps/image'
-import { Tabs } from '~/pages/movie/[id]/index'
+import { Props } from '~/types/movie'
 import { Movie } from '~/types/tmdb'
 
 const movieCreditsQuery = gql`
@@ -27,19 +26,8 @@ const movieCreditsQuery = gql`
   }
 `
 
-export function MovieCredits() {
-  const router = useRouter()
-
-  const queries = router.query as Record<string, string | undefined>
-
-  const id = queries.id!
-  const query = queries.query || ''
-  const page = parseInt(queries.page || '1')
-  const tab = (queries.tab as Tabs) || Tabs.Cast
-
-  const updateQueries = (update: any) => {
-    router.replace({ query: { id, query, page, tab, ...update } })
-  }
+export function MovieCredits(props: Props) {
+  const { id, page, query, tab, updateQueries } = props
 
   const [{ data }] = useQuery<{ movie: Movie }>({
     query: movieCreditsQuery,
