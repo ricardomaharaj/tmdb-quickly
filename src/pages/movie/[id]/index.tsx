@@ -5,8 +5,9 @@ import { Img } from '~/comps/image'
 import { MovieCredits } from '~/comps/movie/credits'
 import { MovieImages } from '~/comps/movie/images'
 import { MovieVideos } from '~/comps/movie/videos'
+import { Queries, tabs, zQueries } from '~/types/movie'
 import { Movie } from '~/types/tmdb'
-import { useTitle } from '~/util'
+import { useTitle, zNumGt1 } from '~/util'
 
 const movieQuery = gql`
   query Movie($id: ID!) {
@@ -30,50 +31,42 @@ const movieQuery = gql`
   }
 `
 
-export enum Tabs {
-  Info = 'Info',
-  Cast = 'Cast',
-  Crew = 'Crew',
-  Images = 'Images',
-  Videos = 'Videos',
-}
-
 export default function MoviePage() {
   const router = useRouter()
 
-  const id = router.query.id as string
-  const tab = (router.query.tab as Tabs) || Tabs.Info
-  const query = (router.query.query as string) || ''
-  const page = parseInt((router.query.page as string) || '1')
+  const { id, page, query, tab } = zQueries.parse(router.query)
 
-  const updateQueries = (update: any) => {
+  const updateQueries = (update: Partial<Queries>) => {
     router.replace({ query: { id, tab, query, page, ...update } })
   }
+
+  const creditProps = { id, page, query, tab, updateQueries }
 
   const [{ data }] = useQuery<{ movie: Movie }>({
     query: movieQuery,
     variables: { id },
   })
+
   const movie = data?.movie
 
   useTitle(movie?.title)
 
-  const castOrCrewTab = [Tabs.Cast, Tabs.Crew].includes(tab)
+  const castOrCrewTab = tab === 'Cast' || tab === 'Crew'
 
   return (
     <>
       <div className='row'>
         <div className='col mr-2'>
-          <Img src={movie?.poster_path} />
+          {movie?.poster_path && <Img src={movie?.poster_path} />}
         </div>
         <div className='col'>
-          <div>{movie?.release_date}</div>
-          <div>{movie?.title}</div>
-          <div>{movie?.tagline}</div>
+          {movie?.release_date && <div>{movie?.release_date}</div>}
+          {movie?.title && <div>{movie?.title}</div>}
+          {movie?.tagline && <div>{movie?.tagline}</div>}
         </div>
       </div>
       <div className='row space-x-4'>
-        {Object.values(Tabs).map((x, i) => (
+        {tabs.map((x, i) => (
           <button
             onClick={() => updateQueries({ tab: x, page: 1 })}
             className={`${tab === x && 'font-bold'}`}
@@ -83,17 +76,19 @@ export default function MoviePage() {
           </button>
         ))}
       </div>
-      {tab === Tabs.Info && (
+      {tab === 'Info' && (
         <>
-          <div className='row'>
-            <div>{movie?.overview}</div>
-          </div>
+          {movie?.overview && (
+            <div className='row'>
+              <div>{movie?.overview}</div>
+            </div>
+          )}
 
           <div className='col'>
-            <div>Status: {movie?.status}</div>
-            <div>Budget: {movie?.budget}</div>
-            <div>Revenue: {movie?.revenue}</div>
-            <div>Runtime: {movie?.runtime}m</div>
+            {movie?.status && <div>Status: {movie?.status}</div>}
+            {zNumGt1(movie?.budget) && <div>Budget: {movie?.budget}</div>}
+            {zNumGt1(movie?.revenue) && <div>Revenue: {movie?.revenue}</div>}
+            {zNumGt1(movie?.runtime) && <div>Runtime: {movie?.runtime}m</div>}
           </div>
 
           <div className='row space-x-4 overflow-scroll'>
@@ -109,9 +104,9 @@ export default function MoviePage() {
           </div>
         </>
       )}
-      {castOrCrewTab && <MovieCredits />}
-      {tab === Tabs.Images && <MovieImages id={id} />}
-      {tab === Tabs.Videos && <MovieVideos id={id} />}
+      {castOrCrewTab && <MovieCredits {...creditProps} />}
+      {tab === 'Images' && <MovieImages id={id!} />}
+      {tab === 'Videos' && <MovieVideos id={id!} />}
     </>
   )
 }
