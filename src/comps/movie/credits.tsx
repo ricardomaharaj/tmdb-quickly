@@ -68,7 +68,7 @@ export function MovieCredits(props: Props) {
         />
       </div>
       <div className='grid123'>
-        {tab === Tabs.Cast && (
+        {tab === 'Cast' && (
           <>
             {cast?.map((x, i) => (
               <Link href={`/person/${x?.id}`} className='row' key={i}>
@@ -83,7 +83,7 @@ export function MovieCredits(props: Props) {
             ))}
           </>
         )}
-        {tab === Tabs.Crew && (
+        {tab === 'Crew' && (
           <>
             {crew?.map((x, i) => (
               <Link href={`/person/${x?.id}`} className='row' key={i}>
