@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import { gql, useQuery } from 'urql'
 
 import { Img } from '~/comps/image'
+import { Queries, zQueries } from '~/types/search'
 import { SearchResults } from '~/types/tmdb'
-import { trimmer, useTitle } from '~/util'
+import { useTitle } from '~/util'
 
 const searchQuery = gql`
   query Search($query: String, $page: Int) {
@@ -31,13 +32,10 @@ export default function Home() {
   useTitle()
   const router = useRouter()
 
-  const queries = router.query as Record<string, string | undefined>
+  const { query, page } = zQueries.parse(router.query)
 
-  const query = queries.query || ''
-  const page = parseInt(queries.page || '1')
-
-  function updateQueries(update: any) {
-    router.replace({ pathname: '/', query: { query, page, ...update } })
+  function updateQueries(update: Partial<Queries>) {
+    router.replace({ query: { query, page, ...update } })
   }
 
   const [{ data }] = useQuery<{ search: SearchResults }>({
