@@ -12,7 +12,7 @@ export function trimmer(str: string) {
   }
 }
 
-export function useTitle(title?: string | null) {
+export function useTitle(title?: string) {
   useEffect(() => {
     document.title = title ? `${title} | ${appName}` : appName
   }, [title])
