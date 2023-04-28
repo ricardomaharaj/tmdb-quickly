@@ -4,7 +4,7 @@ import * as Urql from 'urql'
 import { Header } from '~/comps/header'
 import '~/styles/globals.css'
 
-const url = '/api/gql'
+const url = '/api'
 
 const UrqlClient = Urql.createClient({
   url,
