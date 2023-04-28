@@ -2,7 +2,6 @@ import { gql, useQuery } from 'urql'
 
 import { Img } from '~/comps/image'
 import { TV } from '~/types/tmdb'
-import { trimmer } from '~/util'
 
 const tvSeasonQuery = gql`
   query Seasons($id: ID!) {
@@ -36,7 +35,7 @@ export function TVSeasons({ id }: { id: string }) {
             <div>{x.name}</div>
             <div>{x.air_date}</div>
             <div>{x.episode_count} Episodes</div>
-            <div>{trimmer(x.overview)}</div>
+            <div className='line-clamp-2 lg:max-w-[50%]'>{x.overview}</div>
           </div>
         </div>
       ))}
