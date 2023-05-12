@@ -51,8 +51,7 @@ const schema = createSchema({
 
 const yoga = createYoga({
   schema,
-  graphqlEndpoint: '/api',
-  landingPage: false,
+  graphqlEndpoint: '/api/gql',
   graphiql: process.env.NODE_ENV !== 'production',
 })
 
