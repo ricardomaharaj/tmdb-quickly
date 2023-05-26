@@ -16,6 +16,7 @@ type Result {
   original_title: String
   overview: String
   poster_path: String
+  profile_path: String
   media_type: String
   genre_ids: [Int]
   popularity: Int
@@ -326,7 +327,7 @@ type Episode {
 
 type Query {
   search(query: String, page: Int): Search
-  movie(id: ID!): Movie
+  movie(id: ID!, query: String, page: Int): Movie
   tv(id: ID!): TV
   season(id: ID!, season_number: Int!): Season
   episode(id: ID!, season_number: Int!, episode_number: Int!): Episode
