@@ -1,3 +1,3 @@
-export default function Home() {
-  return <></>
-}
+import { Home } from '~/comps/home'
+
+export default Home
