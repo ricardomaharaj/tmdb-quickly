@@ -1,58 +1,43 @@
-import fs from 'fs'
+import { readFileSync } from 'fs'
 import { createSchema, createYoga } from 'graphql-yoga'
+import { ID } from '~/types/id'
+import { Yoga } from '~/types/yoga'
+import { TMDB } from '~/util/tmdb-api'
 
-import { tmdbApi } from '~/util/tmdb-api'
-
-const schema = createSchema({
-  typeDefs: fs.readFileSync('./schema.gql').toString('utf8'),
+const schema = createSchema<Yoga>({
+  typeDefs: readFileSync('./gql/schema.gql').toString('utf-8'),
   resolvers: {
     Query: {
-      search: async (_, { query, page }) => {
-        if (!query) {
-          return await tmdbApi.get('trending/all/week')
-        } else {
-          return await tmdbApi.get('search/multi', { params: { query, page } })
-        }
+      search: async (_, { query, page }: { query?: string; page: number }) => {
+        if (!query) return await TMDB.trending()
+        return await TMDB.search({ query, page })
       },
-      movie: async (_, { id }) => {
-        return await tmdbApi.get(`movie/${id}`, {
-          params: {
-            append_to_response: 'credits,images,videos',
-          },
-        })
+      movie: async (_, { id }: { id: ID }) => {
+        return await TMDB.movie({ id })
       },
-      tv: async (_, { id }) => {
-        return await tmdbApi.get(`tv/${id}`, {
-          params: {
-            append_to_response: 'aggregate_credits,images,videos',
-          },
-        })
+      tv: async (_, { id }: { id: ID }) => {
+        return await TMDB.tv({ id })
       },
-      season: async (_, { id, season }) => {
-        return await tmdbApi.get(`tv/${id}/season/${season}`, {
-          params: {
-            append_to_response: 'credits,images,videos',
-          },
-        })
+      season: async (
+        _,
+        { id, season_number }: { id: ID; season_number: number },
+      ) => {
+        return await TMDB.season({ id, season_number })
       },
-      episode: async (_, { id, season, episode }) => {
-        return await tmdbApi.get(
-          `tv/${id}/season/${season}/episode/${episode}`,
-          {
-            params: {
-              append_to_response: 'credits,images,videos',
-            },
-          },
-        )
+      episode: async (
+        _,
+        {
+          id,
+          season_number,
+          episode_number,
+        }: { id: ID; season_number: number; episode_number: number },
+      ) => {
+        return await TMDB.episode({ id, season_number, episode_number })
       },
     },
   },
 })
 
-const yoga = createYoga({
-  schema,
-  graphqlEndpoint: '/api/gql',
-  graphiql: process.env.NODE_ENV !== 'production',
-})
+const yoga = createYoga<Yoga>({ schema, graphqlEndpoint: '/api/gql' })
 
 export default yoga

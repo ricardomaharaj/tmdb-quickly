@@ -1,11 +1,13 @@
-type SearchResults {
+scalar Any
+
+type Search {
   page: Int
-  results: [SearchResult]
+  results: [Result]
   total_pages: Int
   total_results: Int
 }
 
-type SearchResult {
+type Result {
   adult: Boolean
   backdrop_path: String
   id: Int
@@ -19,41 +21,13 @@ type SearchResult {
   popularity: Int
   release_date: String
   video: Boolean
-  vote_average: Float
-  vote_count: Int
-  name: String
-  original_name: String
-  first_air_date: String
-  origin_country: [String]
-  gender: Int
-  known_for_department: String
-  profile_path: String
-  known_for: [KnownFor]
-}
-
-type KnownFor {
-  adult: Boolean
-  backdrop_path: String
-  id: Int
-  title: String
-  original_language: String
-  original_title: String
-  overview: String
-  poster_path: String
-  media_type: String
-  genre_ids: [Int]
-  popularity: Int
-  release_date: String
-  video: Boolean
-  vote_average: Float
+  vote_average: Int
   vote_count: Int
   name: String
   original_name: String
   first_air_date: String
   origin_country: [String]
 }
-
-#
 
 type Movie {
   adult: Boolean
@@ -79,11 +53,12 @@ type Movie {
   tagline: String
   title: String
   video: Boolean
-  vote_average: Float
+  vote_average: Int
   vote_count: Int
   credits: Credits
   images: Images
   videos: Videos
+  release_dates: ReleaseDates
 }
 
 type BelongsToCollection {
@@ -136,6 +111,7 @@ type Images {
   backdrops: [Image]
   logos: [Image]
   posters: [Image]
+  stills: [Image]
 }
 
 type Image {
@@ -143,7 +119,7 @@ type Image {
   height: Int
   iso_639_1: String
   file_path: String
-  vote_average: Float
+  vote_average: Int
   vote_count: Int
   width: Int
 }
@@ -158,6 +134,24 @@ type ProductionCompany {
 type ProductionCountry {
   iso_3166_1: String
   name: String
+}
+
+type ReleaseDates {
+  results: [ReleaseDatesResult]
+}
+
+type ReleaseDatesResult {
+  iso_3166_1: String
+  release_dates: [ReleaseDate]
+}
+
+type ReleaseDate {
+  certification: String
+  descriptors: [String]
+  iso_639_1: String
+  note: String
+  release_date: String
+  type: Int
 }
 
 type SpokenLanguage {
@@ -183,12 +177,9 @@ type VideoResult {
   id: String
 }
 
-#
-
 type TV {
   adult: Boolean
   backdrop_path: String
-  created_by: [CreatedBy]
   episode_run_time: [Int]
   first_air_date: String
   genres: [Genre]
@@ -197,7 +188,6 @@ type TV {
   in_production: Boolean
   languages: [String]
   last_air_date: String
-  last_episode_to_air: LastEpisodeToAir
   name: String
   networks: [Network]
   number_of_episodes: Int
@@ -208,14 +198,14 @@ type TV {
   overview: String
   popularity: Int
   poster_path: String
-  production_companies: [ProductionCompany]
+  production_companies: [Network]
   production_countries: [ProductionCountry]
   seasons: [TVSeason]
   spoken_languages: [SpokenLanguage]
   status: String
   tagline: String
   type: String
-  vote_average: Float
+  vote_average: Int
   vote_count: Int
   aggregate_credits: AggregateCredits
   images: Images
@@ -267,29 +257,6 @@ type Job {
   episode_count: Int
 }
 
-type CreatedBy {
-  id: Int
-  credit_id: String
-  name: String
-  gender: Int
-  profile_path: String
-}
-
-type LastEpisodeToAir {
-  id: Int
-  name: String
-  overview: String
-  vote_average: Float
-  vote_count: Int
-  air_date: String
-  episode_number: Int
-  production_code: String
-  runtime: Int
-  season_number: Int
-  show_id: Int
-  still_path: String
-}
-
 type Network {
   id: Int
   logo_path: String
@@ -306,8 +273,6 @@ type TVSeason {
   poster_path: String
   season_number: Int
 }
-
-#
 
 type Season {
   _id: String
@@ -334,33 +299,17 @@ type SeasonEpisode {
   season_number: Int
   show_id: Int
   still_path: String
-  vote_average: Float
+  vote_average: Int
   vote_count: Int
   crew: [Crew]
-  guest_stars: [GuestStar]
+  guest_stars: [Cast]
 }
-
-type GuestStar {
-  character: String
-  credit_id: String
-  order: Int
-  adult: Boolean
-  gender: Int
-  id: Int
-  known_for_department: String
-  name: String
-  original_name: String
-  popularity: Int
-  profile_path: String
-}
-
-#
 
 type Episode {
   air_date: String
   crew: [Crew]
   episode_number: Int
-  guest_stars: [GuestStar]
+  guest_stars: [Cast]
   name: String
   overview: String
   id: Int
@@ -368,29 +317,17 @@ type Episode {
   runtime: Int
   season_number: Int
   still_path: String
-  vote_average: Float
+  vote_average: Int
   vote_count: Int
-  credits: EpisodeCredits
-  images: EpisodeImages
+  credits: Credits
+  images: Images
   videos: Videos
 }
 
-type EpisodeCredits {
-  cast: [Cast]
-  crew: [Crew]
-  guest_stars: [GuestStar]
-}
-
-type EpisodeImages {
-  stills: [Image]
-}
-
-scalar Any
-
 type Query {
-  search(query: String, page: Int): SearchResults
+  search(query: String, page: Int): Search
   movie(id: ID!): Movie
   tv(id: ID!): TV
-  season(id: ID!, season: Int!): Season
-  episode(id: ID!, season: Int!, episode: Int!): Episode
+  season(id: ID!, season_number: Int!): Season
+  episode(id: ID!, season_number: Int!, episode_number: Int!): Episode
 }

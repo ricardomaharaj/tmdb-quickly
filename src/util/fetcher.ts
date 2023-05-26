@@ -1,22 +1,21 @@
-interface Opts extends RequestInit {
-  params?: Record<string, string>
-}
+type Params = Record<string, string | number>
 
 export class Fetcher {
   baseUrl: string
-  opts?: Opts
-  constructor({ baseUrl, opts }: { baseUrl: string; opts?: Opts }) {
-    this.baseUrl = baseUrl
-    this.opts = opts
+  params?: Params
+
+  constructor(args: { baseUrl: string; params?: Params }) {
+    this.baseUrl = args.baseUrl
+    this.params = args.params
   }
-  async get<T = any>(path: string, opts?: Opts) {
-    let url = `${this.baseUrl}${path}`
-    const params = { ...this.opts?.params, ...opts?.params }
-    Object.keys(params).forEach((key, i) => {
-      url += `${i === 0 ? '?' : '&'}${key}=${params[key]}`
+
+  async get<T = unknown>(path: string, params?: Params) {
+    let url = this.baseUrl + path
+    Object.entries({ ...this.params, ...params }).forEach(([key, val], i) => {
+      url += `${i === 0 ? '?' : '&'}${key}=${val}`
     })
-    const x = await fetch(url, { cache: 'force-cache', ...this.opts, ...opts })
-    const y = await x.json()
-    return y as T
+    const res = await fetch(url, { cache: 'force-cache' })
+    const data = await res.json()
+    return data as T
   }
 }

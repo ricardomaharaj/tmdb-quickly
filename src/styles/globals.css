@@ -1,31 +1,6 @@
-@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer base {
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  * {
-    -webkit-tap-highlight-color: transparent;
-    font-family: 'Ubuntu', sans-serif;
-  }
-  body {
-    @apply container mx-auto;
-  }
-}
-
-@layer components {
-  .grid123 {
-    @apply grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3;
-  }
-  .grid234 {
-    @apply grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4;
-  }
-}
 
 @layer utilities {
   .row {
