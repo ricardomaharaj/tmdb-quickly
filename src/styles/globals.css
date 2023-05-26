@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply container mx-auto max-w-md;
+  }
+}
+
 @layer utilities {
   .row {
     @apply flex flex-row;
