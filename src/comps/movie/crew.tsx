@@ -1,10 +1,8 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { gql, useQuery } from 'urql'
-import { Movie } from '~/types/tmdb'
-import { useDebounce } from '~/util/debounce'
-import { imageUrls } from '~/util/image-urls'
-import type { Props, Queries } from './types'
+import { Poster } from '~/comps/poster'
+import type { Movie } from '~/types/tmdb'
+import type { Props } from './types'
 
 const query = gql`
   query ($id: ID!, $query: String, $page: Int) {
@@ -22,63 +20,26 @@ const query = gql`
 `
 
 type Data = { movie: { credits: Movie['credits'] } }
-type Vars = Omit<Queries, 'tab'>
+type Vars = Props
 function useCrewQuery(variables: Vars) {
   return useQuery<Data, Vars>({ query, variables })
 }
 
 export function Crew(props: Props) {
-  const { queries, replaceQueries } = props
-  const { id, query, page } = queries
-  const { setDbVal, val } = useDebounce(query)
-
-  const [res] = useCrewQuery({ id, query: val, page })
+  const [res] = useCrewQuery(props)
   const crew = res.data?.movie?.credits?.crew
 
   return (
-    <>
-      <div className='row mb-2'>
-        <input
-          type='text'
-          placeholder='Search'
-          className='p-2 border-2 w-full'
-          onChange={(e) => setDbVal(e.target.value)}
-        />
-      </div>
-      <div className='col space-y-2 mb-2'>
-        {crew?.map((x, i) => (
-          <Link href={`/person/${x.id}`} className='row' key={i}>
-            {x.profile_path && (
-              <Image
-                src={`${imageUrls.w94h141}${x.profile_path}`}
-                width={94}
-                height={141}
-                className='mr-2'
-                alt=''
-              />
-            )}
-            <div className='col'>
-              <div>{x.name}</div>
-              <div>{x.job}</div>
-            </div>
-          </Link>
-        ))}
-      </div>
-      <div className='row justify-evenly py-2'>
-        <button
-          className='px-8 py-2'
-          onClick={() => replaceQueries({ page: page - 1 })}
-        >
-          {'<'}
-        </button>
-        <div className='py-2'>{page}</div>
-        <button
-          className='px-8 py-2'
-          onClick={() => replaceQueries({ page: page + 1 })}
-        >
-          {'>'}
-        </button>
-      </div>
-    </>
+    <div className='col space-y-2 mb-2'>
+      {crew?.map((x, i) => (
+        <Link href={`/person/${x.id}`} className='row' key={i}>
+          <Poster path={x.profile_path} />
+          <div className='col'>
+            <div>{x.name}</div>
+            <div>{x.job}</div>
+          </div>
+        </Link>
+      ))}
+    </div>
   )
 }

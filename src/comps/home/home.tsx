@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useEffect, useRef, useState } from 'react'
 import { gql, useQuery } from 'urql'
 import type { Search } from '~/types/tmdb'
-import { useDebounce } from '~/util/debounce'
 import { imageUrls } from '~/util/image-urls'
-import { zQueries } from './types'
+import { Queries, zQueries } from './types'
 
 const query = gql`
   query ($query: String, $page: Int) {
@@ -37,10 +37,29 @@ function useSearch(variables: Vars) {
 export function Home() {
   const router = useRouter()
   const { query, page } = zQueries.parse(router.query)
-  const { setDbVal, val } = useDebounce(query)
 
-  const [res] = useSearch({ query: val, page })
+  const [res] = useSearch({ query, page })
   const results = res.data?.search.results
+
+  function replaceQueries(update: Partial<Queries>) {
+    router.replace({
+      query: { query, page, ...update },
+    })
+  }
+
+  const [dbVal, setDbVal] = useState('')
+  const ref = useRef<NodeJS.Timeout>()
+  useEffect(() => {
+    ref.current = setTimeout(() => {
+      if (dbVal && dbVal !== query) {
+        replaceQueries({ query: dbVal })
+      }
+    }, 500)
+    return () => {
+      clearTimeout(ref.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dbVal])
 
   return (
     <div className='m-2'>
@@ -48,6 +67,7 @@ export function Home() {
         <input
           type='text'
           placeholder='Search'
+          defaultValue={query}
           className='border-2 w-full p-2'
           onChange={(e) => setDbVal(e.target.value)}
         />
@@ -66,8 +86,10 @@ export function Home() {
             )}
             <div className='col'>
               <div>{x.name || x.title}</div>
-              <div>{x.first_air_date || x.release_date}</div>
-              <div className='line-clamp-2'>{x.overview}</div>
+              {query && <div>{x.first_air_date || x.release_date}</div>}
+              <div className={`${query ? 'line-clamp-2' : 'line-clamp-3'}`}>
+                {x.overview}
+              </div>
             </div>
           </Link>
         ))}

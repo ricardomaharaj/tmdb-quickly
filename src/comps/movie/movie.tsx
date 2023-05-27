@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useEffect, useRef, useState } from 'react'
 import { gql, useQuery } from 'urql'
 import { ID } from '~/types/id'
 import { Movie } from '~/types/tmdb'
@@ -7,7 +8,7 @@ import { imageUrls } from '~/util/image-urls'
 import { Cast } from './cast'
 import { Crew } from './crew'
 import { Info } from './info'
-import type { Props, Queries } from './types'
+import type { Queries } from './types'
 import { tabs, zQueries } from './types'
 
 const query = gql`
@@ -58,13 +59,27 @@ export function Movie() {
   const movie = res.data?.movie
 
   function replaceQueries(update: Partial<Queries>) {
-    router.replace({ query: { id, tab, query, page, ...update } })
+    router.replace({
+      query: { id, tab, query, page, ...update },
+    })
   }
 
-  const props: Props = {
-    queries,
-    replaceQueries,
-  }
+  const [dbVal, setDbVal] = useState('')
+  const ref = useRef<NodeJS.Timeout>()
+  useEffect(() => {
+    ref.current = setTimeout(() => {
+      if (dbVal && dbVal !== query) {
+        replaceQueries({ query: dbVal })
+      }
+    }, 500)
+    return () => {
+      clearTimeout(ref.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dbVal])
+
+  const showFilterBar = tab === 'Cast' || tab === 'Crew'
+  const showPager = tab !== 'Info'
 
   return (
     <>
@@ -93,9 +108,31 @@ export function Movie() {
             </button>
           ))}
         </div>
+        {showFilterBar && (
+          <div className='row mb-2'>
+            <input
+              type='text'
+              placeholder='Search'
+              defaultValue={query}
+              className='p-2 border-2 w-full'
+              onChange={(e) => setDbVal(e.target.value)}
+            />
+          </div>
+        )}
         {tab === 'Info' && <Info movie={movie} />}
-        {tab === 'Cast' && <Cast {...props} />}
-        {tab === 'Crew' && <Crew {...props} />}
+        {tab === 'Cast' && <Cast {...queries} />}
+        {tab === 'Crew' && <Crew {...queries} />}
+        {showPager && (
+          <div className='row space-x-4'>
+            <button onClick={() => replaceQueries({ page: page - 1 })}>
+              Back
+            </button>
+            <div>{page}</div>
+            <button onClick={() => replaceQueries({ page: page + 1 })}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </>
   )
