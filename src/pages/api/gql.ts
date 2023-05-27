@@ -16,6 +16,7 @@ const schema = createSchema<Yoga>({
         _,
         { id, query = '', page = 1 }: { id: ID; query?: string; page?: number },
       ) => {
+        if (!id) return
         const movie = await TMDB.movie({ id })
 
         const perPage = 9
@@ -26,7 +27,7 @@ const schema = createSchema<Yoga>({
           let cast = movie.credits.cast
           if (query) {
             cast = cast.filter((x) =>
-              JSON.stringify(x).toLowerCase().includes(query),
+              JSON.stringify(x).toLowerCase().includes(query.toLowerCase()),
             )
           }
           cast = cast.slice(start, end)
@@ -37,7 +38,7 @@ const schema = createSchema<Yoga>({
           let crew = movie?.credits?.crew
           if (query) {
             crew = crew.filter((x) =>
-              JSON.stringify(x).toLowerCase().includes(query),
+              JSON.stringify(x).toLowerCase().includes(query.toLowerCase()),
             )
           }
           crew = crew.slice(start, end)
@@ -46,8 +47,40 @@ const schema = createSchema<Yoga>({
 
         return movie
       },
-      tv: async (_, { id }: { id: ID }) => {
-        return await TMDB.tv({ id })
+      tv: async (
+        _,
+        { id, query = '', page = 1 }: { id: ID; query?: string; page?: number },
+      ) => {
+        if (!id) return
+        const TV = await TMDB.tv({ id })
+
+        const perPage = 9
+        const start = (page - 1) * perPage
+        const end = page * perPage
+
+        if (TV.aggregate_credits?.cast) {
+          let cast = TV.aggregate_credits.cast
+          if (query) {
+            cast = cast.filter((x) =>
+              JSON.stringify(x).toLowerCase().includes(query.toLowerCase()),
+            )
+          }
+          cast = cast.slice(start, end)
+          TV.aggregate_credits.cast = cast
+        }
+
+        if (TV.aggregate_credits?.crew) {
+          let crew = TV.aggregate_credits.crew
+          if (query) {
+            crew = crew.filter((x) =>
+              JSON.stringify(x).toLowerCase().includes(query.toLowerCase()),
+            )
+          }
+          crew = crew.slice(start, end)
+          TV.aggregate_credits.crew = crew
+        }
+
+        return TV
       },
       season: async (
         _,
@@ -69,6 +102,9 @@ const schema = createSchema<Yoga>({
   },
 })
 
-const yoga = createYoga<Yoga>({ schema, graphqlEndpoint: '/api/gql' })
+const yoga = createYoga<Yoga>({
+  schema,
+  graphqlEndpoint: '/api/gql',
+})
 
 export default yoga
