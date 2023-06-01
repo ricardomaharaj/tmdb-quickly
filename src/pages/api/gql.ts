@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 import { createSchema, createYoga } from 'graphql-yoga'
-import { ID } from '~/types/id'
+import { Args } from '~/types/args'
 import { Yoga } from '~/types/yoga'
 import { TMDB } from '~/util/tmdb-api'
 
@@ -8,14 +8,15 @@ const schema = createSchema<Yoga>({
   typeDefs: readFileSync('./gql/schema.gql').toString('utf-8'),
   resolvers: {
     Query: {
-      search: async (_, { query, page }: { query?: string; page: number }) => {
+      search: async (_, args: Pick<Args, 'query' | 'page'>) => {
+        const { query, page } = args
+
         if (!query) return await TMDB.trending()
         return await TMDB.search({ query, page })
       },
-      movie: async (
-        _,
-        { id, query = '', page = 1 }: { id: ID; query?: string; page?: number },
-      ) => {
+      movie: async (_, args: Pick<Args, 'id' | 'query' | 'page'>) => {
+        const { id, query, page } = args
+
         if (!id) return
         const movie = await TMDB.movie({ id })
 
@@ -45,12 +46,27 @@ const schema = createSchema<Yoga>({
           movie.credits.crew = crew
         }
 
+        if (movie?.images?.posters) {
+          movie.images.posters = movie.images.posters
+            .filter(({ iso_639_1 }) => iso_639_1 === 'en' || !iso_639_1)
+            .slice(start, end)
+        }
+
+        if (movie?.images?.backdrops) {
+          movie.images.backdrops = movie.images.backdrops
+            .filter(({ iso_639_1 }) => iso_639_1 === 'en' || !iso_639_1)
+            .slice(start, end)
+        }
+
+        if (movie.videos?.results) {
+          movie.videos.results = movie.videos.results.slice(start, end)
+        }
+
         return movie
       },
-      tv: async (
-        _,
-        { id, query = '', page = 1 }: { id: ID; query?: string; page?: number },
-      ) => {
+      tv: async (_, args: Pick<Args, 'id' | 'query' | 'page'>) => {
+        const { id, query, page } = args
+
         if (!id) return
         const TV = await TMDB.tv({ id })
 
@@ -82,20 +98,15 @@ const schema = createSchema<Yoga>({
 
         return TV
       },
-      season: async (
-        _,
-        { id, season_number }: { id: ID; season_number: number },
-      ) => {
+      season: async (_, args: Pick<Args, 'id' | 'season_number'>) => {
+        const { id, season_number } = args
         return await TMDB.season({ id, season_number })
       },
       episode: async (
         _,
-        {
-          id,
-          season_number,
-          episode_number,
-        }: { id: ID; season_number: number; episode_number: number },
+        args: Pick<Args, 'id' | 'season_number' | 'episode_number'>,
       ) => {
+        const { id, season_number, episode_number } = args
         return await TMDB.episode({ id, season_number, episode_number })
       },
     },
