@@ -13,7 +13,7 @@ export function Poster({ path }: { path?: string }) {
           alt=''
         />
       ) : (
-        <div className='icon-[mdi--account] w-[94px] h-[141px] mr-2' />
+        <div className='icon-[mdi--account] mr-2 h-[141px] w-[94px]' />
       )}
     </>
   )
