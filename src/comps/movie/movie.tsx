@@ -1,15 +1,19 @@
-import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { lazy } from 'react'
 import { gql, useQuery } from 'urql'
+import { Card } from '~/comps/card'
+import { Pager } from '~/comps/pager'
+import { QueryBar } from '~/comps/query-bar'
 import { ID } from '~/types/id'
 import { Movie } from '~/types/tmdb'
-import { imageUrls } from '~/util/image-urls'
-import { Cast } from './cast'
-import { Crew } from './crew'
-import { Info } from './info'
-import type { Queries } from './types'
-import { tabs, zQueries } from './types'
+import { useDbQuery } from '~/util/debounce'
+import { Queries, tabs, zQueries } from './types'
+
+const Info = lazy(() => import('./info'))
+const Cast = lazy(() => import('./cast'))
+const Crew = lazy(() => import('./crew'))
+const Images = lazy(() => import('./images'))
+const Videos = lazy(() => import('./videos'))
 
 const query = gql`
   query ($id: ID!) {
@@ -64,74 +68,49 @@ export function Movie() {
     })
   }
 
-  const [dbVal, setDbVal] = useState('')
-  const ref = useRef<NodeJS.Timeout>()
-  useEffect(() => {
-    ref.current = setTimeout(() => {
-      if (dbVal && dbVal !== query) {
-        replaceQueries({ query: dbVal })
-      }
-    }, 500)
-    return () => {
-      clearTimeout(ref.current)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dbVal])
+  const { setDbVal } = useDbQuery({ query, replaceQueries })
 
-  const showFilterBar = tab === 'Cast' || tab === 'Crew'
+  const showQueryBar = tab === 'Cast' || tab === 'Crew'
   const showPager = tab !== 'Info'
 
   return (
     <>
       <div className='col m-2'>
-        <div className='row mb-2'>
-          {movie?.poster_path && (
-            <Image
-              src={`${imageUrls.w94h141}${movie.poster_path}`}
-              width={94}
-              height={141}
-              className='mr-2'
-              priority
-              alt=''
-            />
-          )}
-          <div className='col'>
-            <div>{movie?.title}</div>
-            <div>{movie?.release_date}</div>
-            <div>{movie?.tagline}</div>
-          </div>
-        </div>
-        <div className='row space-x-2 mb-1'>
+        <Card
+          image={movie?.poster_path}
+          primary={movie?.title}
+          secondary={movie?.release_date}
+          tertiary={movie?.tagline}
+        />
+        <div className='row my-2 space-x-2'>
           {tabs.map((x, i) => (
-            <button onClick={() => replaceQueries({ tab: x })} key={i}>
-              {x}
+            <button
+              className='row border-2 px-2'
+              onClick={() => replaceQueries({ tab: x })}
+              key={i}
+            >
+              <div>{x}</div>
             </button>
           ))}
         </div>
-        {showFilterBar && (
-          <div className='row mb-2'>
-            <input
-              type='text'
-              placeholder='Search'
-              defaultValue={query}
-              className='p-2 border-2 w-full'
-              onChange={(e) => setDbVal(e.target.value)}
-            />
-          </div>
+        {showQueryBar && (
+          <QueryBar
+            query={query}
+            onInputChange={(e) => setDbVal(e.target.value)}
+            onClearClick={() => replaceQueries({ query: '' })}
+          />
         )}
         {tab === 'Info' && <Info movie={movie} />}
-        {tab === 'Cast' && <Cast {...queries} />}
-        {tab === 'Crew' && <Crew {...queries} />}
+        {tab === 'Cast' && <Cast queries={queries} />}
+        {tab === 'Crew' && <Crew queries={queries} />}
+        {tab === 'Images' && <Images queries={queries} />}
+        {tab === 'Videos' && <Videos queries={queries} />}
         {showPager && (
-          <div className='row space-x-4'>
-            <button onClick={() => replaceQueries({ page: page - 1 })}>
-              Back
-            </button>
-            <div>{page}</div>
-            <button onClick={() => replaceQueries({ page: page + 1 })}>
-              Next
-            </button>
-          </div>
+          <Pager
+            page={page}
+            onPageDownClick={() => replaceQueries({ page: page - 1 })}
+            onPageUpClick={() => replaceQueries({ page: page + 1 })}
+          />
         )}
       </div>
     </>

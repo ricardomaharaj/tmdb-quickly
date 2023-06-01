@@ -13,10 +13,6 @@ export const zQueries = z.object({
 
 export type Queries = z.infer<typeof zQueries>
 
-export type ReplaceQueries = (update: Partial<Queries>) => void
-
-export type Props = Pick<Queries, 'id' | 'query' | 'page'>
-
 export const releaseTypes = [
   '',
   'Premiere',

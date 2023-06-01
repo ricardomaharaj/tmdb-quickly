@@ -1,7 +1,7 @@
 import { Movie } from '~/types/tmdb'
 import { releaseTypes } from './types'
 
-export function Info(props: { movie?: Movie }) {
+export default function Info(props: { movie?: Movie }) {
   const { movie } = props
 
   const release_dates = movie?.release_dates?.results
@@ -15,14 +15,14 @@ export function Info(props: { movie?: Movie }) {
       </div>
       <div className='row mb-2 space-x-4 overflow-scroll'>
         {movie?.production_companies?.map((x, i) => (
-          <div className='text-sm whitespace-nowrap' key={i}>
+          <div className='whitespace-nowrap text-sm' key={i}>
             {x.name}
           </div>
         ))}
       </div>
-      <div className='row overflow-scroll space-x-4'>
+      <div className='row space-x-4 overflow-scroll'>
         {release_dates?.map((x, i) => (
-          <div key={i} className='col text-sm whitespace-nowrap'>
+          <div key={i} className='col whitespace-nowrap text-sm'>
             {x.type && <div>{releaseTypes[x.type]}</div>}
             {x.release_date && (
               <div key={i}>
