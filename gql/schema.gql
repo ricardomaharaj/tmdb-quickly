@@ -328,7 +328,7 @@ type Episode {
 type Query {
   search(query: String, page: Int): Search
   movie(id: ID!, query: String, page: Int): Movie
-  tv(id: ID!): TV
+  tv(id: ID!, query: String, page: Int): TV
   season(id: ID!, season_number: Int!): Season
   episode(id: ID!, season_number: Int!, episode_number: Int!): Episode
 }
