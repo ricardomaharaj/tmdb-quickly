@@ -18,37 +18,15 @@ const Videos = lazy(() => import('./videos'))
 const query = gql`
   query ($id: ID!) {
     movie(id: $id) {
-      backdrop_path
-      budget
-      imdb_id
-      original_language
-      original_title
-      overview
       poster_path
-      production_companies {
-        name
-      }
-      release_dates {
-        results {
-          release_dates {
-            iso_639_1
-            release_date
-            type
-          }
-          iso_3166_1
-        }
-      }
-      revenue
-      release_date
-      runtime
-      status
-      tagline
       title
+      tagline
+      release_date
     }
   }
 `
 
-type Data = { movie: Movie }
+type Data = { movie?: Movie }
 type Vars = { id: ID }
 function useMovieQuery(variables: Vars) {
   return useQuery<Data, Vars>({ query, variables })
@@ -79,8 +57,8 @@ export function Movie() {
         <Card
           image={movie?.poster_path}
           primary={movie?.title}
-          secondary={movie?.release_date}
-          tertiary={movie?.tagline}
+          secondary={movie?.tagline}
+          tertiary={movie?.release_date}
         />
         <div className='row my-2 space-x-2'>
           {tabs.map((x, i) => (
@@ -100,7 +78,7 @@ export function Movie() {
             onClearClick={() => replaceQueries({ query: '' })}
           />
         )}
-        {tab === 'Info' && <Info movie={movie} />}
+        {tab === 'Info' && <Info queries={queries} />}
         {tab === 'Cast' && <Cast queries={queries} />}
         {tab === 'Crew' && <Crew queries={queries} />}
         {tab === 'Images' && <Images queries={queries} />}

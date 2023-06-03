@@ -1,6 +1,8 @@
 import { gql, useQuery } from 'urql'
 import { Card } from '~/comps/card'
+import { ID } from '~/types/id'
 import { Movie } from '~/types/tmdb'
+import { removeVoiceTag } from '~/util/voice-tag'
 import { Queries } from './types'
 
 const query = gql`
@@ -8,9 +10,9 @@ const query = gql`
     movie(id: $id, query: $query, page: $page) {
       credits {
         cast {
-          character
           id
           name
+          character
           profile_path
         }
       }
@@ -20,7 +22,7 @@ const query = gql`
 
 type Data = { movie: Movie }
 type Vars = {
-  id: string
+  id: ID
   query: string
   page: number
 }
@@ -43,7 +45,7 @@ export default function Cast(props: Props) {
           href={`/person/${x.id}`}
           image={x.profile_path}
           primary={x.name}
-          secondary={x.character}
+          secondary={removeVoiceTag(x.character)}
           key={i}
         />
       ))}

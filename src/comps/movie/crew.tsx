@@ -9,9 +9,9 @@ const query = gql`
     movie(id: $id, query: $query, page: $page) {
       credits {
         crew {
-          job
           id
           name
+          job
           profile_path
         }
       }

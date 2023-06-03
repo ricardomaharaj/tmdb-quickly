@@ -76,12 +76,13 @@ export default function Images(props: Props) {
       )}
       {tab === 'Backdrops' && (
         <div className='grid123 mb-2'>
-          {images?.posters?.map((x, i) => (
+          {images?.backdrops?.map((x, i) => (
             <Image
               src={`${imageUrls.w500h282}${x.file_path}`}
               width={500}
               height={282}
               key={i}
+              className='max-w-'
               alt=''
             />
           ))}
