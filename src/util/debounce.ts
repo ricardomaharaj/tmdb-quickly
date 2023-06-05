@@ -1,18 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 
-export function useDbQuery<T>(args: {
-  query: T
-  replaceQueries: (args: Partial<{ query: T }>) => void
+type Queries = {
+  id: string
+  query: string
+  page: number
+}
+
+export function useDbQuery(args: {
+  query: string
+  replaceQueries: (update: Partial<Queries>) => void
 }) {
   const { query, replaceQueries } = args
 
-  const [dbVal, setDbVal] = useState<T>(query)
+  const [dbVal, setDbVal] = useState(query)
   const ref = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     ref.current = setTimeout(() => {
       if (!dbVal || dbVal === query) return
-      replaceQueries({ query: dbVal })
+      replaceQueries({ query: dbVal, page: 1 })
     }, 600)
     return () => {
       clearTimeout(ref.current)
