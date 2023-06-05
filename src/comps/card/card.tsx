@@ -24,7 +24,7 @@ export function Card(props: Props) {
           alt=''
         />
       )}
-      <div className='col ml-2 mt-1'>
+      <div className='col m-2'>
         {primary && <div>{primary}</div>}
         {secondary && <div>{secondary}</div>}
         {tertiary && <div className='line-clamp-3'>{tertiary}</div>}
