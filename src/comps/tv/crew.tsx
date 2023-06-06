@@ -2,20 +2,19 @@ import { gql, useQuery } from 'urql'
 import { Card } from '~/comps/card'
 import { ID } from '~/types/id'
 import { TV } from '~/types/tmdb'
-import { removeVoiceTag } from '~/util/voice-tag'
 import { Queries } from './types'
 
 const query = gql`
   query ($id: ID!, $query: String, $page: Int) {
     tv(id: $id, query: $query, page: $page) {
       aggregate_credits {
-        cast {
+        crew {
           id
           name
           profile_path
-          roles {
-            character
+          jobs {
             episode_count
+            job
           }
         }
       }
@@ -29,31 +28,30 @@ type Vars = {
   query: string
   page: number
 }
-function useCastQuery(variables: Vars) {
+function useCrewQuery(variables: Vars) {
   return useQuery<Data, Vars>({ query, variables })
 }
 
 type Props = { queries: Queries }
-export default function Cast(props: Props) {
+export default function Crew(props: Props) {
   const { queries } = props
   const { id, query, page } = queries
-  const [res] = useCastQuery({ id, query, page })
-  const cast = res.data?.tv?.aggregate_credits?.cast
+
+  const [res] = useCrewQuery({ id, query, page })
+  const crew = res.data?.tv?.aggregate_credits?.crew
 
   return (
     <>
       <div className='col mb-2 space-y-2'>
-        {cast?.map((x, i) => (
+        {crew?.map((x, i) => (
           <Card
-            href={`/person/${x.id}`}
             image={x.profile_path}
+            href={`/person/${x.id}`}
             primary={x.name}
-            secondary={removeVoiceTag(
-              x.roles
-                ?.slice(0, 2)
-                ?.map((x) => `${x.character} (${x.episode_count})`)
-                ?.join(' | '),
-            )}
+            secondary={x.jobs
+              ?.slice(0, 2)
+              ?.map((x) => `${x.job} (${x.episode_count})`)
+              ?.join(' | ')}
             key={i}
           />
         ))}

@@ -12,6 +12,9 @@ import { Queries, tabs, zQueries } from './types'
 const Info = lazy(() => import('./info'))
 const Seasons = lazy(() => import('./seasons'))
 const Cast = lazy(() => import('./cast'))
+const Crew = lazy(() => import('./crew'))
+const Images = lazy(() => import('./images'))
+const Videos = lazy(() => import('./videos'))
 
 const query = gql`
   query ($id: ID!) {
@@ -70,13 +73,16 @@ export function TV() {
         {showQueryBar && (
           <QueryBar
             query={query}
-            onClearClick={() => replaceQueries({ query: '' })}
+            onClearClick={() => replaceQueries({ query: '', page: 1 })}
             onInputChange={(e) => setDbVal(e.target.value)}
           />
         )}
         {tab === 'Info' && <Info queries={queries} />}
         {tab === 'Seasons' && <Seasons id={id} />}
         {tab === 'Cast' && <Cast queries={queries} />}
+        {tab === 'Crew' && <Crew queries={queries} />}
+        {tab === 'Images' && <Images queries={queries} />}
+        {tab === 'Videos' && <Videos queries={queries} />}
         {showPager && (
           <Pager
             page={page}
