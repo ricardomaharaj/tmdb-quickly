@@ -17,7 +17,7 @@ export function VideoCard(props: Props) {
     <>
       <Link href={href} target='_blank' className='col border-2'>
         <div className='row'>
-          <Image src={src} width={360} height={202} alt='' />
+          <Image src={src} width={480} height={360} alt='' />
         </div>
         <div className='col m-1 text-sm'>
           <div>{primary}</div>
