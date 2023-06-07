@@ -28,7 +28,10 @@ export function QueryBar(props: Props) {
           ref={queryInputRef}
         />
         {query && (
-          <button onClick={handleClearClick} className='col justify-center'>
+          <button
+            onClick={handleClearClick}
+            className='col justify-center bg-neutral-700 pl-2'
+          >
             <div className='icon-[mdi--close] mr-2 text-xl'></div>
           </button>
         )}
