@@ -12,11 +12,9 @@ const query = gql`
       images {
         posters {
           file_path
-          iso_639_1
         }
         backdrops {
           file_path
-          iso_639_1
         }
       }
     }
