@@ -10,7 +10,7 @@ type Search {
 type Result {
   adult: Boolean
   backdrop_path: String
-  id: Int
+  id: String
   title: String
   original_language: String
   original_title: String
@@ -19,10 +19,10 @@ type Result {
   profile_path: String
   media_type: String
   genre_ids: [Int]
-  popularity: Int
+  popularity: Float
   release_date: String
   video: Boolean
-  vote_average: Int
+  vote_average: Float
   vote_count: Int
   name: String
   original_name: String
@@ -37,12 +37,12 @@ type Movie {
   budget: Int
   genres: [Genre]
   homepage: String
-  id: Int
+  id: String
   imdb_id: String
   original_language: String
   original_title: String
   overview: String
-  popularity: Int
+  popularity: Float
   poster_path: String
   production_companies: [ProductionCompany]
   production_countries: [ProductionCountry]
@@ -54,7 +54,7 @@ type Movie {
   tagline: String
   title: String
   video: Boolean
-  vote_average: Int
+  vote_average: Float
   vote_count: Int
   credits: Credits
   images: Images
@@ -63,7 +63,7 @@ type Movie {
 }
 
 type BelongsToCollection {
-  id: Int
+  id: String
   name: String
   poster_path: String
   backdrop_path: String
@@ -77,13 +77,13 @@ type Credits {
 type Cast {
   adult: Boolean
   gender: Int
-  id: Int
+  id: String
   known_for_department: String
   name: String
   original_name: String
-  popularity: Int
+  popularity: Float
   profile_path: String
-  cast_id: Int
+  cast_id: String
   character: String
   credit_id: String
   order: Int
@@ -92,11 +92,11 @@ type Cast {
 type Crew {
   adult: Boolean
   gender: Int
-  id: Int
+  id: String
   known_for_department: String
   name: String
   original_name: String
-  popularity: Int
+  popularity: Float
   profile_path: String
   credit_id: String
   department: String
@@ -104,7 +104,7 @@ type Crew {
 }
 
 type Genre {
-  id: Int
+  id: String
   name: String
 }
 
@@ -120,13 +120,13 @@ type Image {
   height: Int
   iso_639_1: String
   file_path: String
-  vote_average: Int
+  vote_average: Float
   vote_count: Int
   width: Int
 }
 
 type ProductionCompany {
-  id: Int
+  id: String
   logo_path: String
   name: String
   origin_country: String
@@ -185,7 +185,7 @@ type TV {
   first_air_date: String
   genres: [Genre]
   homepage: String
-  id: Int
+  id: String
   in_production: Boolean
   languages: [String]
   last_air_date: String
@@ -197,7 +197,7 @@ type TV {
   original_language: String
   original_name: String
   overview: String
-  popularity: Int
+  popularity: Float
   poster_path: String
   production_companies: [Network]
   production_countries: [ProductionCountry]
@@ -206,7 +206,7 @@ type TV {
   status: String
   tagline: String
   type: String
-  vote_average: Int
+  vote_average: Float
   vote_count: Int
   aggregate_credits: AggregateCredits
   images: Images
@@ -221,11 +221,11 @@ type AggregateCredits {
 type AggregateCast {
   adult: Boolean
   gender: Int
-  id: Int
+  id: String
   known_for_department: String
   name: String
   original_name: String
-  popularity: Int
+  popularity: Float
   profile_path: String
   roles: [Role]
   total_episode_count: Int
@@ -241,11 +241,11 @@ type Role {
 type AggregateCrew {
   adult: Boolean
   gender: Int
-  id: Int
+  id: String
   known_for_department: String
   name: String
   original_name: String
-  popularity: Int
+  popularity: Float
   profile_path: String
   jobs: [Job]
   department: String
@@ -259,7 +259,7 @@ type Job {
 }
 
 type Network {
-  id: Int
+  id: String
   logo_path: String
   name: String
   origin_country: String
@@ -268,7 +268,7 @@ type Network {
 type TVSeason {
   air_date: String
   episode_count: Int
-  id: Int
+  id: String
   name: String
   overview: String
   poster_path: String
@@ -281,7 +281,7 @@ type Season {
   episodes: [SeasonEpisode]
   name: String
   overview: String
-  id: Int
+  id: String
   poster_path: String
   season_number: Int
   credits: Credits
@@ -292,15 +292,15 @@ type Season {
 type SeasonEpisode {
   air_date: String
   episode_number: Int
-  id: Int
+  id: String
   name: String
   overview: String
   production_code: String
   runtime: Int
   season_number: Int
-  show_id: Int
+  show_id: String
   still_path: String
-  vote_average: Int
+  vote_average: Float
   vote_count: Int
   crew: [Crew]
   guest_stars: [Cast]
@@ -313,12 +313,12 @@ type Episode {
   guest_stars: [Cast]
   name: String
   overview: String
-  id: Int
+  id: String
   production_code: String
   runtime: Int
   season_number: Int
   still_path: String
-  vote_average: Int
+  vote_average: Float
   vote_count: Int
   credits: Credits
   images: Images
@@ -327,8 +327,8 @@ type Episode {
 
 type Query {
   search(query: String, page: Int): Search
-  movie(id: ID!, query: String, page: Int): Movie
-  tv(id: ID!, query: String, page: Int): TV
-  season(id: ID!, season_number: Int!): Season
-  episode(id: ID!, season_number: Int!, episode_number: Int!): Episode
+  movie(id: String!, query: String, page: Int): Movie
+  tv(id: String!, query: String, page: Int): TV
+  season(id: String!, season_number: Int!): Season
+  episode(id: String!, season_number: Int!, episode_number: Int!): Episode
 }
