@@ -1,7 +1,5 @@
-import { ID } from '~/types/id'
-
 export type Args = {
-  id: ID
+  id: string
   query: string
   page: number
   season_number: number
