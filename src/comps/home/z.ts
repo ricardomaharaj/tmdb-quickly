@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const filters = ['', 'movie', 'tv', 'person'] as const
-const zFilters = z.enum(filters)
+export const zFilters = z.enum(filters)
 export type Filter = z.infer<typeof zFilters>
 
 export const zQueries = z.object({

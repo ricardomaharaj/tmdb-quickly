@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const tabs = ['Info', 'Cast', 'Crew', 'Images', 'Videos'] as const
-const zTabs = z.enum(tabs)
+export const zTabs = z.enum(tabs)
 export type Tabs = z.infer<typeof zTabs>
 
 export const zQueries = z.object({
@@ -12,13 +12,4 @@ export const zQueries = z.object({
 })
 
 export type Queries = z.infer<typeof zQueries>
-
-export const releaseTypes = [
-  '',
-  'Premiere',
-  'Theatrical (limited)',
-  'Theatrical',
-  'Digital',
-  'Physical',
-  'TV',
-] as const
+export type Props = { queries: Queries }
