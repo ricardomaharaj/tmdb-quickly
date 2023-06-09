@@ -1,32 +1,11 @@
 import { useRouter } from 'next/router'
-import { gql, useQuery } from 'urql'
 import { Card } from '~/comps/card'
 import { Pager } from '~/comps/pager'
 import { QueryBar } from '~/comps/query-bar'
-import { Search } from '~/types/tmdb'
 import { useDbQuery } from '~/util/debounce'
-import { Filter, Queries, filters, zQueries } from './types'
-
-const query = gql`
-  query ($query: String, $page: Int) {
-    search(query: $query, page: $page) {
-      page
-      total_pages
-      total_results
-      results {
-        first_air_date
-        id
-        media_type
-        name
-        overview
-        poster_path
-        profile_path
-        release_date
-        title
-      }
-    }
-  }
-`
+import { useSearchQuery } from './query'
+import type { Filter, Queries } from './z'
+import { filters, zQueries } from './z'
 
 const filterMap: Record<Filter, string> = {
   '': '',
@@ -42,18 +21,13 @@ const iconMap: Record<Filter, string> = {
   person: 'icon-[mdi--account]',
 }
 
-type Data = { search: Search }
-type Vars = { query: string; page: number }
-function useSearch(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
 export function Home() {
   const router = useRouter()
-  const { query, page, filter } = zQueries.parse(router.query)
+  const queries = zQueries.parse(router.query)
+  const { filter, query, page } = queries
 
-  const [res] = useSearch({ query, page })
-  const results = res.data?.search.results?.filter((x) => {
+  const [res] = useSearchQuery({ query, page })
+  const results = res.data?.search?.results?.filter((x) => {
     if (!filter) return true
     if (x.media_type === filter) return true
     return false
@@ -61,7 +35,7 @@ export function Home() {
 
   function replaceQueries(update: Partial<Queries>) {
     router.replace({
-      query: { query, page, filter, ...update },
+      query: { ...queries, ...update },
     })
   }
 
