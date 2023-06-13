@@ -1,13 +1,12 @@
 import { useRouter } from 'next/router'
 import { lazy } from 'react'
-import { gql, useQuery } from 'urql'
+import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { Pager } from '~/comps/pager'
 import { QueryBar } from '~/comps/query-bar'
-import { ID } from '~/types/id'
-import { Movie } from '~/types/tmdb'
 import { useDbQuery } from '~/util/debounce'
-import { Queries, tabs, zQueries } from './types'
+import { useMovieQuery } from './query'
+import { Queries, tabs, zQueries } from './z'
 
 const Info = lazy(() => import('./info'))
 const Cast = lazy(() => import('./cast'))
@@ -15,34 +14,29 @@ const Crew = lazy(() => import('./crew'))
 const Images = lazy(() => import('./images'))
 const Videos = lazy(() => import('./videos'))
 
-const query = gql`
-  query ($id: ID!) {
-    movie(id: $id) {
-      poster_path
-      title
-      tagline
-      release_date
-    }
-  }
-`
-
-type Data = { movie?: Movie }
-type Vars = { id: ID }
-function useMovieQuery(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
 export function Movie() {
   const router = useRouter()
   const queries = zQueries.parse(router.query)
   const { id, tab, query, page } = queries
 
-  const [res] = useMovieQuery({ id })
+  const [res] = useMovieQuery({
+    query: gql`
+      query ($id: String!) {
+        movie(id: $id) {
+          poster_path
+          title
+          tagline
+          release_date
+        }
+      }
+    `,
+    variables: { id },
+  })
   const movie = res.data?.movie
 
   function replaceQueries(update: Partial<Queries>) {
     router.replace({
-      query: { id, tab, query, page, ...update },
+      query: { ...queries, ...update },
     })
   }
 

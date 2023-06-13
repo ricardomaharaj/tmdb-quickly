@@ -1,55 +1,46 @@
 import Image from 'next/image'
 import { useState } from 'react'
-import { gql, useQuery } from 'urql'
-import { ID } from '~/types/id'
-import { Movie } from '~/types/tmdb'
+import { gql } from 'urql'
 import { imageUrls } from '~/util/image-urls'
-import { Queries } from './types'
+import { useMovieQuery } from './query'
+import type { Props } from './z'
 
-const query = gql`
-  query ($id: ID!, $page: Int) {
-    movie(id: $id, page: $page) {
-      images {
-        posters {
-          file_path
-        }
-        backdrops {
-          file_path
-        }
-      }
-    }
-  }
-`
-
-type Data = { movie?: Movie }
-type Vars = {
-  id: ID
-  page: number
-}
-function useImagesQuery(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
-const tabs = {
+const imageTabs = {
   Posters: 'Posters',
   Backdrops: 'Backdrops',
 } as const
 
-type Tab = (typeof tabs)[keyof typeof tabs]
+type ImageTab = (typeof imageTabs)[keyof typeof imageTabs]
 
-type Props = { queries: Queries }
 export default function Images(props: Props) {
   const { queries } = props
   const { id, page } = queries
 
-  const [tab, setTab] = useState<Tab>('Posters')
-  const [res] = useImagesQuery({ id, page })
+  const [res] = useMovieQuery({
+    query: gql`
+      query ($id: String!, $page: Int) {
+        movie(id: $id, page: $page) {
+          images {
+            posters {
+              file_path
+            }
+            backdrops {
+              file_path
+            }
+          }
+        }
+      }
+    `,
+    variables: { id, page },
+  })
   const images = res.data?.movie?.images
+
+  const [tab, setTab] = useState<ImageTab>('Posters')
 
   return (
     <>
       <div className='row mb-2 space-x-2'>
-        {Object.values(tabs).map((x, i) => (
+        {Object.values(imageTabs).map((x, i) => (
           <button
             onClick={() => setTab(x)}
             className='row border-2 px-2'
