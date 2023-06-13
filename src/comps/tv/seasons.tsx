@@ -1,33 +1,28 @@
-import { gql, useQuery } from 'urql'
+import { gql } from 'urql'
 import { Card } from '~/comps/card'
-import { ID } from '~/types/id'
-import { TV } from '~/types/tmdb'
+import { useTVQuery } from './query'
+import type { Props } from './z'
 
-const query = gql`
-  query ($id: ID!) {
-    tv(id: $id) {
-      seasons {
-        name
-        air_date
-        episode_count
-        overview
-        poster_path
-        season_number
-      }
-    }
-  }
-`
-
-type Data = { tv?: TV }
-type Vars = { id: ID }
-function useSeasonsQuery(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
-type Props = { id: ID }
 export default function Seasons(props: Props) {
-  const { id } = props
-  const [res] = useSeasonsQuery({ id })
+  const { id } = props.queries
+
+  const [res] = useTVQuery({
+    query: gql`
+      query ($id: String!) {
+        tv(id: $id) {
+          seasons {
+            air_date
+            episode_count
+            name
+            overview
+            poster_path
+            season_number
+          }
+        }
+      }
+    `,
+    variables: { id },
+  })
   const seasons = res.data?.tv?.seasons
 
   return (

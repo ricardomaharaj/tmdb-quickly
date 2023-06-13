@@ -1,13 +1,12 @@
 import { useRouter } from 'next/router'
 import { lazy } from 'react'
-import { gql, useQuery } from 'urql'
+import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { Pager } from '~/comps/pager'
 import { QueryBar } from '~/comps/query-bar'
-import { ID } from '~/types/id'
-import { TV } from '~/types/tmdb'
 import { useDbQuery } from '~/util/debounce'
-import { Queries, tabs, zQueries } from './types'
+import { useTVQuery } from './query'
+import { Queries, tabs, zQueries } from './z'
 
 const Info = lazy(() => import('./info'))
 const Seasons = lazy(() => import('./seasons'))
@@ -16,33 +15,28 @@ const Crew = lazy(() => import('./crew'))
 const Images = lazy(() => import('./images'))
 const Videos = lazy(() => import('./videos'))
 
-const query = gql`
-  query ($id: ID!) {
-    tv(id: $id) {
-      name
-      poster_path
-      first_air_date
-      tagline
-    }
-  }
-`
-
-type Data = { tv?: TV }
-type Vars = { id: ID }
-function useTVQuery(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
 export function TV() {
   const router = useRouter()
   const queries = zQueries.parse(router.query)
   const { id, tab, query, page } = queries
 
-  const [res] = useTVQuery({ id })
+  const [res] = useTVQuery({
+    query: gql`
+      query ($id: String!) {
+        tv(id: $id) {
+          first_air_date
+          name
+          poster_path
+          tagline
+        }
+      }
+    `,
+    variables: { id },
+  })
   const tv = res.data?.tv
 
   function replaceQueries(update: Partial<Queries>) {
-    router.replace({ query: { id, tab, query, page, ...update } })
+    router.replace({ query: { ...queries, ...update } })
   }
 
   const { setDbVal } = useDbQuery({ query, replaceQueries })
@@ -78,7 +72,7 @@ export function TV() {
           />
         )}
         {tab === 'Info' && <Info queries={queries} />}
-        {tab === 'Seasons' && <Seasons id={id} />}
+        {tab === 'Seasons' && <Seasons queries={queries} />}
         {tab === 'Cast' && <Cast queries={queries} />}
         {tab === 'Crew' && <Crew queries={queries} />}
         {tab === 'Images' && <Images queries={queries} />}

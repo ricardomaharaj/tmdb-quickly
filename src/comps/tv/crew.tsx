@@ -1,43 +1,31 @@
-import { gql, useQuery } from 'urql'
+import { gql } from 'urql'
 import { Card } from '~/comps/card'
-import { ID } from '~/types/id'
-import { TV } from '~/types/tmdb'
-import { Queries } from './types'
+import { useTVQuery } from './query'
+import type { Props } from './z'
 
-const query = gql`
-  query ($id: ID!, $query: String, $page: Int) {
-    tv(id: $id, query: $query, page: $page) {
-      aggregate_credits {
-        crew {
-          id
-          name
-          profile_path
-          jobs {
-            episode_count
-            job
+export default function Crew(props: Props) {
+  const { id, query, page } = props.queries
+
+  const [res] = useTVQuery({
+    query: gql`
+      query ($id: String!, $query: String, $page: Int) {
+        tv(id: $id, query: $query, page: $page) {
+          aggregate_credits {
+            crew {
+              id
+              name
+              profile_path
+              jobs {
+                episode_count
+                job
+              }
+            }
           }
         }
       }
-    }
-  }
-`
-
-type Data = { tv?: TV }
-type Vars = {
-  id: ID
-  query: string
-  page: number
-}
-function useCrewQuery(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
-type Props = { queries: Queries }
-export default function Crew(props: Props) {
-  const { queries } = props
-  const { id, query, page } = queries
-
-  const [res] = useCrewQuery({ id, query, page })
+    `,
+    variables: { id, query, page },
+  })
   const crew = res.data?.tv?.aggregate_credits?.crew
 
   return (

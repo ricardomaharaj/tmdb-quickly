@@ -1,56 +1,45 @@
 import Image from 'next/image'
 import { useState } from 'react'
-import { gql, useQuery } from 'urql'
-import { ID } from '~/types/id'
-import { TV } from '~/types/tmdb'
+import { gql } from 'urql'
 import { imageUrls } from '~/util/image-urls'
-import { Queries } from './types'
+import { useTVQuery } from './query'
+import type { Props } from './z'
 
-const query = gql`
-  query ($id: ID!, $page: Int) {
-    tv(id: $id, page: $page) {
-      images {
-        posters {
-          file_path
-        }
-        backdrops {
-          file_path
-        }
-      }
-    }
-  }
-`
-
-type Data = { tv?: TV }
-type Vars = {
-  id: ID
-  page: number
-}
-function useImagesQuery(variables: Vars) {
-  return useQuery<Data, Vars>({ query, variables })
-}
-
-const tabs = {
+const imageTabs = {
   Posters: 'Posters',
   Backdrops: 'Backdrops',
 } as const
 
-type Tabs = (typeof tabs)[keyof typeof tabs]
+type ImageTab = (typeof imageTabs)[keyof typeof imageTabs]
 
-type Props = { queries: Queries }
 export default function Images(props: Props) {
-  const { queries } = props
-  const { id, page } = queries
+  const { id, page } = props.queries
 
-  const [res] = useImagesQuery({ id, page })
+  const [res] = useTVQuery({
+    query: gql`
+      query ($id: String!, $page: Int) {
+        tv(id: $id, page: $page) {
+          images {
+            posters {
+              file_path
+            }
+            backdrops {
+              file_path
+            }
+          }
+        }
+      }
+    `,
+    variables: { id, page },
+  })
   const images = res.data?.tv?.images
 
-  const [tab, setTab] = useState<Tabs>('Posters')
+  const [tab, setTab] = useState<ImageTab>('Posters')
 
   return (
     <>
       <div className='row mb-2 space-x-2'>
-        {Object.values(tabs).map((x, i) => (
+        {Object.values(imageTabs).map((x, i) => (
           <button className='border-2 px-2' onClick={() => setTab(x)} key={i}>
             {x}
           </button>

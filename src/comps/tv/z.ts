@@ -8,8 +8,8 @@ export const tabs = [
   'Images',
   'Videos',
 ] as const
-
-const zTabs = z.enum(tabs)
+export const zTabs = z.enum(tabs)
+export type Tabs = z.infer<typeof zTabs>
 
 export const zQueries = z.object({
   id: z.string().optional().default(''),
@@ -19,3 +19,4 @@ export const zQueries = z.object({
 })
 
 export type Queries = z.infer<typeof zQueries>
+export type Props = { queries: Queries }
