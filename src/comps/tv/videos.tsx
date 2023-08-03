@@ -1,28 +1,27 @@
 import { gql } from 'urql'
+import { useTVQuery } from '~/comps/tv/query'
+import { TVProps } from '~/comps/tv/z'
 import { VideoCard } from '~/comps/video-card'
-import { useTVQuery } from './query'
-import type { Queries } from './z'
 
-type Props = { queries: Queries }
-export default function Videos(props: Props) {
-  const { id, page } = props.queries
-
-  const [res] = useTVQuery({
-    query: gql`
-      query ($id: String!, $page: Int) {
-        tv(id: $id, page: $page) {
-          videos {
-            results {
-              key
-              name
-              published_at
-            }
-          }
+const gqlQuery = gql`
+  query ($id: String!, $page: Int) {
+    tv(id: $id, page: $page) {
+      videos {
+        results {
+          key
+          name
+          published_at
         }
       }
-    `,
-    variables: { id, page },
-  })
+    }
+  }
+`
+
+export default function Videos(props: TVProps) {
+  const { queries } = props
+  const { id, page } = queries
+
+  const [res] = useTVQuery(gqlQuery, { id, page })
   const videos = res.data?.tv?.videos?.results
 
   return (

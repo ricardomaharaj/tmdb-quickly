@@ -1,15 +1,21 @@
 import { z } from 'zod'
+import { useRouterQuery } from '~/hooks/router-query'
 
-export const tabs = ['Info', 'Cast', 'Crew', 'Images', 'Videos'] as const
-export const zTabs = z.enum(tabs)
-export type Tabs = z.infer<typeof zTabs>
+export const movieTabs = ['Info', 'Cast', 'Crew', 'Images', 'Videos'] as const
+const zTabs = z.enum(movieTabs)
 
-export const zQueries = z.object({
-  id: z.string().optional().default(''),
-  tab: zTabs.optional().default('Info'),
-  page: z.coerce.number().optional().default(1),
-  query: z.string().optional().default(''),
+const zQueries = z.object({
+  id: z.string().default(''),
+  tab: zTabs.default('Info'),
+  page: z.coerce.number().default(1),
+  query: z.string().default(''),
 })
 
-export type Queries = z.infer<typeof zQueries>
-export type Props = { queries: Queries }
+export function useMovieState() {
+  const queries = useRouterQuery(zQueries)
+  return { queries }
+}
+
+export type MovieProps = {
+  queries: z.infer<typeof zQueries>
+}

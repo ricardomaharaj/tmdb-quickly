@@ -1,5 +1,3 @@
-scalar Any
-
 type Search {
   page: Int
   results: [Result]

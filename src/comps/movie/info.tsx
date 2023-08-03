@@ -1,45 +1,44 @@
 import { gql } from 'urql'
 import { releaseTypes } from '~/util/release-types'
 import { useMovieQuery } from './query'
-import type { Props } from './z'
+import { MovieProps } from './z'
 
-export default function Info(props: Props) {
+const gqlQuery = gql`
+  query ($id: String!) {
+    movie(id: $id) {
+      budget
+      genres {
+        name
+      }
+      imdb_id
+      original_language
+      original_title
+      overview
+      release_dates {
+        results {
+          iso_3166_1
+          release_dates {
+            iso_639_1
+            release_date
+            type
+          }
+        }
+      }
+      production_companies {
+        name
+      }
+      revenue
+      runtime
+      status
+    }
+  }
+`
+
+export default function Info(props: MovieProps) {
   const { queries } = props
   const { id } = queries
 
-  const [res] = useMovieQuery({
-    query: gql`
-      query ($id: String!) {
-        movie(id: $id) {
-          budget
-          genres {
-            name
-          }
-          imdb_id
-          original_language
-          original_title
-          overview
-          release_dates {
-            results {
-              iso_3166_1
-              release_dates {
-                iso_639_1
-                release_date
-                type
-              }
-            }
-          }
-          production_companies {
-            name
-          }
-          revenue
-          runtime
-          status
-        }
-      }
-    `,
-    variables: { id },
-  })
+  const [res] = useMovieQuery(gqlQuery, { id })
   const movie = res.data?.movie
 
   const release_dates = movie?.release_dates?.results

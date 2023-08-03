@@ -1,38 +1,38 @@
 import { gql } from 'urql'
 import { useTVQuery } from './query'
-import type { Props } from './z'
+import { TVProps } from './z'
 
-export default function Info(props: Props) {
-  const { id } = props.queries
-
-  const [res] = useTVQuery({
-    query: gql`
-      query ($id: String!) {
-        tv(id: $id) {
-          first_air_date
-          last_air_date
-          number_of_episodes
-          number_of_seasons
-          origin_country
-          original_language
-          original_name
-          overview
-          status
-          type
-          genres {
-            name
-          }
-          networks {
-            name
-          }
-          production_companies {
-            name
-          }
-        }
+const gqlQuery = gql`
+  query ($id: String!) {
+    tv(id: $id) {
+      first_air_date
+      last_air_date
+      number_of_episodes
+      number_of_seasons
+      origin_country
+      original_language
+      original_name
+      overview
+      status
+      type
+      genres {
+        name
       }
-    `,
-    variables: { id },
-  })
+      networks {
+        name
+      }
+      production_companies {
+        name
+      }
+    }
+  }
+`
+
+export default function Info(props: TVProps) {
+  const { queries } = props
+  const { id } = queries
+
+  const [res] = useTVQuery(gqlQuery, { id })
   const tv = res.data?.tv
 
   const companies: string[] = []

@@ -1,3 +1,3 @@
-import { TV } from '~/comps/tv'
+import { TVPage } from '~/comps/tv/page'
 
-export default TV
+export default TVPage

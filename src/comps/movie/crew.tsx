@@ -1,29 +1,28 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { useMovieQuery } from './query'
-import type { Props } from './z'
+import { MovieProps } from './z'
 
-export default function Crew(props: Props) {
+const gqlQuery = gql`
+  query ($id: String!, $query: String, $page: Int) {
+    movie(id: $id, query: $query, page: $page) {
+      credits {
+        crew {
+          id
+          name
+          job
+          profile_path
+        }
+      }
+    }
+  }
+`
+
+export default function Crew(props: MovieProps) {
   const { queries } = props
   const { id, query, page } = queries
 
-  const [res] = useMovieQuery({
-    query: gql`
-      query ($id: String!, $query: String, $page: Int) {
-        movie(id: $id, query: $query, page: $page) {
-          credits {
-            crew {
-              id
-              name
-              job
-              profile_path
-            }
-          }
-        }
-      }
-    `,
-    variables: { id, query, page },
-  })
+  const [res] = useMovieQuery(gqlQuery, { id, query, page })
   const crew = res.data?.movie?.credits?.crew
 
   return (

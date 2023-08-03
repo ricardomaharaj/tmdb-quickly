@@ -1,7 +1,7 @@
-import { env } from '~/env'
+import { env } from '~/server/env'
+import { Resolver } from '~/types/server'
 import { Episode, Movie, Search, Season, TV } from '~/types/tmdb'
 import { Fetcher } from '~/util/fetcher'
-import { Resolver } from './types'
 
 const api = new Fetcher({
   baseUrl: 'https://api.themoviedb.org/3',
@@ -148,7 +148,7 @@ const episode: Resolver<Episode> = async (
   )
 }
 
-export const TMDB = {
+export const tmdbResolvers = {
   search,
   movie,
   tv,

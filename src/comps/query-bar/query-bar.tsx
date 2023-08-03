@@ -30,7 +30,7 @@ export function QueryBar(props: Props) {
         {query && (
           <button
             onClick={handleClearClick}
-            className='col justify-center bg-neutral-700 pl-2'
+            className='col justify-center pl-2'
           >
             <div className='icon-[mdi--close] mr-2 text-xl'></div>
           </button>

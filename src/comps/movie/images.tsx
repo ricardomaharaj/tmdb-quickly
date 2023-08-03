@@ -3,7 +3,22 @@ import { useState } from 'react'
 import { gql } from 'urql'
 import { imageUrls } from '~/util/image-urls'
 import { useMovieQuery } from './query'
-import type { Props } from './z'
+import { MovieProps } from './z'
+
+const gqlQuery = gql`
+  query ($id: String!, $page: Int) {
+    movie(id: $id, page: $page) {
+      images {
+        posters {
+          file_path
+        }
+        backdrops {
+          file_path
+        }
+      }
+    }
+  }
+`
 
 const imageTabs = {
   Posters: 'Posters',
@@ -12,27 +27,11 @@ const imageTabs = {
 
 type ImageTab = (typeof imageTabs)[keyof typeof imageTabs]
 
-export default function Images(props: Props) {
+export default function Images(props: MovieProps) {
   const { queries } = props
   const { id, page } = queries
 
-  const [res] = useMovieQuery({
-    query: gql`
-      query ($id: String!, $page: Int) {
-        movie(id: $id, page: $page) {
-          images {
-            posters {
-              file_path
-            }
-            backdrops {
-              file_path
-            }
-          }
-        }
-      }
-    `,
-    variables: { id, page },
-  })
+  const [res] = useMovieQuery(gqlQuery, { id, page })
   const images = res.data?.movie?.images
 
   const [tab, setTab] = useState<ImageTab>('Posters')

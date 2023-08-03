@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { gql } from 'urql'
 import { imageUrls } from '~/util/image-urls'
 import { useTVQuery } from './query'
-import type { Props } from './z'
+import { TVProps } from './z'
 
 const imageTabs = {
   Posters: 'Posters',
@@ -12,26 +12,26 @@ const imageTabs = {
 
 type ImageTab = (typeof imageTabs)[keyof typeof imageTabs]
 
-export default function Images(props: Props) {
-  const { id, page } = props.queries
-
-  const [res] = useTVQuery({
-    query: gql`
-      query ($id: String!, $page: Int) {
-        tv(id: $id, page: $page) {
-          images {
-            posters {
-              file_path
-            }
-            backdrops {
-              file_path
-            }
-          }
+const gqlQuery = gql`
+  query ($id: String!, $page: Int) {
+    tv(id: $id, page: $page) {
+      images {
+        posters {
+          file_path
+        }
+        backdrops {
+          file_path
         }
       }
-    `,
-    variables: { id, page },
-  })
+    }
+  }
+`
+
+export default function Images(props: TVProps) {
+  const { queries } = props
+  const { id, page } = queries
+
+  const [res] = useTVQuery(gqlQuery, { id, page })
   const images = res.data?.tv?.images
 
   const [tab, setTab] = useState<ImageTab>('Posters')

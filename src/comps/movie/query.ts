@@ -1,23 +1,16 @@
-import type { TypedDocumentNode } from 'urql'
-import { useQuery } from 'urql'
-import type { Movie } from '~/types/tmdb'
-
-type Vars = {
-  id?: string
-  query?: string
-  page?: number
-}
-
-type Args = {
-  query: TypedDocumentNode
-  variables: Vars
-}
+import { TypedDocumentNode, useQuery } from 'urql'
+import { Movie } from '~/types/tmdb'
 
 type Data = {
   movie?: Movie
 }
 
-export function useMovieQuery(args: Args) {
-  const { query, variables } = args
+type Vars = {
+  id: string
+  query?: string
+  page?: number
+}
+
+export function useMovieQuery(query: TypedDocumentNode, variables: Vars) {
   return useQuery<Data, Vars>({ query, variables })
 }

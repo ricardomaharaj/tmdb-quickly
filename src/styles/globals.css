@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,7 +9,7 @@
     @apply hidden;
   }
   html {
-    @apply font-[roboto];
+    font-family: 'Noto Sans', sans-serif;
   }
   a,
   button {
@@ -19,19 +19,7 @@
     @apply outline-none;
   }
   body {
-    @apply container mx-auto max-w-md;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    * {
-      @apply border-neutral-500;
-    }
-    html {
-      @apply bg-neutral-900 text-neutral-200;
-    }
-    input {
-      @apply bg-neutral-700;
-    }
+    @apply container mx-auto max-w-[400px];
   }
 }
 

@@ -1,3 +1,3 @@
-import { Home } from '~/comps/home'
+import { HomePage } from '~/comps/home/page'
 
-export default Home
+export default HomePage

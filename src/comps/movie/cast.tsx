@@ -2,29 +2,28 @@ import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { removeVoiceTag } from '~/util/voice-tag'
 import { useMovieQuery } from './query'
-import type { Props } from './z'
+import { MovieProps } from './z'
 
-export default function Cast(props: Props) {
+const gqlQuery = gql`
+  query ($id: String!, $query: String, $page: Int) {
+    movie(id: $id, query: $query, page: $page) {
+      credits {
+        cast {
+          id
+          name
+          character
+          profile_path
+        }
+      }
+    }
+  }
+`
+
+export default function Cast(props: MovieProps) {
   const { queries } = props
   const { id, query, page } = queries
 
-  const [res] = useMovieQuery({
-    query: gql`
-      query ($id: String!, $query: String, $page: Int) {
-        movie(id: $id, query: $query, page: $page) {
-          credits {
-            cast {
-              id
-              name
-              character
-              profile_path
-            }
-          }
-        }
-      }
-    `,
-    variables: { id, query, page },
-  })
+  const [res] = useMovieQuery(gqlQuery, { id, query, page })
   const cast = res.data?.movie?.credits?.cast
 
   return (

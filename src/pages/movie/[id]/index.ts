@@ -1,3 +1,3 @@
-import { Movie } from '~/comps/movie'
+import { MoviePage } from '~/comps/movie/page'
 
-export default Movie
+export default MoviePage
