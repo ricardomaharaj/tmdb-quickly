@@ -6,7 +6,7 @@ import { QueryBar } from '~/comps/query-bar'
 import { TabBar } from '~/comps/tab-bar'
 import { useStateObject } from '~/hooks/object'
 import { useTimeout } from '~/hooks/timeout'
-import { toDateString } from '~/util/local-date'
+import { toDateStr } from '~/util/to-date-str'
 import { useSeasonQuery } from './query'
 import { seasonTabs, useSeasonState } from './z'
 
@@ -56,7 +56,7 @@ export function SeasonPage() {
           image={season?.poster_path}
           primary={tv?.name}
           secondary={season?.name}
-          tertiary={toDateString(season?.air_date)}
+          tertiary={toDateStr(season?.air_date)}
         />
 
         <TabBar

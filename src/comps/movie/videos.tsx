@@ -1,6 +1,6 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/comps/video-card'
-import { toDateString } from '~/util/local-date'
+import { toDateStr } from '~/util/to-date-str'
 import { useMovieQuery } from './query'
 import { MovieProps } from './z'
 
@@ -33,7 +33,7 @@ export default function Videos(props: MovieProps) {
             href={`https://www.youtube.com/watch?v=${x.key}`}
             src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
             primary={x.name}
-            secondary={toDateString(x.published_at)}
+            secondary={toDateStr(x.published_at)}
             key={i}
           />
         ))}

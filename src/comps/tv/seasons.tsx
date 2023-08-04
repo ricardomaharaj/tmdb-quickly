@@ -1,8 +1,8 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
-import { useTVQuery } from '~/comps/tv/query'
-import { TVProps } from '~/comps/tv/z'
-import { toDateString } from '~/util/local-date'
+import { toDateStr } from '~/util/to-date-str'
+import { useTVQuery } from './query'
+import { TVProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!) {
@@ -35,7 +35,7 @@ export default function Seasons(props: TVProps) {
             image={x.poster_path}
             primary={x.name}
             secondary={`${x.episode_count} Episodes`}
-            tertiary={toDateString(x.air_date)}
+            tertiary={toDateStr(x.air_date)}
             key={i}
           />
         ))}

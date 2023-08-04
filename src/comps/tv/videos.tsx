@@ -1,8 +1,8 @@
 import { gql } from 'urql'
-import { useTVQuery } from '~/comps/tv/query'
-import { TVProps } from '~/comps/tv/z'
 import { VideoCard } from '~/comps/video-card'
-import { toDateString } from '~/util/local-date'
+import { toDateStr } from '~/util/to-date-str'
+import { useTVQuery } from './query'
+import { TVProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $page: Int) {
@@ -33,7 +33,7 @@ export default function Videos(props: TVProps) {
             href={`https://www.youtube.com/watch?v=${x.key}`}
             src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
             primary={x.name}
-            secondary={toDateString(x.published_at)}
+            secondary={toDateStr(x.published_at)}
             key={i}
           />
         ))}

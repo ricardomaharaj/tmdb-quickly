@@ -6,7 +6,7 @@ import { QueryBar } from '~/comps/query-bar'
 import { TabBar } from '~/comps/tab-bar'
 import { useStateObject } from '~/hooks/object'
 import { useTimeout } from '~/hooks/timeout'
-import { toDateString } from '~/util/local-date'
+import { toDateStr } from '~/util/to-date-str'
 import { useTVQuery } from './query'
 import { tvTabs, useTVState } from './z'
 
@@ -52,7 +52,7 @@ export function TVPage() {
           image={tv?.poster_path}
           primary={tv?.name}
           secondary={tv?.tagline}
-          tertiary={toDateString(tv?.first_air_date)}
+          tertiary={toDateStr(tv?.first_air_date)}
         />
 
         <TabBar

@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import { gql } from 'urql'
-import { useSeasonQuery } from '~/comps/season/query'
-import { SeasonProps } from '~/comps/season/z'
 import { imageUrls } from '~/util/image-urls'
+import { useSeasonQuery } from './query'
+import { SeasonProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!, $page: Int) {

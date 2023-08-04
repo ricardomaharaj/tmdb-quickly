@@ -1,4 +1,4 @@
-export function toDateString(dateString?: string) {
+export function toDateStr(dateString?: string) {
   if (!dateString) return ''
   if (dateString.includes('T')) {
     dateString = dateString.split('T').at(0)!

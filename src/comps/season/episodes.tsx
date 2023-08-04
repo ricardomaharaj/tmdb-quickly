@@ -4,8 +4,8 @@ import { gql } from 'urql'
 import { usePath } from '~/hooks/path'
 import { SeasonEpisode } from '~/types/tmdb'
 import { imageUrls } from '~/util/image-urls'
-import { toDateString } from '~/util/local-date'
 import { genRuntime } from '~/util/runtime'
+import { toDateStr } from '~/util/to-date-str'
 import { useSeasonQuery } from './query'
 import { SeasonProps } from './z'
 
@@ -41,7 +41,7 @@ export default function Episodes(props: SeasonProps) {
     }
 
     if (ep.air_date) {
-      tag += ` | ${toDateString(ep.air_date)}`
+      tag += ` | ${toDateStr(ep.air_date)}`
     }
 
     if (ep.runtime) {

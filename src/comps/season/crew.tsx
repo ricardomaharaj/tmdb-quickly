@@ -1,7 +1,7 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
-import { useSeasonQuery } from '~/comps/season/query'
-import { SeasonProps } from '~/comps/season/z'
+import { useSeasonQuery } from './query'
+import { SeasonProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!, $query: String, $page: Int) {

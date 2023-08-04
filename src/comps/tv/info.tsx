@@ -1,5 +1,5 @@
 import { gql } from 'urql'
-import { toDateString } from '~/util/local-date'
+import { toDateStr } from '~/util/to-date-str'
 import { useTVQuery } from './query'
 import { TVProps } from './z'
 
@@ -51,10 +51,10 @@ export default function Info(props: TVProps) {
         {tv?.status && <div>Status: {tv?.status}</div>}
         {tv?.type && <div>Type: {tv?.type}</div>}
         {tv?.first_air_date && (
-          <div>First Aired: {toDateString(tv?.first_air_date)}</div>
+          <div>First Aired: {toDateStr(tv?.first_air_date)}</div>
         )}
         {tv?.last_air_date && (
-          <div>Last Aired: {toDateString(tv?.last_air_date)}</div>
+          <div>Last Aired: {toDateStr(tv?.last_air_date)}</div>
         )}
         {tv?.number_of_seasons && <div>Seasons: {tv?.number_of_seasons}</div>}
         {tv?.number_of_episodes && (
