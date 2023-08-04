@@ -5,7 +5,7 @@ type Props = {
   href?: string
   src?: string
   primary?: string
-  secondary?: Date
+  secondary?: string
 }
 
 export function VideoCard(props: Props) {
@@ -20,12 +20,8 @@ export function VideoCard(props: Props) {
           <Image src={src} width={480} height={360} alt='' />
         </div>
         <div className='col m-1 text-sm'>
-          <div>{primary}</div>
-          {secondary && (
-            <div className='text-xs'>
-              {secondary.toDateString().substring(4)}
-            </div>
-          )}
+          <p>{primary}</p>
+          {secondary && <div className='my-1 text-xs'>{secondary}</div>}
         </div>
       </Link>
     </>

@@ -11,7 +11,6 @@ export function QueryBar(props: Props) {
   const queryInputRef = useRef<HTMLInputElement>(null)
 
   function handleClearClick() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     queryInputRef.current!.value = ''
     onClearClick()
   }
@@ -32,7 +31,7 @@ export function QueryBar(props: Props) {
             onClick={handleClearClick}
             className='col justify-center pl-2'
           >
-            <div className='icon-[mdi--close] mr-2 text-xl'></div>
+            <i className='icon-[mdi--close] mr-2 text-xl' />
           </button>
         )}
       </div>

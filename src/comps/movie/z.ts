@@ -3,6 +3,7 @@ import { useRouterQuery } from '~/hooks/router-query'
 
 export const movieTabs = ['Info', 'Cast', 'Crew', 'Images', 'Videos'] as const
 const zTabs = z.enum(movieTabs)
+export type MovieTab = z.infer<typeof zTabs>
 
 const zQueries = z.object({
   id: z.string().default(''),

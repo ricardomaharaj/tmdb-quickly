@@ -1,5 +1,6 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/comps/video-card'
+import { toDateString } from '~/util/local-date'
 import { useMovieQuery } from './query'
 import { MovieProps } from './z'
 
@@ -27,14 +28,12 @@ export default function Videos(props: MovieProps) {
   return (
     <>
       <div className='grid234 mb-2'>
-        {videos?.map((vid, i) => (
+        {videos?.map((x, i) => (
           <VideoCard
-            href={`https://www.youtube.com/watch?v=${vid.key}`}
-            src={`https://i.ytimg.com/vi/${vid.key}/hqdefault.jpg`}
-            primary={vid.name}
-            secondary={
-              vid.published_at ? new Date(vid.published_at) : undefined
-            }
+            href={`https://www.youtube.com/watch?v=${x.key}`}
+            src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
+            primary={x.name}
+            secondary={toDateString(x.published_at)}
             key={i}
           />
         ))}

@@ -66,6 +66,7 @@ export function HomePage() {
         onInputChange={(e) => setDbQuery(e.target.value)}
         onClearClick={() => queries.replace({ query: '' })}
       />
+
       <div className='row mb-2 space-x-2'>
         {tabs.slice(1).map((tab, i) => (
           <button
@@ -78,6 +79,7 @@ export function HomePage() {
           </button>
         ))}
       </div>
+
       <div className='col mb-2 space-y-2'>
         {results?.map((x, i) => (
           <Card
@@ -90,6 +92,7 @@ export function HomePage() {
           />
         ))}
       </div>
+
       {showPager && (
         <Pager
           page={page}

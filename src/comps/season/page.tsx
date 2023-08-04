@@ -7,32 +7,36 @@ import { TabBar } from '~/comps/tab-bar'
 import { useStateObject } from '~/hooks/object'
 import { useTimeout } from '~/hooks/timeout'
 import { toDateString } from '~/util/local-date'
-import { useTVQuery } from './query'
-import { tvTabs, useTVState } from './z'
+import { useSeasonQuery } from './query'
+import { seasonTabs, useSeasonState } from './z'
 
 const Info = lazy(() => import('./info'))
-const Seasons = lazy(() => import('./seasons'))
+const Episodes = lazy(() => import('./episodes'))
 const Cast = lazy(() => import('./cast'))
 const Crew = lazy(() => import('./crew'))
 const Images = lazy(() => import('./images'))
 const Videos = lazy(() => import('./videos'))
 
 const gqlQuery = gql`
-  query ($id: String!) {
-    tv(id: $id) {
-      first_air_date
+  query ($id: String!, $season_number: Int!) {
+    season(id: $id, season_number: $season_number) {
       name
+      overview
       poster_path
-      tagline
+      air_date
+    }
+    tv(id: $id) {
+      name
     }
   }
 `
 
-export function TVPage() {
-  const { queries } = useTVState()
-  const { id, tab, query, page } = queries.val
+export function SeasonPage() {
+  const { queries } = useSeasonState()
+  const { id, season_number, tab, query, page } = queries.val
 
-  const [res] = useTVQuery(gqlQuery, { id })
+  const [res] = useSeasonQuery(gqlQuery, { id, season_number })
+  const season = res.data?.season
   const tv = res.data?.tv
 
   const debounce = useStateObject(query)
@@ -47,29 +51,33 @@ export function TVPage() {
 
   return (
     <>
-      <div className='col m-2'>
+      <div className='m-2'>
         <Card
-          image={tv?.poster_path}
+          image={season?.poster_path}
           primary={tv?.name}
-          secondary={tv?.tagline}
-          tertiary={toDateString(tv?.first_air_date)}
+          secondary={season?.name}
+          tertiary={toDateString(season?.air_date)}
         />
 
         <TabBar
-          tabs={tvTabs}
+          tabs={seasonTabs}
           setTab={(newTab) => queries.replace({ tab: newTab })}
         />
 
         {showQueryBar && (
           <QueryBar
             query={query}
-            onClearClick={() => queries.replace({ query: '', page: 1 })}
-            onInputChange={(e) => debounce.set(e.target.value)}
+            onClearClick={() => {
+              queries.replace({ query: '' })
+            }}
+            onInputChange={(e) => {
+              debounce.set(e.currentTarget.value)
+            }}
           />
         )}
 
         {tab === 'Info' && <Info queries={queries.val} />}
-        {tab === 'Seasons' && <Seasons queries={queries.val} />}
+        {tab === 'Episodes' && <Episodes queries={queries.val} />}
         {tab === 'Cast' && <Cast queries={queries.val} />}
         {tab === 'Crew' && <Crew queries={queries.val} />}
         {tab === 'Images' && <Images queries={queries.val} />}

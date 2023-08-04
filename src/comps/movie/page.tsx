@@ -3,10 +3,11 @@ import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { Pager } from '~/comps/pager'
 import { QueryBar } from '~/comps/query-bar'
-import { useObject } from '~/hooks/object'
+import { TabBar } from '~/comps/tab-bar'
+import { useStateObject } from '~/hooks/object'
 import { useTimeout } from '~/hooks/timeout'
 import { useMovieQuery } from './query'
-import { movieTabs, useMovieState } from './z'
+import { MovieTab, movieTabs, useMovieState } from './z'
 
 const Info = lazy(() => import('./info'))
 const Cast = lazy(() => import('./cast'))
@@ -31,15 +32,19 @@ export function MoviePage() {
   const [res] = useMovieQuery(gqlQuery, { id, query, page })
   const movie = res.data?.movie
 
-  const debouncedQuery = useObject(query)
+  const debounce = useStateObject(query)
   useTimeout(() => {
-    if (debouncedQuery.val !== query) {
-      queries.replace({ query: debouncedQuery.val })
+    if (debounce.val !== query) {
+      queries.replace({ query: debounce.val })
     }
-  }, [debouncedQuery.val])
+  }, [debounce.val])
 
-  const showQueryBar = tab === 'Cast' || tab === 'Crew'
-  const showPager = tab !== 'Info'
+  const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(tab)
+  const showQueryBar = ['Cast', 'Crew'].includes(tab)
+
+  function setTab(tab: MovieTab) {
+    queries.replace({ tab })
+  }
 
   return (
     <>
@@ -50,21 +55,11 @@ export function MoviePage() {
           secondary={movie?.tagline}
           tertiary={movie?.release_date}
         />
-        <div className='row my-2 space-x-2'>
-          {movieTabs.map((x, i) => (
-            <button
-              className='row border-2 px-2'
-              onClick={() => queries.replace({ tab: x })}
-              key={i}
-            >
-              <div>{x}</div>
-            </button>
-          ))}
-        </div>
+        <TabBar tabs={movieTabs} setTab={setTab} />
         {showQueryBar && (
           <QueryBar
             query={query}
-            onInputChange={(e) => debouncedQuery.set(e.target.value)}
+            onInputChange={(e) => debounce.set(e.target.value)}
             onClearClick={() => queries.replace({ query: '' })}
           />
         )}

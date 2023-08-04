@@ -1,5 +1,5 @@
 import { env } from '~/server/env'
-import { Resolver } from '~/types/server'
+import { Resolver } from '~/types/resolver'
 import { Episode, Movie, Search, Season, TV } from '~/types/tmdb'
 import { Fetcher } from '~/util/fetcher'
 
@@ -33,21 +33,20 @@ const movie: Resolver<Movie> = async (_, { id, query, page }) => {
   const { start, end } = getPagePos(page)
 
   if (query) {
-    query = query.toLowerCase()
+    const q = query.toLowerCase()
 
     if (movie?.credits?.cast) {
-      movie.credits.cast = movie.credits.cast.filter((person) => {
-        if (person.name?.toLowerCase().includes(query)) return true
-        if (person.character?.toLowerCase().includes(query)) return true
+      movie.credits.cast = movie.credits.cast.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.character?.toLowerCase().includes(q)) return true
         return false
       })
     }
 
     if (movie?.credits?.crew) {
-      movie.credits.crew = movie.credits.crew.filter((person) => {
-        if (person.name?.toLowerCase().includes(query.toLowerCase()))
-          return true
-        if (person.job?.toLowerCase().includes(query.toLowerCase())) return true
+      movie.credits.crew = movie.credits.crew.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.job?.toLowerCase().includes(q)) return true
         return false
       })
     }
@@ -130,22 +129,97 @@ const tv: Resolver<TV> = async (_, { id, query, page }) => {
   }
 }
 
-const season: Resolver<Season> = async (_, { id, season_number }) => {
-  return await api.get<Season>(`/tv/${id}/season/${season_number}`, {
+const season: Resolver<Season> = async (
+  _,
+  { id, season_number, query, page },
+) => {
+  const season = await api.get<Season>(`/tv/${id}/season/${season_number}`, {
     append_to_response: 'credits,images,videos',
   })
+
+  const { start, end } = getPagePos(page)
+
+  if (query) {
+    const q = query.toLowerCase()
+
+    if (season.credits?.cast) {
+      season.credits.cast = season.credits.cast.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.character?.toLowerCase().includes(q)) return true
+        return false
+      })
+    }
+
+    if (season.credits?.crew) {
+      season.credits.crew = season.credits.crew.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.job?.toLowerCase().includes(q)) return true
+        return false
+      })
+    }
+  }
+
+  return {
+    ...season,
+    credits: {
+      cast: season.credits?.cast?.slice(start, end),
+      crew: season.credits?.crew?.slice(start, end),
+    },
+    images: {
+      posters: season.images?.posters?.slice(start, end),
+    },
+    videos: {
+      results: season.videos?.results?.slice(start, end),
+    },
+  }
 }
 
 const episode: Resolver<Episode> = async (
   _,
-  { id, season_number, episode_number },
+  { id, season_number, episode_number, query, page },
 ) => {
-  return await api.get<Episode>(
+  const episode = await api.get<Episode>(
     `/tv/${id}/season/${season_number}/episode/${episode_number}`,
     {
       append_to_response: 'credits,images,videos',
     },
   )
+
+  const { start, end } = getPagePos(page)
+
+  if (query) {
+    const q = query.toLowerCase()
+
+    if (episode.credits?.cast) {
+      episode.credits.cast = episode.credits.cast.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.character?.toLowerCase().includes(q)) return true
+        return false
+      })
+    }
+
+    if (episode.credits?.crew) {
+      episode.credits.crew = episode.credits.crew.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.job?.toLowerCase().includes(q)) return true
+        return false
+      })
+    }
+  }
+
+  return {
+    ...episode,
+    credits: {
+      cast: episode.credits?.cast?.slice(start, end),
+      crew: episode.credits?.crew?.slice(start, end),
+    },
+    images: {
+      stills: episode.images?.stills?.slice(start, end),
+    },
+    videos: {
+      results: episode.videos?.results?.slice(start, end),
+    },
+  }
 }
 
 export const tmdbResolvers = {

@@ -9,6 +9,7 @@ const schema = createSchema({
 
 const yoga = createYoga({
   schema,
+  graphiql: true,
   graphqlEndpoint: '/api/gql',
 })
 
