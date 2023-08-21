@@ -6,6 +6,6 @@ const client = createClient({
   exchanges: [cacheExchange, fetchExchange],
 })
 
-export const Urql = (props: { children: ReactNode }) => (
-  <Provider value={client}>{props.children}</Provider>
+export const Urql = ({ children }: { children: ReactNode }) => (
+  <Provider value={client}>{children}</Provider>
 )

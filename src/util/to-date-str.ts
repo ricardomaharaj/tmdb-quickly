@@ -1,7 +1,7 @@
-export function toDateStr(dateString?: string) {
-  if (!dateString) return ''
-  if (dateString.includes('T')) {
-    dateString = dateString.split('T').at(0)!
+export function toDateStr(dateStr?: string) {
+  if (!dateStr) return ''
+  if (dateStr.includes('T')) {
+    dateStr = dateStr.split('T').at(0)!
   }
-  return new Date(dateString.replaceAll('-', '/')).toDateString().substring(4)
+  return new Date(dateStr.replaceAll('-', '/')).toDateString().substring(4)
 }
