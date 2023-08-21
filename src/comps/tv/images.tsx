@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { gql } from 'urql'
+import { TVProps } from '~/types/props'
 import { imageUrls } from '~/util/image-urls'
 import { useTVQuery } from './query'
-import { TVProps } from './z'
 
 const imageTabs = {
   Posters: 'Posters',
@@ -27,10 +27,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Images(props: TVProps) {
-  const { queries } = props
-  const { id, page } = queries
-
+export default function Images({ id, page }: TVProps) {
   const [res] = useTVQuery(gqlQuery, { id, page })
   const images = res.data?.tv?.images
 

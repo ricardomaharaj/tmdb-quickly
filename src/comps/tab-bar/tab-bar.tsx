@@ -1,10 +1,9 @@
-type Props<T> = {
-  tabs: Readonly<T[]>
-  setTab: (tab: T) => void
+type Props = {
+  tabs: string[]
+  setTab: (tab: string) => void
 }
 
-export function TabBar<T>(props: Props<T>) {
-  const { tabs, setTab } = props
+export function TabBar({ tabs, setTab }: Props) {
   return (
     <>
       <div className='row my-2 space-x-2 overflow-scroll'>
@@ -14,7 +13,7 @@ export function TabBar<T>(props: Props<T>) {
             onClick={() => setTab(tab)}
             key={i}
           >
-            <div>{tab as string}</div>
+            <div>{tab}</div>
           </button>
         ))}
       </div>

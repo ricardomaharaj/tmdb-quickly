@@ -1,7 +1,7 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
+import { SeasonProps } from '~/types/props'
 import { useSeasonQuery } from './query'
-import { SeasonProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!, $query: String, $page: Int) {
@@ -18,10 +18,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Cast(props: SeasonProps) {
-  const { queries } = props
-  const { id, season_number, query, page } = queries
-
+export default function Cast({ id, season_number, query, page }: SeasonProps) {
   const [res] = useSeasonQuery(gqlQuery, { id, season_number, query, page })
   const cast = res.data?.season?.credits?.cast
 

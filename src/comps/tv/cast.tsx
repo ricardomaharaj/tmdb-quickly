@@ -1,8 +1,8 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
+import { TVProps } from '~/types/props'
 import { removeVoiceTag } from '~/util/voice-tag'
 import { useTVQuery } from './query'
-import { TVProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $query: String, $page: Int) {
@@ -22,10 +22,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Cast(props: TVProps) {
-  const { queries } = props
-  const { id, query, page } = queries
-
+export default function Cast({ id, query, page }: TVProps) {
   const [res] = useTVQuery(gqlQuery, { id, query, page })
   const cast = res.data?.tv?.aggregate_credits?.cast
 

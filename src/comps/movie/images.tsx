@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { gql } from 'urql'
+import { MovieProps } from '~/types/props'
 import { imageUrls } from '~/util/image-urls'
 import { useMovieQuery } from './query'
-import { MovieProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $page: Int) {
@@ -27,10 +27,7 @@ const imageTabs = {
 
 type ImageTab = (typeof imageTabs)[keyof typeof imageTabs]
 
-export default function Images(props: MovieProps) {
-  const { queries } = props
-  const { id, page } = queries
-
+export default function Images({ id, page }: MovieProps) {
   const [res] = useMovieQuery(gqlQuery, { id, page })
   const images = res.data?.movie?.images
 

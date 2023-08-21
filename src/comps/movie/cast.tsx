@@ -1,8 +1,8 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
+import { MovieProps } from '~/types/props'
 import { removeVoiceTag } from '~/util/voice-tag'
 import { useMovieQuery } from './query'
-import { MovieProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $query: String, $page: Int) {
@@ -19,10 +19,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Cast(props: MovieProps) {
-  const { queries } = props
-  const { id, query, page } = queries
-
+export default function Cast({ id, query, page }: MovieProps) {
   const [res] = useMovieQuery(gqlQuery, { id, query, page })
   const cast = res.data?.movie?.credits?.cast
 

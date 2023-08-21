@@ -6,9 +6,7 @@ type Props = {
   onPageUpClick: MouseEventHandler<HTMLButtonElement>
 }
 
-export function Pager(props: Props) {
-  const { page, onPageDownClick, onPageUpClick } = props
-
+export function Pager({ page, onPageDownClick, onPageUpClick }: Props) {
   return (
     <>
       <div className='row space-x-2'>

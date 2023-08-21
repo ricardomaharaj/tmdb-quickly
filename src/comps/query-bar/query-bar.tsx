@@ -6,8 +6,7 @@ type Props = {
   onClearClick: () => void
 }
 
-export function QueryBar(props: Props) {
-  const { query, onInputChange, onClearClick } = props
+export function QueryBar({ query, onInputChange, onClearClick }: Props) {
   const queryInputRef = useRef<HTMLInputElement>(null)
 
   function handleClearClick() {

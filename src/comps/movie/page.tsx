@@ -1,13 +1,14 @@
-import { lazy } from 'react'
+import { useRouter } from 'next/router'
+import { lazy, useState } from 'react'
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { Pager } from '~/comps/pager'
 import { QueryBar } from '~/comps/query-bar'
 import { TabBar } from '~/comps/tab-bar'
-import { useStateObject } from '~/hooks/object'
 import { useTimeout } from '~/hooks/timeout'
+import { paramParse } from '~/util/param-parse'
+import { getSearchParams } from '~/util/search-params'
 import { useMovieQuery } from './query'
-import { MovieTab, movieTabs, useMovieState } from './z'
 
 const Info = lazy(() => import('./info'))
 const Cast = lazy(() => import('./cast'))
@@ -25,26 +26,38 @@ const gqlQuery = gql`
     }
   }
 `
-export function MoviePage() {
-  const { queries } = useMovieState()
-  const { id, tab, query, page } = queries.val
 
-  const [res] = useMovieQuery(gqlQuery, { id, query, page })
+const tabs = ['Info', 'Cast', 'Crew', 'Images', 'Videos']
+
+export function MoviePage() {
+  const router = useRouter()
+
+  const searchParams = getSearchParams(router.query)
+  const params = paramParse(searchParams)
+
+  const id = params.id || ''
+  const query = params.query || ''
+  const page = parseInt(params.page || '1')
+  const tab = params.tab || 'Info'
+
+  const [res] = useMovieQuery(gqlQuery, { id })
   const movie = res.data?.movie
 
-  const debounce = useStateObject(query)
-  useTimeout(() => {
-    if (debounce.val !== query) {
-      queries.replace({ query: debounce.val })
-    }
-  }, [debounce.val])
-
-  const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(tab)
-  const showQueryBar = ['Cast', 'Crew'].includes(tab)
-
-  function setTab(tab: MovieTab) {
-    queries.replace({ tab })
+  function replaceParams(upd: Record<string, string | number | undefined>) {
+    router.replace({ query: { ...params, ...upd } })
   }
+
+  const [dbQuery, setDbQuery] = useState(query)
+  useTimeout(() => {
+    if (dbQuery !== query) {
+      replaceParams({ query: dbQuery })
+    }
+  }, [dbQuery])
+
+  const showQueryBar = ['Cast', 'Crew'].includes(tab)
+  const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(tab)
+
+  const props = { id, query, page }
 
   return (
     <>
@@ -55,24 +68,28 @@ export function MoviePage() {
           secondary={movie?.tagline}
           tertiary={movie?.release_date}
         />
-        <TabBar tabs={movieTabs} setTab={setTab} />
+
+        <TabBar tabs={tabs} setTab={(tab) => replaceParams({ tab })} />
+
         {showQueryBar && (
           <QueryBar
             query={query}
-            onInputChange={(e) => debounce.set(e.target.value)}
-            onClearClick={() => queries.replace({ query: '' })}
+            onInputChange={(e) => setDbQuery(e.target.value)}
+            onClearClick={() => replaceParams({ query: '', page: 1 })}
           />
         )}
-        {tab === 'Info' && <Info queries={queries.val} />}
-        {tab === 'Cast' && <Cast queries={queries.val} />}
-        {tab === 'Crew' && <Crew queries={queries.val} />}
-        {tab === 'Images' && <Images queries={queries.val} />}
-        {tab === 'Videos' && <Videos queries={queries.val} />}
+
+        {tab === 'Info' && <Info {...props} />}
+        {tab === 'Cast' && <Cast {...props} />}
+        {tab === 'Crew' && <Crew {...props} />}
+        {tab === 'Images' && <Images {...props} />}
+        {tab === 'Videos' && <Videos {...props} />}
+
         {showPager && (
           <Pager
             page={page}
-            onPageDownClick={() => queries.replace({ page: page - 1 })}
-            onPageUpClick={() => queries.replace({ page: page + 1 })}
+            onPageDownClick={() => replaceParams({ page: page - 1 })}
+            onPageUpClick={() => replaceParams({ page: page + 1 })}
           />
         )}
       </div>

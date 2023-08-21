@@ -1,6 +1,6 @@
 import { gql } from 'urql'
+import { SeasonProps } from '~/types/props'
 import { useSeasonQuery } from './query'
-import { SeasonProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!) {
@@ -10,10 +10,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Info(props: SeasonProps) {
-  const { queries } = props
-  const { id, season_number } = queries
-
+export default function Info({ id, season_number }: SeasonProps) {
   const [res] = useSeasonQuery(gqlQuery, { id, season_number })
   const season = res.data?.season
 

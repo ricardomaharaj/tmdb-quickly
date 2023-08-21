@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import { gql } from 'urql'
+import { SeasonProps } from '~/types/props'
 import { imageUrls } from '~/util/image-urls'
 import { useSeasonQuery } from './query'
-import { SeasonProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!, $page: Int) {
@@ -17,10 +17,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Images(props: SeasonProps) {
-  const { queries } = props
-  const { id, season_number, page } = queries
-
+export default function Images({ id, season_number, page }: SeasonProps) {
   const [res] = useSeasonQuery(gqlQuery, { id, season_number, page })
   const posters = res.data?.season?.images?.posters?.filter((x) => {
     if (!x.iso_639_1) return true

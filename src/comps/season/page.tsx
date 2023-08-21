@@ -1,14 +1,15 @@
-import { lazy } from 'react'
+import { useRouter } from 'next/router'
+import { lazy, useState } from 'react'
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
 import { Pager } from '~/comps/pager'
 import { QueryBar } from '~/comps/query-bar'
 import { TabBar } from '~/comps/tab-bar'
-import { useStateObject } from '~/hooks/object'
 import { useTimeout } from '~/hooks/timeout'
+import { paramParse } from '~/util/param-parse'
+import { getSearchParams } from '~/util/search-params'
 import { toDateStr } from '~/util/to-date-str'
 import { useSeasonQuery } from './query'
-import { seasonTabs, useSeasonState } from './z'
 
 const Info = lazy(() => import('./info'))
 const Episodes = lazy(() => import('./episodes'))
@@ -31,23 +32,40 @@ const gqlQuery = gql`
   }
 `
 
+const tabs = ['Info', 'Episodes', 'Cast', 'Crew', 'Images', 'Videos']
+
 export function SeasonPage() {
-  const { queries } = useSeasonState()
-  const { id, season_number, tab, query, page } = queries.val
+  const router = useRouter()
+
+  const searchParams = getSearchParams(router.query)
+  const params = paramParse(searchParams)
+
+  const id = params.id || ''
+  const season_number = parseInt(params.season_number || '1')
+
+  const query = params.query || ''
+  const page = parseInt(params.page || '1')
+  const tab = params.tab || 'Info'
 
   const [res] = useSeasonQuery(gqlQuery, { id, season_number })
   const season = res.data?.season
   const tv = res.data?.tv
 
-  const debounce = useStateObject(query)
+  function replaceParams(upd: Record<string, string | number | undefined>) {
+    router.replace({ query: { ...params, ...upd } })
+  }
+
+  const [dbQuery, setDbQuery] = useState(query)
   useTimeout(() => {
-    if (debounce.val !== query) {
-      queries.replace({ query: debounce.val })
+    if (dbQuery !== query) {
+      replaceParams({ query: dbQuery })
     }
-  }, [debounce.val])
+  }, [dbQuery])
 
   const showQueryBar = ['Cast', 'Crew'].includes(tab)
   const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(tab)
+
+  const props = { id, season_number, query, page }
 
   return (
     <>
@@ -59,35 +77,28 @@ export function SeasonPage() {
           tertiary={toDateStr(season?.air_date)}
         />
 
-        <TabBar
-          tabs={seasonTabs}
-          setTab={(newTab) => queries.replace({ tab: newTab })}
-        />
+        <TabBar tabs={tabs} setTab={(tab) => replaceParams({ tab })} />
 
         {showQueryBar && (
           <QueryBar
             query={query}
-            onClearClick={() => {
-              queries.replace({ query: '' })
-            }}
-            onInputChange={(e) => {
-              debounce.set(e.currentTarget.value)
-            }}
+            onClearClick={() => replaceParams({ query: '', page: 1 })}
+            onInputChange={(e) => setDbQuery(e.target.value)}
           />
         )}
 
-        {tab === 'Info' && <Info queries={queries.val} />}
-        {tab === 'Episodes' && <Episodes queries={queries.val} />}
-        {tab === 'Cast' && <Cast queries={queries.val} />}
-        {tab === 'Crew' && <Crew queries={queries.val} />}
-        {tab === 'Images' && <Images queries={queries.val} />}
-        {tab === 'Videos' && <Videos queries={queries.val} />}
+        {tab === 'Info' && <Info {...props} />}
+        {tab === 'Episodes' && <Episodes {...props} />}
+        {tab === 'Cast' && <Cast {...props} />}
+        {tab === 'Crew' && <Crew {...props} />}
+        {tab === 'Images' && <Images {...props} />}
+        {tab === 'Videos' && <Videos {...props} />}
 
         {showPager && (
           <Pager
             page={page}
-            onPageDownClick={() => queries.replace({ page: page - 1 })}
-            onPageUpClick={() => queries.replace({ page: page + 1 })}
+            onPageDownClick={() => replaceParams({ page: page - 1 })}
+            onPageUpClick={() => replaceParams({ page: page + 1 })}
           />
         )}
       </div>

@@ -1,7 +1,7 @@
 import { gql } from 'urql'
+import { MovieProps } from '~/types/props'
 import { releaseTypes } from '~/util/release-types'
 import { useMovieQuery } from './query'
-import { MovieProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!) {
@@ -34,10 +34,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Info(props: MovieProps) {
-  const { queries } = props
-  const { id } = queries
-
+export default function Info({ id }: MovieProps) {
   const [res] = useMovieQuery(gqlQuery, { id })
   const movie = res.data?.movie
 

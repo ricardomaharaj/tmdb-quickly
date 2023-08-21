@@ -1,8 +1,8 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/comps/video-card'
+import { SeasonProps } from '~/types/props'
 import { toDateStr } from '~/util/to-date-str'
 import { useSeasonQuery } from './query'
-import { SeasonProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!, $page: Int) {
@@ -19,10 +19,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Videos(props: SeasonProps) {
-  const { queries } = props
-  const { id, season_number, page } = queries
-
+export default function Videos({ id, season_number, page }: SeasonProps) {
   const [res] = useSeasonQuery(gqlQuery, { id, season_number, page })
   const videos = res.data?.season?.videos?.results
 

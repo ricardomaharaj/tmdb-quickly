@@ -1,7 +1,7 @@
 import { gql } from 'urql'
+import { TVProps } from '~/types/props'
 import { toDateStr } from '~/util/to-date-str'
 import { useTVQuery } from './query'
-import { TVProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!) {
@@ -29,10 +29,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Info(props: TVProps) {
-  const { queries } = props
-  const { id } = queries
-
+export default function Info({ id }: TVProps) {
   const [res] = useTVQuery(gqlQuery, { id })
   const tv = res.data?.tv
 

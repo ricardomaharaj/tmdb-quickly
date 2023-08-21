@@ -1,8 +1,8 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/comps/video-card'
+import { TVProps } from '~/types/props'
 import { toDateStr } from '~/util/to-date-str'
 import { useTVQuery } from './query'
-import { TVProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $page: Int) {
@@ -18,10 +18,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Videos(props: TVProps) {
-  const { queries } = props
-  const { id, page } = queries
-
+export default function Videos({ id, page }: TVProps) {
   const [res] = useTVQuery(gqlQuery, { id, page })
   const videos = res.data?.tv?.videos?.results
 

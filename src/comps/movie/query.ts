@@ -1,8 +1,8 @@
 import { TypedDocumentNode, useQuery } from 'urql'
-import { Movie } from '~/types/tmdb'
+import * as TMDBTypes from '~/types/tmdb'
 
 type Data = {
-  movie?: Movie
+  movie?: TMDBTypes.Movie
 }
 
 type Vars = {

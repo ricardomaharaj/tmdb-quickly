@@ -1,7 +1,7 @@
 import { gql } from 'urql'
 import { Card } from '~/comps/card'
+import { MovieProps } from '~/types/props'
 import { useMovieQuery } from './query'
-import { MovieProps } from './z'
 
 const gqlQuery = gql`
   query ($id: String!, $query: String, $page: Int) {
@@ -18,10 +18,7 @@ const gqlQuery = gql`
   }
 `
 
-export default function Crew(props: MovieProps) {
-  const { queries } = props
-  const { id, query, page } = queries
-
+export default function Crew({ id, query, page }: MovieProps) {
   const [res] = useMovieQuery(gqlQuery, { id, query, page })
   const crew = res.data?.movie?.credits?.crew
 
