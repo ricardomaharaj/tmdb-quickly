@@ -56,7 +56,7 @@ export function HomePage() {
       <div className='row mb-2 space-x-2'>
         {Object.entries(tabMap).map(([key, val], i) => (
           <button
-            className={`btn ${
+            className={`btn lg:hover:bg-primary-600 ${
               val === curTab ? 'bg-primary-700' : 'bg-primary-800'
             }`}
             onClick={() => replaceParams({ tab: curTab === val ? '' : val })}
@@ -69,13 +69,12 @@ export function HomePage() {
 
       <div className='grid123'>
         {results?.map((x, i) => (
-          <Link href={`/${x.media_type}/${x.id}`}>
+          <Link href={`/${x.media_type}/${x.id}`} key={i}>
             <PosterCard
               path={x.poster_path || x.profile_path}
               pri={x.name || x.title}
               sec={query ? x.release_date || x.first_air_date : undefined}
               ter={x.overview}
-              key={i}
             />
           </Link>
         ))}

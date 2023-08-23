@@ -19,7 +19,6 @@ const Videos = lazy(() => import('./videos'))
 const gqlQuery = gql`
   query ($id: String!) {
     movie(id: $id) {
-      poster_path
       backdrop_path
       title
       tagline
@@ -74,7 +73,7 @@ export function MoviePage() {
         <TabBar
           tabs={tabs}
           currentTab={curTab}
-          onTabClicked={(tab) => replaceParams({ tab })}
+          onTabClicked={(tab) => replaceParams({ tab, page: 1 })}
         />
 
         {showQueryBar && (

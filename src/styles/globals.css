@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,17 +6,17 @@
 
 @layer base {
   html {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
   }
   a,
   button {
     -webkit-tap-highlight-color: transparent;
   }
   input {
-    @apply outline-none;
+    @apply focus:outline-none;
   }
   body {
-    @apply bg-primary-900 container mx-auto text-white;
+    @apply container mx-auto bg-primary-900 text-white;
   }
 }
 
@@ -31,13 +31,16 @@
     @apply overflow-x-scroll lg:overflow-hidden;
   }
   .tag {
-    @apply bg-primary-800 whitespace-nowrap rounded-xl px-4 py-1 text-sm;
+    @apply whitespace-nowrap rounded-xl bg-primary-800 px-4 py-1 text-sm;
   }
   .bubble {
-    @apply bg-primary-800 mb-2 rounded-xl p-4;
+    @apply mb-2 rounded-xl bg-primary-800 p-4;
+  }
+  .hover-hint {
+    @apply lg:hover:bg-primary-700;
   }
   .btn {
-    @apply rounded-xl px-4 py-1;
+    @apply hover-hint rounded-xl px-4 py-1 disabled:bg-primary-900 lg:hover:bg-primary-600 lg:disabled:bg-primary-900;
   }
 }
 

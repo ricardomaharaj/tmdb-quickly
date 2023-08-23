@@ -70,6 +70,7 @@ type BelongsToCollection {
 type Credits {
   cast: [Cast]
   crew: [Crew]
+  guest_stars: [Cast]
 }
 
 type Cast {

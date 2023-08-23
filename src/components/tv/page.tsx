@@ -20,11 +20,10 @@ const Videos = lazy(() => import('./videos'))
 const gqlQuery = gql`
   query ($id: String!) {
     tv(id: $id) {
-      first_air_date
-      name
-      poster_path
-      tagline
       backdrop_path
+      name
+      tagline
+      first_air_date
     }
   }
 `

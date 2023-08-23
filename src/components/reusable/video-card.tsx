@@ -3,12 +3,12 @@ import Link from 'next/link'
 
 type Props = {
   ytKey?: string
-  primary?: string
-  secondary?: string
+  pri?: string
+  sec?: string
 }
 
 export function VideoCard(props: Props) {
-  const { ytKey, primary, secondary } = props
+  const { ytKey, pri, sec } = props
 
   if (!ytKey) return <></>
 
@@ -17,7 +17,7 @@ export function VideoCard(props: Props) {
       <Link
         href={`https://www.youtube.com/watch?v=${ytKey}`}
         target='_blank'
-        className='col rounded-xl bg-primary-800'
+        className='col hover-hint rounded-xl bg-primary-800'
       >
         <div className='row'>
           <Image
@@ -28,9 +28,11 @@ export function VideoCard(props: Props) {
             alt=''
           />
         </div>
-        <div className='col p-2 text-sm'>
-          <p className='line-clamp-2'>{primary}</p>
-          {secondary && <div className='my-1 text-xs'>{secondary}</div>}
+        <div className='col p-2'>
+          <p className='line-clamp-1 text-sm md:text-base'>{pri}</p>
+          {sec && (
+            <div className='text-sm text-subtext'>{sec.split('T').at(0)}</div>
+          )}
         </div>
       </Link>
     </>

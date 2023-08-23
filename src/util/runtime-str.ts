@@ -1,4 +1,6 @@
-export function genRuntimeStr(runtime: number) {
+export function genRuntimeStr(runtime?: number) {
+  if (!runtime) return ''
+
   if (runtime === 60) {
     return '1h'
   }

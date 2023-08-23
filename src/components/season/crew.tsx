@@ -25,15 +25,10 @@ export default function Crew({ id, season_number, query, page }: SeasonProps) {
 
   return (
     <>
-      <div className='col mb-2 space-y-2'>
+      <div className='grid123'>
         {crew?.map((x, i) => (
-          <Link href={`/person/${x.id}`}>
-            <PosterCard
-              path={x.profile_path}
-              pri={x.name}
-              sec={x.job}
-              key={i}
-            />
+          <Link href={`/person/${x.id}`} key={i}>
+            <PosterCard path={x.profile_path} pri={x.name} sec={x.job} />
           </Link>
         ))}
       </div>

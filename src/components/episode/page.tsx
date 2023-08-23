@@ -1,12 +1,22 @@
 import { useRouter } from 'next/router'
+import { lazy, useState } from 'react'
 import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
-import { usePath } from '~/hooks/path'
+import { Pager } from '~/components/reusable/pager'
+import { QueryBar } from '~/components/reusable/query-bar'
+import { TabBar } from '~/components/reusable/tab-bar'
+import { useTimeout } from '~/hooks/timeout'
 import { paramParse } from '~/util/param-parse'
 import { getSearchParams } from '~/util/search-params'
 import { useEpisodeQuery } from './query'
 
-const tabs = ['Info', 'Cast', 'Crew', 'Stills', 'Videos']
+const Info = lazy(() => import('./info'))
+const Cast = lazy(() => import('./cast'))
+const Crew = lazy(() => import('./crew'))
+const Stills = lazy(() => import('./stills'))
+const Guests = lazy(() => import('./guests'))
+
+const tabs = ['Info', 'Cast', 'Guests', 'Crew', 'Stills', 'Videos']
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!, $episode_number: Int!) {
@@ -37,23 +47,68 @@ export function EpisodePage() {
 
   const query = params.query || ''
   const page = parseInt(params.page || '1')
-  const tab = params.tab || 'Info'
+  const curTab = params.tab || 'Info'
 
   const [res] = useEpisodeQuery(gqlQuery, { id, season_number, episode_number })
   const tv = res.data?.tv
-  const episode = res.data?.episode
+  const ep = res.data?.episode
 
-  const path = usePath()
+  function replaceParams(upd: Record<string, string | number | undefined>) {
+    router.replace({ query: { ...params, ...upd } })
+  }
+
+  const [dbQuery, setDbQuery] = useState(query)
+  useTimeout(() => {
+    if (dbQuery !== query) {
+      replaceParams({ query: dbQuery })
+    }
+  }, [dbQuery])
+
+  const showQueryBar = ['Cast', 'Guests', 'Crew'].includes(curTab)
+  const showPager = ['Cast', 'Guests', 'Crew', 'Stills', 'Videos'].includes(
+    curTab,
+  )
+
+  const props = { id, season_number, episode_number, query, page }
 
   return (
     <>
       <div className='m-2'>
         <BackdropCard
-          backdrop={episode?.still_path}
-          pri={tv?.name}
-          sec={episode?.name}
-          ter={episode?.air_date}
+          backdrop={ep?.still_path}
+          pri={`${tv?.name} S${season_number} E${episode_number}`}
+          sec={ep?.name}
+          ter={ep?.air_date}
+          className='xl:p-14'
         />
+
+        <TabBar
+          tabs={tabs}
+          currentTab={curTab}
+          onTabClicked={(tab) => replaceParams({ tab })}
+        />
+
+        {showQueryBar && (
+          <QueryBar
+            query={query}
+            onInputChange={(e) => setDbQuery(e.target.value)}
+            onClearClick={() => replaceParams({ query: '' })}
+          />
+        )}
+
+        {curTab === 'Info' && <Info {...props} />}
+        {curTab === 'Cast' && <Cast {...props} />}
+        {curTab === 'Guests' && <Guests {...props} />}
+        {curTab === 'Crew' && <Crew {...props} />}
+        {curTab === 'Stills' && <Stills {...props} />}
+
+        {showPager && (
+          <Pager
+            page={page}
+            onPageDownClick={() => replaceParams({ page: page - 1 })}
+            onPageUpClick={() => replaceParams({ page: page + 1 })}
+          />
+        )}
       </div>
     </>
   )

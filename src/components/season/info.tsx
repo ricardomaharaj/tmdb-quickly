@@ -16,7 +16,7 @@ export default function Info({ id, season_number }: SeasonProps) {
 
   return (
     <>
-      <div className='bg-primary-800 rounded-xl p-4'>
+      <div className='bubble'>
         <p>{season?.overview || 'No overview for this season'}</p>
       </div>
     </>

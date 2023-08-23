@@ -30,7 +30,7 @@ export default function Crew({ id, query, page }: TVProps) {
     <>
       <div className='grid123'>
         {crew?.map((x, i) => (
-          <Link href={`/person/${x.id}`}>
+          <Link href={`/person/${x.id}`} key={i}>
             <PosterCard
               path={x.profile_path}
               pri={x.name}
@@ -38,7 +38,6 @@ export default function Crew({ id, query, page }: TVProps) {
                 ?.slice(0, 2)
                 .map((x) => `${x.job} (${x.episode_count})`)
                 .join(' | ')}
-              key={i}
             />
           </Link>
         ))}

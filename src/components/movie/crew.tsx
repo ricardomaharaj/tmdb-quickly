@@ -26,8 +26,8 @@ export default function Crew({ id, query, page }: MovieProps) {
   return (
     <div className='grid123'>
       {crew?.map((x, i) => (
-        <Link href={`/person/${x.id}`}>
-          <PosterCard path={x.profile_path} pri={x.name} sec={x.job} key={i} />
+        <Link href={`/person/${x.id}`} key={i}>
+          <PosterCard path={x.profile_path} pri={x.name} sec={x.job} />
         </Link>
       ))}
     </div>

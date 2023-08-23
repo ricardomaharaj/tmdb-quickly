@@ -3,6 +3,7 @@ import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { usePath } from '~/hooks/path'
 import { SeasonProps } from '~/types/props'
+import { genRuntimeStr } from '~/util/runtime-str'
 import { useSeasonQuery } from './query'
 
 const gqlQuery = gql`
@@ -29,15 +30,16 @@ export default function Episodes({ id, season_number }: SeasonProps) {
   return (
     <>
       <div className='grid123'>
-        {episodes?.map((episode, i) => (
-          <Link href={`${path}/episode/${episode?.episode_number}`}>
+        {episodes?.map((x, i) => (
+          <Link href={`${path}/episode/${x?.episode_number}`} key={i}>
             <BackdropCard
-              backdrop={episode?.still_path}
-              pri={episode?.name}
-              sec={`S${season_number} E${episode?.episode_number} | ${episode?.air_date}`}
-              ter={episode?.overview}
+              backdrop={x?.still_path}
+              pri={x?.name}
+              sec={`S${season_number} E${x?.episode_number} | ${x?.air_date} | ${genRuntimeStr(
+                x.runtime,
+              )}`}
+              ter={x?.overview}
               className=''
-              key={i}
             />
           </Link>
         ))}

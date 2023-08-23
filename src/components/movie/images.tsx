@@ -1,9 +1,8 @@
-import Image from 'next/image'
 import { useState } from 'react'
 import { gql } from 'urql'
+import { ImageCard } from '~/components/reusable/image-card'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { MovieProps } from '~/types/props'
-import { imageUrls } from '~/util/image-urls'
 import { useMovieQuery } from './query'
 
 const gqlQuery = gql`
@@ -40,26 +39,14 @@ export default function Images({ id, page }: MovieProps) {
       {curTab === 'Posters' && (
         <div className='grid234'>
           {images?.posters?.map((x, i) => (
-            <Image
-              src={`${imageUrls.w500}${x.file_path}`}
-              width={500}
-              height={0}
-              alt=''
-              key={i}
-            />
+            <ImageCard path={x.file_path} key={i} />
           ))}
         </div>
       )}
       {curTab === 'Backdrops' && (
         <div className='grid123'>
           {images?.backdrops?.map((x, i) => (
-            <Image
-              src={`${imageUrls.w500}${x.file_path}`}
-              width={500}
-              height={0}
-              alt=''
-              key={i}
-            />
+            <ImageCard path={x.file_path} key={i} />
           ))}
         </div>
       )}

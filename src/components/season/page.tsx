@@ -22,15 +22,14 @@ const gqlQuery = gql`
     season(id: $id, season_number: $season_number) {
       name
       overview
-      poster_path
       air_date
       episodes {
         episode_number
       }
     }
     tv(id: $id) {
-      name
       backdrop_path
+      name
     }
   }
 `

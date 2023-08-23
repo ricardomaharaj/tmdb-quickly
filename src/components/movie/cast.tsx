@@ -26,13 +26,8 @@ export default function Cast({ id, query, page }: MovieProps) {
   return (
     <div className='grid123'>
       {cast?.map((x, i) => (
-        <Link href={`/person/${x.id}`}>
-          <PosterCard
-            path={x.profile_path}
-            pri={x.name}
-            sec={x.character}
-            key={i}
-          />
+        <Link href={`/person/${x.id}`} key={i}>
+          <PosterCard path={x.profile_path} pri={x.name} sec={x.character} />
         </Link>
       ))}
     </div>

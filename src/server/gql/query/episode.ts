@@ -34,6 +34,14 @@ export const episode: GqlResolver<Episode> = async (
         return false
       })
     }
+
+    if (episode.credits?.guest_stars) {
+      episode.credits.guest_stars = episode.credits.guest_stars.filter((x) => {
+        if (x.name?.toLowerCase().includes(q)) return true
+        if (x.character?.toLowerCase().includes(q)) return true
+        return false
+      })
+    }
   }
 
   return {
@@ -41,6 +49,7 @@ export const episode: GqlResolver<Episode> = async (
     credits: {
       cast: episode.credits?.cast?.slice(start, end),
       crew: episode.credits?.crew?.slice(start, end),
+      guest_stars: episode.credits?.guest_stars?.slice(start, end),
     },
     images: {
       stills: episode.images?.stills?.slice(start, end),

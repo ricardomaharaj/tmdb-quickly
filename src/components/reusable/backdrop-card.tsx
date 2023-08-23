@@ -20,9 +20,9 @@ export function BackdropCard({ backdrop, pri, sec, ter, className }: Props) {
         <div
           className={`col space-y-2 rounded-xl bg-black bg-opacity-50 p-6 ${className}`}
         >
-          {pri && <div className='font-medium'>{pri}</div>}
-          {sec && <div className='text-sm font-medium'>{sec}</div>}
-          {ter && <div className='line-clamp-1 text-sm'>{ter}</div>}
+          {pri && <div>{pri}</div>}
+          {sec && <div>{sec}</div>}
+          {ter && <div className='line-clamp-1'>{ter}</div>}
         </div>
       </div>
     </>

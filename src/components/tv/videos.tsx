@@ -1,7 +1,6 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/components/reusable/video-card'
 import { TVProps } from '~/types/props'
-import { toDateStr } from '~/util/to-date-str'
 import { useTVQuery } from './query'
 
 const gqlQuery = gql`
@@ -26,12 +25,7 @@ export default function Videos({ id, page }: TVProps) {
     <>
       <div className='grid234'>
         {videos?.map((x, i) => (
-          <VideoCard
-            ytKey={x.key}
-            primary={x.name}
-            secondary={toDateStr(x.published_at)}
-            key={i}
-          />
+          <VideoCard ytKey={x.key} pri={x.name} sec={x.published_at} key={i} />
         ))}
       </div>
     </>

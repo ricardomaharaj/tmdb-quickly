@@ -1,7 +1,6 @@
-import Image from 'next/image'
 import { gql } from 'urql'
+import { ImageCard } from '~/components/reusable/image-card'
 import { SeasonProps } from '~/types/props'
-import { imageUrls } from '~/util/image-urls'
 import { useSeasonQuery } from './query'
 
 const gqlQuery = gql`
@@ -27,16 +26,8 @@ export default function Images({ id, season_number, page }: SeasonProps) {
 
   return (
     <>
-      <div className='grid234 mb-2'>
-        {posters?.map((x, i) => (
-          <Image
-            src={`${imageUrls.w500}${x.file_path}`}
-            alt=''
-            width={500}
-            height={750}
-            key={i}
-          />
-        ))}
+      <div className='grid234'>
+        {posters?.map((x, i) => <ImageCard path={x.file_path} key={i} />)}
       </div>
     </>
   )

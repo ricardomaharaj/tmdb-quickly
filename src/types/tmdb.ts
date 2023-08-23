@@ -70,6 +70,7 @@ export type BelongsToCollection = {
 export type Credits = {
   cast?: Cast[]
   crew?: Crew[]
+  guest_stars?: Cast[]
 }
 
 export type Cast = {
