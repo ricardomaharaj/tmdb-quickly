@@ -4,17 +4,9 @@ type Props = {
   query: string
   onInputChange: ChangeEventHandler<HTMLInputElement>
   onClearClick: () => void
-  className?: string
-  iconClass?: string
 }
 
-export function QueryBar({
-  query,
-  onInputChange,
-  onClearClick,
-  className,
-  iconClass,
-}: Props) {
+export function QueryBar({ query, onInputChange, onClearClick }: Props) {
   const queryInputRef = useRef<HTMLInputElement>(null)
 
   function handleClearClick() {
@@ -29,7 +21,7 @@ export function QueryBar({
           type='text'
           placeholder='Search'
           defaultValue={query}
-          className={`w-full rounded-xl bg-primary-800 p-2 pl-3 ${className}`}
+          className='w-full rounded-xl bg-primary-800 p-2 pl-3'
           onChange={onInputChange}
           ref={queryInputRef}
         />
@@ -38,7 +30,7 @@ export function QueryBar({
             onClick={handleClearClick}
             className='col justify-center pl-2'
           >
-            <i className={`icon-[mdi--close] mr-2 text-xl ${iconClass}`} />
+            <i className='icon-[mdi--close] mr-2 text-xl' />
           </button>
         )}
       </div>

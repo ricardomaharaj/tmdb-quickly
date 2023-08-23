@@ -1,7 +1,8 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { LinkCard } from '~/components/reusable/link-card'
 import { Pager } from '~/components/reusable/pager'
+import { PosterCard } from '~/components/reusable/poster-card'
 import { QueryBar } from '~/components/reusable/query-bar'
 import { useTimeout } from '~/hooks/timeout'
 import { paramParse } from '~/util/param-parse'
@@ -50,8 +51,6 @@ export function HomePage() {
         query={query}
         onInputChange={(e) => setDbQuery(e.target.value)}
         onClearClick={() => replaceParams({ query: '', page: 1 })}
-        className='lg:p-4 lg:pl-4 lg:text-xl'
-        iconClass='lg:text-2xl lg:mr-4'
       />
 
       <div className='row mb-2 space-x-2'>
@@ -70,14 +69,15 @@ export function HomePage() {
 
       <div className='grid123'>
         {results?.map((x, i) => (
-          <LinkCard
-            href={`/${x.media_type}/${x.id}`}
-            path={x.poster_path || x.profile_path}
-            pri={x.name || x.title}
-            sec={query ? x.release_date || x.first_air_date : undefined}
-            ter={x.overview}
-            key={i}
-          />
+          <Link href={`/${x.media_type}/${x.id}`}>
+            <PosterCard
+              path={x.poster_path || x.profile_path}
+              pri={x.name || x.title}
+              sec={query ? x.release_date || x.first_air_date : undefined}
+              ter={x.overview}
+              key={i}
+            />
+          </Link>
         ))}
       </div>
 

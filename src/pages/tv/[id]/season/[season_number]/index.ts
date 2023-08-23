@@ -1,3 +1,3 @@
-import { SeasonPage } from '~/comps/season/page'
+import { SeasonPage } from '~/components/season/page'
 
 export default SeasonPage

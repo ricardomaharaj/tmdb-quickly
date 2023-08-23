@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { gql } from 'urql'
+import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { usePath } from '~/hooks/path'
 import { TVProps } from '~/types/props'
-import { imageUrls } from '~/util/image-urls'
 import { useTVQuery } from './query'
 
 const gqlQuery = gql`
@@ -30,19 +30,13 @@ export default function Seasons({ id }: TVProps) {
     <>
       <div className='grid123'>
         {seasons?.map((x, i) => (
-          <Link
-            href={`${path}/season/${x.season_number}`}
-            className='row h-[150px] rounded-xl bg-cover bg-center'
-            style={{
-              backgroundImage: `url('${imageUrls.w94h141}/${x.poster_path}')`,
-            }}
-            key={i}
-          >
-            <div className='col h-full w-full space-y-1 rounded-xl bg-black bg-opacity-50 p-4'>
-              <div className='font-bold'>{x.name}</div>
-              <div className='text-sm'>{x.episode_count} Episodes</div>
-              <div className='text-sm'>{x.air_date}</div>
-            </div>
+          <Link href={`${path}/season/${x.season_number}`} key={i}>
+            <BackdropCard
+              backdrop={x.poster_path}
+              pri={x.name}
+              sec={`${x.episode_count} Episodes`}
+              ter={x.air_date}
+            />
           </Link>
         ))}
       </div>

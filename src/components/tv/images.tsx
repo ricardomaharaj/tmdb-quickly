@@ -41,9 +41,9 @@ export default function Images({ id, page }: TVProps) {
         <div className='grid234'>
           {images?.posters?.map((x, i) => (
             <Image
-              src={`${imageUrls.w300h450}${x.file_path}`}
-              width={300}
-              height={450}
+              src={`${imageUrls.w500}${x.file_path}`}
+              width={500}
+              height={0}
               alt=''
               key={i}
             />
@@ -54,9 +54,9 @@ export default function Images({ id, page }: TVProps) {
         <div className='grid123'>
           {images?.backdrops?.map((x, i) => (
             <Image
-              src={`${imageUrls.w500h282}${x.file_path}`}
+              src={`${imageUrls.w500}${x.file_path}`}
               width={500}
-              height={282}
+              height={0}
               alt=''
               key={i}
             />

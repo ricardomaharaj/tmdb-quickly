@@ -1,13 +1,11 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { lazy, useState } from 'react'
 import { gql } from 'urql'
-import { AdaptImg } from '~/components/reusable/adapt-img'
+import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { Pager } from '~/components/reusable/pager'
 import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { useTimeout } from '~/hooks/timeout'
-import { imageUrls } from '~/util/image-urls'
 import { paramParse } from '~/util/param-parse'
 import { getSearchParams } from '~/util/search-params'
 import { useSeasonQuery } from './query'
@@ -75,24 +73,13 @@ export function SeasonPage() {
   return (
     <>
       <div className='m-2'>
-        <div
-          className='rounded-xl bg-cover bg-center'
-          style={{
-            backgroundImage: `url('${imageUrls.w500}/${tv?.backdrop_path}')`,
-          }}
-        >
-          <div className='row rounded-xl bg-black bg-opacity-50 p-4'>
-            <AdaptImg path={season?.poster_path} />
-            <div className='col ml-2 space-y-1 text-white'>
-              <Link href={`/tv/${id}`} className='font-bold underline'>
-                {tv?.name}
-              </Link>
-              <div>Season {season_number}</div>
-              <div>{season?.episodes?.length} Episodes</div>
-              <div>{season?.air_date}</div>
-            </div>
-          </div>
-        </div>
+        <BackdropCard
+          backdrop={tv?.backdrop_path}
+          pri={tv?.name}
+          sec={season?.name}
+          ter={season?.air_date}
+          className='xl:p-14'
+        />
 
         <TabBar
           tabs={tabs}

@@ -1,5 +1,6 @@
+import Link from 'next/link'
 import { gql } from 'urql'
-import { LinkCard } from '~/components/reusable/link-card'
+import { PosterCard } from '~/components/reusable/poster-card'
 import { TVProps } from '~/types/props'
 import { useTVQuery } from './query'
 
@@ -29,16 +30,17 @@ export default function Cast({ id, query, page }: TVProps) {
     <>
       <div className='grid123'>
         {cast?.map((x, i) => (
-          <LinkCard
-            href={`/person/${x.id}`}
-            path={x.profile_path}
-            pri={x.name}
-            sec={x.roles
-              ?.slice(0, 2)
-              .map((x) => `${x.character} (${x.episode_count})`)
-              .join(' | ')}
-            key={i}
-          />
+          <Link href={`/person/${x.id}`}>
+            <PosterCard
+              path={x.profile_path}
+              pri={x.name}
+              sec={x.roles
+                ?.slice(0, 2)
+                .map((x) => `${x.character} (${x.episode_count})`)
+                .join(' | ')}
+              key={i}
+            />
+          </Link>
         ))}
       </div>
     </>

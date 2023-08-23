@@ -16,3 +16,11 @@ export type SeasonProps = {
   query: string
   page: number
 }
+
+export type EpisodeProps = {
+  id: string
+  season_number: number
+  episode_number: number
+  query: string
+  page: number
+}

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { lazy, useState } from 'react'
 import { gql } from 'urql'
-import { HeaderCard } from '~/components/reusable/header-card'
+import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { Pager } from '~/components/reusable/pager'
 import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
@@ -63,12 +63,12 @@ export function MoviePage() {
   return (
     <>
       <div className='col m-2'>
-        <HeaderCard
+        <BackdropCard
           backdrop={movie?.backdrop_path}
-          poster={movie?.poster_path}
           pri={movie?.title}
           sec={movie?.tagline}
           ter={movie?.release_date}
+          className='xl:p-14'
         />
 
         <TabBar

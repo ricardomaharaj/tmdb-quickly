@@ -1,5 +1,6 @@
+import Link from 'next/link'
 import { gql } from 'urql'
-import { LinkCard } from '~/components/reusable/link-card'
+import { PosterCard } from '~/components/reusable/poster-card'
 import { MovieProps } from '~/types/props'
 import { useMovieQuery } from './query'
 
@@ -25,13 +26,9 @@ export default function Crew({ id, query, page }: MovieProps) {
   return (
     <div className='grid123'>
       {crew?.map((x, i) => (
-        <LinkCard
-          href={`/person/${x.id}`}
-          path={x.profile_path}
-          pri={x.name}
-          sec={x.job}
-          key={i}
-        />
+        <Link href={`/person/${x.id}`}>
+          <PosterCard path={x.profile_path} pri={x.name} sec={x.job} key={i} />
+        </Link>
       ))}
     </div>
   )

@@ -1,8 +1,7 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { gql } from 'urql'
+import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { usePath } from '~/hooks/path'
-import { imageUrls } from '~/util/image-urls'
 import { paramParse } from '~/util/param-parse'
 import { getSearchParams } from '~/util/search-params'
 import { useEpisodeQuery } from './query'
@@ -10,11 +9,7 @@ import { useEpisodeQuery } from './query'
 const tabs = ['Info', 'Cast', 'Crew', 'Stills', 'Videos']
 
 const gqlQuery = gql`
-  query (
-    $id: String = ""
-    $season_number: Int = 10
-    $episode_number: Int = 10
-  ) {
+  query ($id: String!, $season_number: Int!, $episode_number: Int!) {
     tv(id: $id) {
       name
     }
@@ -53,21 +48,12 @@ export function EpisodePage() {
   return (
     <>
       <div className='m-2'>
-        <div
-          className='rounded-xl border-2 bg-cover bg-center text-white shadow-xl'
-          style={{
-            backgroundImage: `url('${imageUrls.w500}/${episode?.still_path}')`,
-          }}
-        >
-          <div className='col space-y-2 rounded-xl bg-black bg-opacity-50 p-4'>
-            <Link href={`/tv/${id}`} className='font-bold underline'>
-              {tv?.name}
-            </Link>
-            <div>{`S${season_number} E${episode_number}`}</div>
-            <div>{episode?.name}</div>
-            <div>{episode?.air_date}</div>
-          </div>
-        </div>
+        <BackdropCard
+          backdrop={episode?.still_path}
+          pri={tv?.name}
+          sec={episode?.name}
+          ter={episode?.air_date}
+        />
       </div>
     </>
   )

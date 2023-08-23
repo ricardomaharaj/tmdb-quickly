@@ -1,5 +1,5 @@
 import { AppProps } from 'next/app'
-import { Header } from '~/comps/header'
+import { Header } from '~/components/header'
 import '~/styles/globals.css'
 import { Urql } from '~/util/urql'
 

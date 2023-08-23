@@ -2,8 +2,8 @@ import { TypedDocumentNode, useQuery } from 'urql'
 import { Season, TV } from '~/types/tmdb'
 
 type Data = {
-  season?: Season
   tv?: TV
+  season?: Season
 }
 
 type Vars = {

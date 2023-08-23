@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { gql } from 'urql'
+import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { usePath } from '~/hooks/path'
 import { SeasonProps } from '~/types/props'
-import { SeasonEpisode } from '~/types/tmdb'
-import { imageUrls } from '~/util/image-urls'
 import { useSeasonQuery } from './query'
 
 const gqlQuery = gql`
@@ -25,53 +24,24 @@ export default function Episodes({ id, season_number }: SeasonProps) {
   const [res] = useSeasonQuery(gqlQuery, { id, season_number })
   const episodes = res.data?.season?.episodes
 
+  const path = usePath()
+
   return (
     <>
-      <div className='grid123 mb-2'>
+      <div className='grid123'>
         {episodes?.map((episode, i) => (
-          <EpisodeCard
-            episode={episode}
-            season_number={season_number}
-            key={i}
-          />
+          <Link href={`${path}/episode/${episode?.episode_number}`}>
+            <BackdropCard
+              backdrop={episode?.still_path}
+              pri={episode?.name}
+              sec={`S${season_number} E${episode?.episode_number} | ${episode?.air_date}`}
+              ter={episode?.overview}
+              className=''
+              key={i}
+            />
+          </Link>
         ))}
       </div>
-    </>
-  )
-}
-
-function EpisodeCard({
-  episode,
-  season_number,
-}: {
-  episode?: SeasonEpisode
-  season_number?: number
-}) {
-  const path = usePath()
-  return (
-    <>
-      <Link
-        href={`${path}/episode/${episode?.episode_number}`}
-        className='rounded-xl bg-cover bg-center'
-        style={{
-          backgroundImage: `url('${imageUrls.w500}/${episode?.still_path}')`,
-        }}
-      >
-        <div className='col h-full rounded-xl bg-black bg-opacity-50 px-6 py-8'>
-          <p className='row mb-2'>
-            {episode?.name ?? ''}
-            <br />
-            {`S${season_number} E${episode?.episode_number} | ${
-              episode?.air_date ?? ''
-            }`}
-          </p>
-          <div>
-            <p className='line-clamp-3'>
-              {episode?.overview || 'No overview for this episode'}
-            </p>
-          </div>
-        </div>
-      </Link>
     </>
   )
 }

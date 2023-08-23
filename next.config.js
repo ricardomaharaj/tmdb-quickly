@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: false,
-  images: { unoptimized: true },
+  images: {
+    domains: ['image.tmdb.org', 'i.ytimg.com'],
+  },
 }

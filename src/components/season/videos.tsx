@@ -25,11 +25,10 @@ export default function Videos({ id, season_number, page }: SeasonProps) {
 
   return (
     <>
-      <div className='grid234 mb-2'>
+      <div className='grid234'>
         {videos?.map((x, i) => (
           <VideoCard
-            href={`https://www.youtube.com/watch?v=${x.key}`}
-            src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`}
+            ytKey={x.key}
             primary={x.name}
             secondary={toDateStr(x.published_at)}
             key={i}
