@@ -5,7 +5,7 @@ import { getPagePos } from '~/util/paginate'
 
 export const tv: GqlResolver<TV> = async (_, { id, query, page }) => {
   const tv = await tmdbApi.get<TV>(`/tv/${id}`, {
-    append_to_response: 'aggregate_credits,images,videos',
+    append_to_response: 'aggregate_credits,images,videos,external_ids',
   })
 
   const { start, end } = getPagePos(page)

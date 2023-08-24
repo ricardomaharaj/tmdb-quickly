@@ -179,6 +179,19 @@ export const typeDefs = /* GraphQL */ `
     id: String
   }
 
+  type ExternalIds {
+    id: Int
+    imdb_id: String
+    freebase_mid: String
+    freebase_id: String
+    tvdb_id: Int
+    tvrage_id: Int
+    wikidata_id: String
+    facebook_id: String
+    instagram_id: String
+    twitter_id: String
+  }
+
   type TV {
     adult: Boolean
     backdrop_path: String
@@ -212,6 +225,7 @@ export const typeDefs = /* GraphQL */ `
     aggregate_credits: AggregateCredits
     images: Images
     videos: Videos
+    external_ids: ExternalIds
   }
 
   type AggregateCredits {

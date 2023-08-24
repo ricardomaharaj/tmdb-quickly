@@ -70,8 +70,28 @@ export default function Info({ id }: MovieProps) {
         {movie?.original_title && (
           <div>Original Title: {movie?.original_title}</div>
         )}
-        {movie?.imdb_id && <div>IMDB ID: {movie?.imdb_id}</div>}
-        <div>TMDB ID: {id}</div>
+        {movie?.imdb_id && (
+          <div>
+            <a
+              href={`https://www.imdb.com/title/${movie.imdb_id}`}
+              target='_blank'
+              className='underline'
+            >
+              IMDB
+            </a>
+            <span>{` ID: ${movie.imdb_id}`}</span>
+          </div>
+        )}
+        <div>
+          <a
+            href={`https://www.themoviedb.org/movie/${id}`}
+            className='underline'
+            target='_blank'
+          >
+            TMDB
+          </a>
+          <span>{` ID: ${id}`}</span>
+        </div>
       </div>
 
       <div className='row overscroll mb-2 space-x-2'>

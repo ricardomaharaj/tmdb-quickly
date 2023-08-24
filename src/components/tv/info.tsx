@@ -25,6 +25,9 @@ const gqlQuery = gql`
       production_companies {
         name
       }
+      external_ids {
+        imdb_id
+      }
     }
   }
 `
@@ -41,7 +44,7 @@ export default function Info({ id }: TVProps) {
   return (
     <>
       <div className='row bubble'>
-        <div>{tv?.overview}</div>
+        <div>{tv?.overview ?? 'No overview for this show'}</div>
       </div>
 
       <div className='col bubble'>
@@ -62,6 +65,28 @@ export default function Info({ id }: TVProps) {
           <div>Original Language: {tv?.original_language}</div>
         )}
         {tv?.original_name && <div>Original Name: {tv?.original_name}</div>}
+        {tv?.external_ids?.imdb_id && (
+          <div>
+            <a
+              href={`https://www.imdb.com/title/${tv.external_ids.imdb_id}`}
+              target='_blank'
+              className='underline'
+            >
+              IMDB
+            </a>
+            <span>{` ID: ${tv.external_ids.imdb_id}`}</span>
+          </div>
+        )}
+        <div>
+          <a
+            href={`https://www.themoviedb.org/tv/${id}`}
+            target='_blank'
+            className='underline'
+          >
+            TMDB
+          </a>
+          <span>{` ID: ${id}`}</span>
+        </div>
       </div>
 
       <div className='row overscroll mb-2 space-x-2'>

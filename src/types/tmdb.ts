@@ -178,6 +178,19 @@ export type VideoResult = {
   id?: string
 }
 
+export type ExternalIds = {
+  id?: number
+  imdb_id?: string
+  freebase_mid?: string
+  freebase_id?: string
+  tvdb_id?: number
+  tvrage_id?: number
+  wikidata_id?: string
+  facebook_id?: string
+  instagram_id?: string
+  twitter_id?: string
+}
+
 export type TV = {
   adult?: boolean
   backdrop_path?: string
@@ -211,6 +224,7 @@ export type TV = {
   aggregate_credits?: AggregateCredits
   images?: Images
   videos?: Videos
+  external_ids?: ExternalIds
 }
 
 export type AggregateCredits = {
