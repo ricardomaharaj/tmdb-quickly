@@ -2,6 +2,7 @@ import { gql } from 'urql'
 import { useEpisodeQuery } from '~/components/episode/query'
 import { VideoCard } from '~/components/reusable/video-card'
 import { EpisodeProps } from '~/types/props'
+import { dateStr } from '~/util/date-str'
 
 const gqlQuery = gql`
   query (
@@ -37,7 +38,12 @@ export default function Videos(props: EpisodeProps) {
     <>
       <div className='grid234'>
         {videos?.map((x, i) => (
-          <VideoCard ytKey={x.key} pri={x.name} sec={x.published_at} key={i} />
+          <VideoCard
+            ytKey={x.key}
+            pri={x.name}
+            sec={dateStr(x.published_at)}
+            key={i}
+          />
         ))}
       </div>
     </>

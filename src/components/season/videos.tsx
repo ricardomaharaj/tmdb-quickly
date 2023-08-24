@@ -1,6 +1,7 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/components/reusable/video-card'
 import { SeasonProps } from '~/types/props'
+import { dateStr } from '~/util/date-str'
 import { useSeasonQuery } from './query'
 
 const gqlQuery = gql`
@@ -26,7 +27,12 @@ export default function Videos({ id, season_number, page }: SeasonProps) {
     <>
       <div className='grid234'>
         {videos?.map((x, i) => (
-          <VideoCard ytKey={x.key} pri={x.name} sec={x.published_at} key={i} />
+          <VideoCard
+            ytKey={x.key}
+            pri={x.name}
+            sec={dateStr(x.published_at)}
+            key={i}
+          />
         ))}
       </div>
     </>
