@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { gql } from 'urql'
 import { PosterCard } from '~/components/reusable/poster-card'
 import { TVProps } from '~/types/props'
+import { removeVoiceTag } from '~/util/voice-tag'
 import { useTVQuery } from './query'
 
 const gqlQuery = gql`
@@ -36,7 +37,9 @@ export default function Cast({ id, query, page }: TVProps) {
               pri={x.name}
               sec={x.roles
                 ?.slice(0, 2)
-                .map((x) => `${x.character} (${x.episode_count})`)
+                .map(
+                  (x) => `${removeVoiceTag(x.character)} (${x.episode_count})`,
+                )
                 .join(' | ')}
             />
           </Link>

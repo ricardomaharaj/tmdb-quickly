@@ -1,5 +1,6 @@
 import { gql } from 'urql'
 import { MovieProps } from '~/types/props'
+import { dateStr } from '~/util/date-str'
 import { releaseTypes } from '~/util/release-types'
 import { useMovieQuery } from './query'
 
@@ -42,6 +43,11 @@ export default function Info({ id }: MovieProps) {
     ?.filter((x) => x.iso_3166_1 === 'US')
     ?.at(0)?.release_dates
 
+  const budget = !!movie?.budget && movie.budget > 0
+  const revenue = !!movie?.revenue && movie.revenue > 0
+
+  const earnings = budget && revenue
+
   return (
     <>
       <div className='row bubble'>
@@ -50,9 +56,12 @@ export default function Info({ id }: MovieProps) {
 
       <div className='col bubble'>
         {movie?.status && <div>Status: {movie?.status}</div>}
-        {movie?.budget && <div>Budget: ${movie?.budget?.toLocaleString()}</div>}
-        {movie?.revenue && (
-          <div>Revenue: ${movie?.revenue?.toLocaleString()}</div>
+        {budget && <div>Budget: ${movie?.budget?.toLocaleString()}</div>}
+        {revenue && <div>Revenue: ${movie?.revenue?.toLocaleString()}</div>}
+        {earnings && (
+          <div>
+            Earnings: ${(movie.revenue! - movie.budget!).toLocaleString()}
+          </div>
         )}
         {movie?.runtime && <div>Runtime: {movie?.runtime}m</div>}
         {movie?.original_language && (
@@ -85,11 +94,7 @@ export default function Info({ id }: MovieProps) {
         {release_dates?.map((x, i) => (
           <div key={i} className='col tag'>
             {x.type && <div>{releaseTypes[x.type]}</div>}
-            {x.release_date && (
-              <div key={i}>
-                {new Date(x.release_date).toDateString().substring(4)}
-              </div>
-            )}
+            {x.release_date && <div>{dateStr(x.release_date)}</div>}
           </div>
         ))}
       </div>

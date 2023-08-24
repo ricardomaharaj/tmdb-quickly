@@ -1,29 +1,28 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Pager } from '~/components/reusable/pager'
 import { PosterCard } from '~/components/reusable/poster-card'
 import { QueryBar } from '~/components/reusable/query-bar'
+import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
-import { paramParse } from '~/util/param-parse'
-import { getSearchParams } from '~/util/search-params'
+import { dateStr } from '~/util/date-str'
 import { useSearchQuery } from './query'
 
-const tabMap: Record<string, string> = {
-  Movies: 'movie',
-  'TV Shows': 'tv',
-  People: 'person',
-}
+const tabMap = {
+  movie: 'Movies',
+  tv: 'TV Shows',
+  person: 'People',
+} as const
 
 export function HomePage() {
-  const router = useRouter()
+  const [params, replace] = useParams({
+    query: '',
+    page: '1',
+    tab: '',
+  })
 
-  const searchParams = getSearchParams(router.query)
-  const params = paramParse(searchParams)
-
-  const query = params.query || ''
-  const page = parseInt(params.page || '1')
-  const curTab = params.tab || ''
+  const { query, page: pageStr, tab: curTab } = params
+  const page = parseInt(pageStr)
 
   const [res] = useSearchQuery({ page, query })
   const results = res.data?.search?.results?.filter((x) => {
@@ -32,16 +31,14 @@ export function HomePage() {
     return false
   })
 
-  function replaceParams(upd: Record<string, string | number | undefined>) {
-    router.replace({ query: { ...params, ...upd } })
-  }
-
-  const [dbQuery, setDbQuery] = useState(query)
+  const [debounce, setDebounce] = useState(query)
   useTimeout(() => {
-    if (dbQuery !== query) {
-      replaceParams({ query: dbQuery })
+    if (debounce !== query) {
+      replace({ query: debounce, page: '1' })
     }
-  }, [dbQuery])
+  }, [debounce])
+
+  const setPage = (dir: number) => replace({ page: (page + dir).toString() })
 
   const showPager = !!query
 
@@ -49,20 +46,20 @@ export function HomePage() {
     <div className='m-2'>
       <QueryBar
         query={query}
-        onInputChange={(e) => setDbQuery(e.target.value)}
-        onClearClick={() => replaceParams({ query: '', page: 1 })}
+        onInputChange={(e) => setDebounce(e.target.value)}
+        onClearClick={() => replace({ query: '', page: '1' })}
       />
 
       <div className='row mb-2 space-x-2'>
-        {Object.entries(tabMap).map(([key, val], i) => (
+        {Object.entries(tabMap).map(([value, title], i) => (
           <button
-            className={`btn lg:hover:bg-primary-600 ${
-              val === curTab ? 'bg-primary-700' : 'bg-primary-800'
+            className={`btn ${
+              value === curTab ? 'bg-primary-700' : 'bg-primary-800'
             }`}
-            onClick={() => replaceParams({ tab: curTab === val ? '' : val })}
+            onClick={() => replace({ tab: curTab === value ? '' : value })}
             key={i}
           >
-            {key}
+            {title}
           </button>
         ))}
       </div>
@@ -73,7 +70,9 @@ export function HomePage() {
             <PosterCard
               path={x.poster_path || x.profile_path}
               pri={x.name || x.title}
-              sec={query ? x.release_date || x.first_air_date : undefined}
+              sec={
+                query ? dateStr(x.release_date || x.first_air_date) : undefined
+              }
               ter={x.overview}
             />
           </Link>
@@ -83,8 +82,8 @@ export function HomePage() {
       {showPager && (
         <Pager
           page={page}
-          onPageDownClick={() => replaceParams({ page: page - 1 })}
-          onPageUpClick={() => replaceParams({ page: page + 1 })}
+          onPageDownClick={() => setPage(-1)}
+          onPageUpClick={() => setPage(1)}
         />
       )}
     </div>

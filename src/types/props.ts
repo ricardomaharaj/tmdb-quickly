@@ -24,3 +24,10 @@ export type EpisodeProps = {
   query: string
   page: number
 }
+
+export type PersonProps = {
+  id: string
+  query: string
+  page: number
+  filter: string
+}

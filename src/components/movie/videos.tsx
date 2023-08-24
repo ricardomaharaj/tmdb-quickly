@@ -1,6 +1,7 @@
 import { gql } from 'urql'
 import { VideoCard } from '~/components/reusable/video-card'
 import { MovieProps } from '~/types/props'
+import { dateStr } from '~/util/date-str'
 import { useMovieQuery } from './query'
 
 const gqlQuery = gql`
@@ -25,7 +26,12 @@ export default function Videos({ id, page }: MovieProps) {
     <>
       <div className='grid234'>
         {videos?.map((x, i) => (
-          <VideoCard ytKey={x.key} pri={x.name} sec={x.published_at} key={i} />
+          <VideoCard
+            ytKey={x.key}
+            pri={x.name}
+            sec={dateStr(x.published_at)}
+            key={i}
+          />
         ))}
       </div>
     </>

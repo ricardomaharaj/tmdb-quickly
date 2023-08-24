@@ -1,3 +1,9 @@
 export function removeVoiceTag(str?: string) {
-  return str?.replaceAll(' (voice)', '')
+  if (!str) return ''
+
+  if (str.includes('(voice)')) {
+    return str.replaceAll(' (voice)', '')
+  }
+
+  return str
 }

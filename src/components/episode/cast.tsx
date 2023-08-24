@@ -3,6 +3,7 @@ import { gql } from 'urql'
 import { useEpisodeQuery } from '~/components/episode/query'
 import { PosterCard } from '~/components/reusable/poster-card'
 import { EpisodeProps } from '~/types/props'
+import { removeVoiceTag } from '~/util/voice-tag'
 
 const gqlQuery = gql`
   query (
@@ -40,7 +41,11 @@ export default function Cast(props: EpisodeProps) {
       <div className='grid123'>
         {cast?.map((x, i) => (
           <Link href={`/person/${x.id}`} key={i}>
-            <PosterCard path={x.profile_path} pri={x.name} sec={x.character} />
+            <PosterCard
+              path={x.profile_path}
+              pri={x.name}
+              sec={removeVoiceTag(x.character)}
+            />
           </Link>
         ))}
       </div>

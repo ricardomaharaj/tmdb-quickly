@@ -3,6 +3,7 @@ import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { usePath } from '~/hooks/path'
 import { SeasonProps } from '~/types/props'
+import { dateStr } from '~/util/date-str'
 import { genRuntimeStr } from '~/util/runtime-str'
 import { useSeasonQuery } from './query'
 
@@ -35,9 +36,9 @@ export default function Episodes({ id, season_number }: SeasonProps) {
             <BackdropCard
               backdrop={x?.still_path}
               pri={x?.name}
-              sec={`S${season_number} E${x?.episode_number} | ${x?.air_date} | ${genRuntimeStr(
-                x.runtime,
-              )}`}
+              sec={`S${season_number} E${x?.episode_number} | ${dateStr(
+                x?.air_date,
+              )} | ${genRuntimeStr(x.runtime)}`}
               ter={x?.overview}
               className=''
             />

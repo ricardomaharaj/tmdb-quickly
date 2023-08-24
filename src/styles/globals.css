@@ -40,7 +40,7 @@
     @apply lg:hover:bg-primary-700;
   }
   .btn {
-    @apply hover-hint rounded-xl px-4 py-1 disabled:bg-primary-900 lg:hover:bg-primary-600 lg:disabled:bg-primary-900;
+    @apply hover-hint rounded-xl px-6 py-2 disabled:bg-primary-900 lg:px-4 lg:py-1 lg:hover:bg-primary-600 lg:disabled:bg-primary-900;
   }
 }
 

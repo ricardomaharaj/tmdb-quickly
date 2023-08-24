@@ -1,13 +1,12 @@
-import { useRouter } from 'next/router'
 import { lazy, useState } from 'react'
 import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { Pager } from '~/components/reusable/pager'
 import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
+import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
-import { paramParse } from '~/util/param-parse'
-import { getSearchParams } from '~/util/search-params'
+import { dateStr } from '~/util/date-str'
 import { useSeasonQuery } from './query'
 
 const Info = lazy(() => import('./info'))
@@ -16,6 +15,8 @@ const Cast = lazy(() => import('./cast'))
 const Crew = lazy(() => import('./crew'))
 const Images = lazy(() => import('./images'))
 const Videos = lazy(() => import('./videos'))
+
+const tabs = ['Info', 'Episodes', 'Cast', 'Crew', 'Images', 'Videos']
 
 const gqlQuery = gql`
   query ($id: String!, $season_number: Int!) {
@@ -34,35 +35,32 @@ const gqlQuery = gql`
   }
 `
 
-const tabs = ['Info', 'Episodes', 'Cast', 'Crew', 'Images', 'Videos']
-
 export function SeasonPage() {
-  const router = useRouter()
+  const [params, replace] = useParams({
+    id: '',
+    season_number: '1',
+    query: '',
+    page: '1',
+    tab: 'Info',
+  })
 
-  const searchParams = getSearchParams(router.query)
-  const params = paramParse(searchParams)
+  const { id, query, tab: curTab } = params
 
-  const id = params.id || ''
-  const season_number = parseInt(params.season_number || '1')
-
-  const query = params.query || ''
-  const page = parseInt(params.page || '1')
-  const curTab = params.tab || 'Info'
+  const season_number = parseInt(params.season_number)
+  const page = parseInt(params.page)
 
   const [res] = useSeasonQuery(gqlQuery, { id, season_number })
   const season = res.data?.season
   const tv = res.data?.tv
 
-  function replaceParams(upd: Record<string, string | number | undefined>) {
-    router.replace({ query: { ...params, ...upd } })
-  }
-
-  const [dbQuery, setDbQuery] = useState(query)
+  const [debounce, setDebounce] = useState(query)
   useTimeout(() => {
-    if (dbQuery !== query) {
-      replaceParams({ query: dbQuery })
+    if (debounce !== query) {
+      replace({ query: debounce, page: '1' })
     }
-  }, [dbQuery])
+  }, [debounce])
+
+  const setPage = (dir: number) => replace({ page: (page + dir).toString() })
 
   const showQueryBar = ['Cast', 'Crew'].includes(curTab)
   const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(curTab)
@@ -76,21 +74,21 @@ export function SeasonPage() {
           backdrop={tv?.backdrop_path}
           pri={tv?.name}
           sec={season?.name}
-          ter={season?.air_date}
-          className='xl:p-14'
+          ter={dateStr(season?.air_date)}
+          className='xl:p-16'
         />
 
         <TabBar
           tabs={tabs}
           currentTab={curTab}
-          onTabClicked={(tab) => replaceParams({ tab })}
+          onTabClicked={(tab) => replace({ tab })}
         />
 
         {showQueryBar && (
           <QueryBar
             query={query}
-            onClearClick={() => replaceParams({ query: '', page: 1 })}
-            onInputChange={(e) => setDbQuery(e.target.value)}
+            onInputChange={(e) => setDebounce(e.target.value)}
+            onClearClick={() => replace({ query: '', page: '1' })}
           />
         )}
 
@@ -104,8 +102,8 @@ export function SeasonPage() {
         {showPager && (
           <Pager
             page={page}
-            onPageDownClick={() => replaceParams({ page: page - 1 })}
-            onPageUpClick={() => replaceParams({ page: page + 1 })}
+            onPageDownClick={() => setPage(-1)}
+            onPageUpClick={() => setPage(1)}
           />
         )}
       </div>

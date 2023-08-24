@@ -1,5 +1,5 @@
 import { gql, useQuery } from 'urql'
-import * as TMDBTypes from '~/types/tmdb'
+import { Search } from '~/types/tmdb'
 
 const query = gql`
   query ($query: String, $page: Int) {
@@ -23,7 +23,7 @@ const query = gql`
 `
 
 type Data = {
-  search?: TMDBTypes.Search
+  search?: Search
 }
 
 type Vars = {

@@ -1,8 +1,8 @@
 type Params = Record<string, string | number>
 
 export class Fetcher {
-  baseUrl: string
-  params?: Params
+  private baseUrl: string
+  private params?: Params
 
   constructor(args: { baseUrl: string; params?: Params }) {
     this.baseUrl = args.baseUrl

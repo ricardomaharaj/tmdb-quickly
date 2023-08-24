@@ -4,4 +4,7 @@ module.exports = {
   images: {
     domains: ['image.tmdb.org', 'i.ytimg.com'],
   },
+  experimental: {
+    scrollRestoration: true,
+  },
 }

@@ -112,6 +112,7 @@ type Images {
   logos: [Image]
   posters: [Image]
   stills: [Image]
+  profiles: [Image]
 }
 
 type Image {
@@ -324,6 +325,58 @@ type Episode {
   videos: Videos
 }
 
+type CombinedCredit {
+  adult: Boolean
+  backdrop_path: String
+  genre_ids: Int
+  id: Int
+  original_language: String
+  original_title: String
+  overview: String
+  popularity: Int
+  poster_path: String
+  release_date: String
+  title: String
+  video: Boolean
+  vote_average: Int
+  vote_count: Int
+  character: String
+  credit_id: String
+  order: Int
+  media_type: String
+  origin_country: [String]
+  original_name: String
+  first_air_date: String
+  name: String
+  episode_count: Int
+  department: String
+  job: String
+}
+
+type CombinedCredits {
+  cast: [CombinedCredit]
+  crew: [CombinedCredit]
+}
+
+type Person {
+  adult: Boolean
+  also_known_as: [String]
+  biography: String
+  birthday: String
+  deathday: String
+  gender: Int
+  homepage: String
+  id: Int
+  imdb_id: String
+  known_for_department: String
+  name: String
+  place_of_birth: String
+  popularity: Int
+  profile_path: String
+  combined_credits: CombinedCredits
+  images: Images
+}
+
 type Query {
   search(query: String, page: Int): Search
   movie(id: String!, query: String, page: Int): Movie
@@ -336,4 +389,5 @@ type Query {
     query: String
     page: Int
   ): Episode
+  person(id: String!, query: String, filter: String, page: Int): Person
 }

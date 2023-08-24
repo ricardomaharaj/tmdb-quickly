@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { gql } from 'urql'
 import { PosterCard } from '~/components/reusable/poster-card'
 import { SeasonProps } from '~/types/props'
+import { removeVoiceTag } from '~/util/voice-tag'
 import { useSeasonQuery } from './query'
 
 const gqlQuery = gql`
@@ -28,7 +29,11 @@ export default function Cast({ id, season_number, query, page }: SeasonProps) {
       <div className='grid123'>
         {cast?.map((x, i) => (
           <Link href={`/person/${x.id}`} key={i}>
-            <PosterCard path={x.profile_path} pri={x.name} sec={x.character} />
+            <PosterCard
+              path={x.profile_path}
+              pri={x.name}
+              sec={removeVoiceTag(x.character)}
+            />
           </Link>
         ))}
       </div>

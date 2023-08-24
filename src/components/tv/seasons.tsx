@@ -3,6 +3,7 @@ import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
 import { usePath } from '~/hooks/path'
 import { TVProps } from '~/types/props'
+import { dateStr } from '~/util/date-str'
 import { useTVQuery } from './query'
 
 const gqlQuery = gql`
@@ -35,7 +36,7 @@ export default function Seasons({ id }: TVProps) {
               backdrop={x.poster_path}
               pri={x.name}
               sec={`${x.episode_count} Episodes`}
-              ter={x.air_date}
+              ter={dateStr(x.air_date)}
             />
           </Link>
         ))}

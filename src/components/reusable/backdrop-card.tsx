@@ -14,11 +14,13 @@ export function BackdropCard({ backdrop, pri, sec, ter, className }: Props) {
       <div
         className={`rounded-xl bg-cover bg-center`}
         style={{
-          backgroundImage: `url('${imageUrls.w500}/${backdrop}')`,
+          backgroundImage: backdrop
+            ? `url('${imageUrls.w500}/${backdrop}')`
+            : 'none',
         }}
       >
         <div
-          className={`col space-y-2 rounded-xl bg-black bg-opacity-50 p-6 ${className}`}
+          className={`col space-y-2 rounded-xl bg-black bg-opacity-60 p-6 ${className}`}
         >
           {pri && <div>{pri}</div>}
           {sec && <div>{sec}</div>}

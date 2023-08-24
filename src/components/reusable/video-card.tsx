@@ -30,9 +30,7 @@ export function VideoCard(props: Props) {
         </div>
         <div className='col p-2'>
           <p className='line-clamp-1 text-sm md:text-base'>{pri}</p>
-          {sec && (
-            <div className='text-sm text-subtext'>{sec.split('T').at(0)}</div>
-          )}
+          {sec && <div className='text-sm text-subtext'>{sec}</div>}
         </div>
       </Link>
     </>
