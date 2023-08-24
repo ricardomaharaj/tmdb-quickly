@@ -17,7 +17,9 @@ export function Pager({ page, onPageDownClick, onPageUpClick }: Props) {
         >
           Back
         </button>
-        <div className='rounded-xl bg-primary-800 px-4 py-1'>{page}</div>
+        <div className='rounded-xl bg-primary-800 px-4 py-2 lg:py-1'>
+          {page}
+        </div>
         <button
           onClick={onPageUpClick}
           className='btn rounded-xl bg-primary-800'

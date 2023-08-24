@@ -70,8 +70,8 @@ export function PersonPage() {
           {person?.profile_path && (
             <Image
               src={`${imageUrls.w500}${person.profile_path}`}
-              className='mr-3 max-w-[100px] rounded-xl xl:max-w-[125px]'
-              width={150}
+              className='mr-3 rounded-xl'
+              width={100}
               height={0}
               alt=''
             />

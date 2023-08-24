@@ -51,6 +51,7 @@ export function HomePage() {
         query={query}
         onInputChange={(e) => setDebounce(e.target.value)}
         onClearClick={() => replace({ query: '', page: '1' })}
+        thick={true}
       />
 
       <div className='row mb-2 space-x-2'>

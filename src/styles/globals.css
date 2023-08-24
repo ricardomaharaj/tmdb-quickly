@@ -6,10 +6,10 @@
 
 @layer base {
   ::-webkit-scrollbar {
-    @apply bg-primary-900;
+    @apply hidden bg-primary-900 lg:block;
   }
   ::-webkit-scrollbar-thumb {
-    @apply rounded-xl bg-primary-800 hover:bg-primary-700;
+    @apply bg-primary-800 lg:hover:bg-primary-700;
   }
   html {
     font-family: 'Ubuntu', sans-serif;

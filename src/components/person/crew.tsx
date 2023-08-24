@@ -33,13 +33,12 @@ export default function Crew(props: PersonProps) {
     <>
       <div className='grid123'>
         {cast?.map((x, i) => (
-          <Link href={`/${x.media_type}/${x.id}`}>
+          <Link href={`/${x.media_type}/${x.id}`} key={i}>
             <PosterCard
               path={x.poster_path}
               pri={x.name || x.title}
               sec={`${x.job} (${x.episode_count})`}
               ter={dateStr(x.release_date || x.first_air_date)}
-              key={i}
             />
           </Link>
         ))}

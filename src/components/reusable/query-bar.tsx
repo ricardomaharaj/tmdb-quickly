@@ -4,9 +4,10 @@ type Props = {
   query: string
   onInputChange: ChangeEventHandler<HTMLInputElement>
   onClearClick: () => void
+  thick?: boolean
 }
 
-export function QueryBar({ query, onInputChange, onClearClick }: Props) {
+export function QueryBar({ query, onInputChange, onClearClick, thick }: Props) {
   const queryInputRef = useRef<HTMLInputElement>(null)
 
   function handleClearClick() {
@@ -21,7 +22,9 @@ export function QueryBar({ query, onInputChange, onClearClick }: Props) {
           type='text'
           placeholder='Search'
           defaultValue={query}
-          className='w-full rounded-xl bg-primary-800 p-2 pl-3'
+          className={`w-full rounded-xl bg-primary-800 ${
+            thick ? 'p-4 pl-5 text-xl' : 'p-2 py-3 pl-3'
+          } `}
           onChange={onInputChange}
           ref={queryInputRef}
         />
@@ -30,7 +33,11 @@ export function QueryBar({ query, onInputChange, onClearClick }: Props) {
             onClick={handleClearClick}
             className='col justify-center pl-2'
           >
-            <i className='icon-[mdi--close] mr-2 text-xl' />
+            <i
+              className={`icon-[mdi--close] ${
+                thick ? 'mr-4 text-2xl' : 'mr-2 text-xl'
+              }`}
+            />
           </button>
         )}
       </div>

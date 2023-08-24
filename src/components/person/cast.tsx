@@ -39,13 +39,12 @@ export default function Cast(props: PersonProps) {
             sec += ` (${x.episode_count})`
 
           return (
-            <Link href={`/${x.media_type}/${x.id}`}>
+            <Link href={`/${x.media_type}/${x.id}`} key={i}>
               <PosterCard
                 path={x.poster_path}
                 pri={x.name || x.title}
                 sec={sec}
                 ter={dateStr(x.release_date || x.first_air_date)}
-                key={i}
               />
             </Link>
           )
