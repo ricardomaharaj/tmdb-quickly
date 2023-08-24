@@ -1,4 +1,7 @@
-# TMDB Quickly
+# Discontinued
+Please see the successor project github at [tmdb-next](https://github.com/ricardomaharaj/tmdb-next) or the deployed site at [r8r-tmdb-next](https://r8r-tmdb-next.vercel.app/)
+
+## TMDB Quickly
 
 Frontend for The Movie Database written in React and Typescript
 
@@ -11,5 +14,3 @@ Frontend for The Movie Database written in React and Typescript
   - shareable links that correctly load the exact same page and state
 - PWA support for automatic site caching and instant loading upon subsequent visits
 - React router relative routing
-
-Available at: https://tmdb-quickly.netlify.app/
