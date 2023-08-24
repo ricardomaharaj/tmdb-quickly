@@ -5,6 +5,7 @@ import { PosterCard } from '~/components/reusable/poster-card'
 import { QueryBar } from '~/components/reusable/query-bar'
 import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
+import { useTitle } from '~/hooks/title'
 import { dateStr } from '~/util/date-str'
 import { useSearchQuery } from './query'
 
@@ -37,6 +38,8 @@ export function HomePage() {
       replace({ query: debounce, page: '1' })
     }
   }, [debounce])
+
+  useTitle()
 
   const setPage = (dir: number) => replace({ page: (page + dir).toString() })
 

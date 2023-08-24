@@ -6,6 +6,7 @@ import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
+import { useTitle } from '~/hooks/title'
 import { dateStr } from '~/util/date-str'
 import { useSeasonQuery } from './query'
 
@@ -52,6 +53,8 @@ export function SeasonPage() {
   const [res] = useSeasonQuery(gqlQuery, { id, season_number })
   const season = res.data?.season
   const tv = res.data?.tv
+
+  useTitle(`${tv?.name} Season ${season_number}`)
 
   const [debounce, setDebounce] = useState(query)
   useTimeout(() => {

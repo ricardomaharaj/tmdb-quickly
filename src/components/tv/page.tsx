@@ -6,6 +6,7 @@ import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
+import { useTitle } from '~/hooks/title'
 import { dateStr } from '~/util/date-str'
 import { useTVQuery } from './query'
 
@@ -40,15 +41,17 @@ export function TVPage() {
   const { id, query, tab: curTab } = params
   const page = parseInt(params.page)
 
+  const [res] = useTVQuery(gqlQuery, { id })
+  const tv = res.data?.tv
+
+  useTitle(tv?.name)
+
   const [debounce, setDebounce] = useState(query)
   useTimeout(() => {
     if (debounce !== query) {
       replace({ query: debounce, page: '1' })
     }
   }, [debounce])
-
-  const [res] = useTVQuery(gqlQuery, { id })
-  const tv = res.data?.tv
 
   const setPage = (dir: number) => replace({ page: (page + dir).toString() })
 

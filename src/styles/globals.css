@@ -5,6 +5,12 @@
 @tailwind utilities;
 
 @layer base {
+  ::-webkit-scrollbar {
+    @apply bg-primary-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-xl bg-primary-800 hover:bg-primary-700;
+  }
   html {
     font-family: 'Ubuntu', sans-serif;
   }

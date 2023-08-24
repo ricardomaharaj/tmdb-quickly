@@ -1,13 +1,22 @@
 import { AppProps } from 'next/app'
+import Head from 'next/head'
 import { Header } from '~/components/header'
 import '~/styles/globals.css'
 import { Urql } from '~/util/urql'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Urql>
-      <Header />
-      <Component {...pageProps} />
-    </Urql>
+    <>
+      <Head>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
+        />
+      </Head>
+      <Urql>
+        <Header />
+        <Component {...pageProps} />
+      </Urql>
+    </>
   )
 }

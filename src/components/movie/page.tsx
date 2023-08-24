@@ -6,6 +6,7 @@ import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
+import { useTitle } from '~/hooks/title'
 import { dateStr } from '~/util/date-str'
 import { useMovieQuery } from './query'
 
@@ -41,6 +42,8 @@ export function MoviePage() {
 
   const [res] = useMovieQuery(gqlQuery, { id })
   const movie = res.data?.movie
+
+  useTitle(movie?.title)
 
   const [debounce, setDebounce] = useState(query)
   useTimeout(() => {
