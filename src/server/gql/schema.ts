@@ -1,3 +1,395 @@
-import fs from 'node:fs'
+export const typeDefs = /* GraphQL */ `
+  type Search {
+    page: Int
+    results: [Result]
+    total_pages: Int
+    total_results: Int
+  }
 
-export const typeDefs = fs.readFileSync('./gql/schema.gql').toString('utf8')
+  type Result {
+    adult: Boolean
+    backdrop_path: String
+    id: String
+    title: String
+    original_language: String
+    original_title: String
+    overview: String
+    poster_path: String
+    profile_path: String
+    media_type: String
+    genre_ids: [Int]
+    popularity: Float
+    release_date: String
+    video: Boolean
+    vote_average: Float
+    vote_count: Int
+    name: String
+    original_name: String
+    first_air_date: String
+    origin_country: [String]
+  }
+
+  type Movie {
+    adult: Boolean
+    backdrop_path: String
+    belongs_to_collection: BelongsToCollection
+    budget: Int
+    genres: [Genre]
+    homepage: String
+    id: String
+    imdb_id: String
+    original_language: String
+    original_title: String
+    overview: String
+    popularity: Float
+    poster_path: String
+    production_companies: [ProductionCompany]
+    production_countries: [ProductionCountry]
+    release_date: String
+    revenue: Int
+    runtime: Int
+    spoken_languages: [SpokenLanguage]
+    status: String
+    tagline: String
+    title: String
+    video: Boolean
+    vote_average: Float
+    vote_count: Int
+    credits: Credits
+    images: Images
+    videos: Videos
+    release_dates: ReleaseDates
+  }
+
+  type BelongsToCollection {
+    id: String
+    name: String
+    poster_path: String
+    backdrop_path: String
+  }
+
+  type Credits {
+    cast: [Cast]
+    crew: [Crew]
+    guest_stars: [Cast]
+  }
+
+  type Cast {
+    adult: Boolean
+    gender: Int
+    id: String
+    known_for_department: String
+    name: String
+    original_name: String
+    popularity: Float
+    profile_path: String
+    cast_id: String
+    character: String
+    credit_id: String
+    order: Int
+  }
+
+  type Crew {
+    adult: Boolean
+    gender: Int
+    id: String
+    known_for_department: String
+    name: String
+    original_name: String
+    popularity: Float
+    profile_path: String
+    credit_id: String
+    department: String
+    job: String
+  }
+
+  type Genre {
+    id: String
+    name: String
+  }
+
+  type Images {
+    backdrops: [Image]
+    logos: [Image]
+    posters: [Image]
+    stills: [Image]
+    profiles: [Image]
+  }
+
+  type Image {
+    aspect_ratio: Int
+    height: Int
+    iso_639_1: String
+    file_path: String
+    vote_average: Float
+    vote_count: Int
+    width: Int
+  }
+
+  type ProductionCompany {
+    id: String
+    logo_path: String
+    name: String
+    origin_country: String
+  }
+
+  type ProductionCountry {
+    iso_3166_1: String
+    name: String
+  }
+
+  type ReleaseDates {
+    results: [ReleaseDatesResult]
+  }
+
+  type ReleaseDatesResult {
+    iso_3166_1: String
+    release_dates: [ReleaseDate]
+  }
+
+  type ReleaseDate {
+    certification: String
+    descriptors: [String]
+    iso_639_1: String
+    note: String
+    release_date: String
+    type: Int
+  }
+
+  type SpokenLanguage {
+    english_name: String
+    iso_639_1: String
+    name: String
+  }
+
+  type Videos {
+    results: [VideoResult]
+  }
+
+  type VideoResult {
+    iso_639_1: String
+    iso_3166_1: String
+    name: String
+    key: String
+    site: String
+    size: Int
+    type: String
+    official: Boolean
+    published_at: String
+    id: String
+  }
+
+  type TV {
+    adult: Boolean
+    backdrop_path: String
+    episode_run_time: [Int]
+    first_air_date: String
+    genres: [Genre]
+    homepage: String
+    id: String
+    in_production: Boolean
+    languages: [String]
+    last_air_date: String
+    name: String
+    networks: [Network]
+    number_of_episodes: Int
+    number_of_seasons: Int
+    origin_country: [String]
+    original_language: String
+    original_name: String
+    overview: String
+    popularity: Float
+    poster_path: String
+    production_companies: [Network]
+    production_countries: [ProductionCountry]
+    seasons: [TVSeason]
+    spoken_languages: [SpokenLanguage]
+    status: String
+    tagline: String
+    type: String
+    vote_average: Float
+    vote_count: Int
+    aggregate_credits: AggregateCredits
+    images: Images
+    videos: Videos
+  }
+
+  type AggregateCredits {
+    cast: [AggregateCast]
+    crew: [AggregateCrew]
+  }
+
+  type AggregateCast {
+    adult: Boolean
+    gender: Int
+    id: String
+    known_for_department: String
+    name: String
+    original_name: String
+    popularity: Float
+    profile_path: String
+    roles: [Role]
+    total_episode_count: Int
+    order: Int
+  }
+
+  type Role {
+    credit_id: String
+    character: String
+    episode_count: Int
+  }
+
+  type AggregateCrew {
+    adult: Boolean
+    gender: Int
+    id: String
+    known_for_department: String
+    name: String
+    original_name: String
+    popularity: Float
+    profile_path: String
+    jobs: [Job]
+    department: String
+    total_episode_count: Int
+  }
+
+  type Job {
+    credit_id: String
+    job: String
+    episode_count: Int
+  }
+
+  type Network {
+    id: String
+    logo_path: String
+    name: String
+    origin_country: String
+  }
+
+  type TVSeason {
+    air_date: String
+    episode_count: Int
+    id: String
+    name: String
+    overview: String
+    poster_path: String
+    season_number: Int
+  }
+
+  type Season {
+    _id: String
+    air_date: String
+    episodes: [SeasonEpisode]
+    name: String
+    overview: String
+    id: String
+    poster_path: String
+    season_number: Int
+    credits: Credits
+    images: Images
+    videos: Videos
+  }
+
+  type SeasonEpisode {
+    air_date: String
+    episode_number: Int
+    id: String
+    name: String
+    overview: String
+    production_code: String
+    runtime: Int
+    season_number: Int
+    show_id: String
+    still_path: String
+    vote_average: Float
+    vote_count: Int
+    crew: [Crew]
+    guest_stars: [Cast]
+  }
+
+  type Episode {
+    air_date: String
+    crew: [Crew]
+    episode_number: Int
+    guest_stars: [Cast]
+    name: String
+    overview: String
+    id: String
+    production_code: String
+    runtime: Int
+    season_number: Int
+    still_path: String
+    vote_average: Float
+    vote_count: Int
+    credits: Credits
+    images: Images
+    videos: Videos
+  }
+
+  type CombinedCredit {
+    adult: Boolean
+    backdrop_path: String
+    genre_ids: Int
+    id: Int
+    original_language: String
+    original_title: String
+    overview: String
+    popularity: Int
+    poster_path: String
+    release_date: String
+    title: String
+    video: Boolean
+    vote_average: Int
+    vote_count: Int
+    character: String
+    credit_id: String
+    order: Int
+    media_type: String
+    origin_country: [String]
+    original_name: String
+    first_air_date: String
+    name: String
+    episode_count: Int
+    department: String
+    job: String
+  }
+
+  type CombinedCredits {
+    cast: [CombinedCredit]
+    crew: [CombinedCredit]
+  }
+
+  type Person {
+    adult: Boolean
+    also_known_as: [String]
+    biography: String
+    birthday: String
+    deathday: String
+    gender: Int
+    homepage: String
+    id: Int
+    imdb_id: String
+    known_for_department: String
+    name: String
+    place_of_birth: String
+    popularity: Int
+    profile_path: String
+    combined_credits: CombinedCredits
+    images: Images
+  }
+
+  type Query {
+    search(query: String, page: Int): Search
+    movie(id: String!, query: String, page: Int): Movie
+    tv(id: String!, query: String, page: Int): TV
+    season(id: String!, season_number: Int!, query: String, page: Int): Season
+    episode(
+      id: String!
+      season_number: Int!
+      episode_number: Int!
+      query: String
+      page: Int
+    ): Episode
+    person(id: String!, query: String, filter: String, page: Int): Person
+  }
+`
