@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import Image from 'next/image'
 import { lazy, useState } from 'react'
 import { gql } from 'urql'
@@ -64,72 +65,74 @@ export function PersonPage() {
   const props = { id, query, page, filter }
 
   return (
-    <>
-      <div className='m-2 xl:mx-auto xl:max-w-screen-xl'>
-        <div className='row rounded-xl bg-primary-800 p-2 lg:p-4'>
-          {person?.profile_path && (
-            <Image
-              src={`${imageUrls.w130h195}${person.profile_path}`}
-              className='mr-3 rounded-xl'
-              width={110}
-              height={0}
-              alt=''
-            />
+    <div className='col m-2 xl:mx-auto xl:max-w-screen-xl'>
+      <Head>
+        <title>TMDB NEXT | {person?.name}</title>
+      </Head>
+
+      <div className='row rounded-xl bg-primary-800 p-2 lg:p-4'>
+        {person?.profile_path && (
+          <Image
+            src={`${imageUrls.w130h195}${person.profile_path}`}
+            className='mr-3 rounded-xl'
+            width={110}
+            height={0}
+            alt=''
+          />
+        )}
+        <div className='col space-y-1'>
+          <div>{person?.name}</div>
+
+          {person?.birthday && (
+            <div>Age: {calcAge(person.birthday, person.deathday)}</div>
           )}
-          <div className='col space-y-1'>
-            <div>{person?.name}</div>
-
-            {person?.birthday && (
-              <div>Age: {calcAge(person.birthday, person.deathday)}</div>
-            )}
-            {person?.birthday && <div>Born: {dateStr(person.birthday)}</div>}
-            {person?.deathday && <div>Died: {dateStr(person.deathday)}</div>}
-          </div>
+          {person?.birthday && <div>Born: {dateStr(person.birthday)}</div>}
+          {person?.deathday && <div>Died: {dateStr(person.deathday)}</div>}
         </div>
-
-        <TabBar
-          tabs={tabs}
-          currentTab={curTab}
-          onTabClicked={(tab) => replace({ tab })}
-        />
-
-        {showQueryBar && (
-          <QueryBar
-            query={query}
-            onInputChange={(e) => setDebounce(e.target.value)}
-            onClearClick={() => replace({ query: '', page: '1' })}
-          />
-        )}
-
-        {showQueryBar && (
-          <div className='row mb-2 space-x-2'>
-            {Object.entries(filterMap).map(([val, title], i) => (
-              <button
-                className={`btn ${
-                  filter === val ? 'bg-primary-700' : 'bg-primary-800'
-                }`}
-                onClick={() => replace({ filter: val === filter ? '' : val })}
-                key={i}
-              >
-                {title}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {curTab === 'Bio' && <Bio {...props} />}
-        {curTab === 'Cast' && <Cast {...props} />}
-        {curTab === 'Crew' && <Crew {...props} />}
-        {curTab === 'Profiles' && <Profiles {...props} />}
-
-        {showPager && (
-          <Pager
-            page={page}
-            onPageDownClick={() => setPage(-1)}
-            onPageUpClick={() => setPage(1)}
-          />
-        )}
       </div>
-    </>
+
+      <TabBar
+        tabs={tabs}
+        currentTab={curTab}
+        onTabClicked={(tab) => replace({ tab })}
+      />
+
+      {showQueryBar && (
+        <QueryBar
+          query={query}
+          onInputChange={(e) => setDebounce(e.target.value)}
+          onClearClick={() => replace({ query: '', page: '1' })}
+        />
+      )}
+
+      {showQueryBar && (
+        <div className='row mb-2 space-x-2'>
+          {Object.entries(filterMap).map(([val, title], i) => (
+            <button
+              className={`btn ${
+                filter === val ? 'bg-primary-700' : 'bg-primary-800'
+              }`}
+              onClick={() => replace({ filter: val === filter ? '' : val })}
+              key={i}
+            >
+              {title}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {curTab === 'Bio' && <Bio {...props} />}
+      {curTab === 'Cast' && <Cast {...props} />}
+      {curTab === 'Crew' && <Crew {...props} />}
+      {curTab === 'Profiles' && <Profiles {...props} />}
+
+      {showPager && (
+        <Pager
+          page={page}
+          onPageDownClick={() => setPage(-1)}
+          onPageUpClick={() => setPage(1)}
+        />
+      )}
+    </div>
   )
 }

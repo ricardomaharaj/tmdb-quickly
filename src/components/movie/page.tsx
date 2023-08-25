@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { lazy, useState } from 'react'
 import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
@@ -6,7 +7,6 @@ import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
-import { useTitle } from '~/hooks/title'
 import { dateStr } from '~/util/date-str'
 import { useMovieQuery } from './query'
 
@@ -43,8 +43,6 @@ export function MoviePage() {
   const [res] = useMovieQuery(gqlQuery, { id })
   const movie = res.data?.movie
 
-  useTitle(movie?.title)
-
   const [debounce, setDebounce] = useState(query)
   useTimeout(() => {
     if (debounce !== query) {
@@ -60,44 +58,46 @@ export function MoviePage() {
   const props = { id, query, page }
 
   return (
-    <>
-      <div className='col m-2'>
-        <BackdropCard
-          backdrop={movie?.backdrop_path}
-          pri={movie?.title}
-          sec={movie?.tagline}
-          ter={dateStr(movie?.release_date)}
-          className='xl:p-16'
+    <div className='m-2'>
+      <Head>
+        <title>TMDB NEXT | {movie?.title}</title>
+      </Head>
+
+      <BackdropCard
+        backdrop={movie?.backdrop_path}
+        pri={movie?.title}
+        sec={movie?.tagline}
+        ter={dateStr(movie?.release_date)}
+        className='xl:p-16'
+      />
+
+      <TabBar
+        tabs={tabs}
+        currentTab={curTab}
+        onTabClicked={(tab) => replace({ tab, page: '1' })}
+      />
+
+      {showQueryBar && (
+        <QueryBar
+          query={query}
+          onInputChange={(e) => setDebounce(e.target.value)}
+          onClearClick={() => replace({ query: '', page: '1' })}
         />
+      )}
 
-        <TabBar
-          tabs={tabs}
-          currentTab={curTab}
-          onTabClicked={(tab) => replace({ tab, page: '1' })}
+      {curTab === 'Info' && <Info {...props} />}
+      {curTab === 'Cast' && <Cast {...props} />}
+      {curTab === 'Crew' && <Crew {...props} />}
+      {curTab === 'Images' && <Images {...props} />}
+      {curTab === 'Videos' && <Videos {...props} />}
+
+      {showPager && (
+        <Pager
+          page={page}
+          onPageDownClick={() => setPage(-1)}
+          onPageUpClick={() => setPage(1)}
         />
-
-        {showQueryBar && (
-          <QueryBar
-            query={query}
-            onInputChange={(e) => setDebounce(e.target.value)}
-            onClearClick={() => replace({ query: '', page: '1' })}
-          />
-        )}
-
-        {curTab === 'Info' && <Info {...props} />}
-        {curTab === 'Cast' && <Cast {...props} />}
-        {curTab === 'Crew' && <Crew {...props} />}
-        {curTab === 'Images' && <Images {...props} />}
-        {curTab === 'Videos' && <Videos {...props} />}
-
-        {showPager && (
-          <Pager
-            page={page}
-            onPageDownClick={() => setPage(-1)}
-            onPageUpClick={() => setPage(1)}
-          />
-        )}
-      </div>
-    </>
+      )}
+    </div>
   )
 }

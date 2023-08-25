@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { lazy, useState } from 'react'
 import { gql } from 'urql'
 import { BackdropCard } from '~/components/reusable/backdrop-card'
@@ -6,7 +7,6 @@ import { QueryBar } from '~/components/reusable/query-bar'
 import { TabBar } from '~/components/reusable/tab-bar'
 import { useParams } from '~/hooks/params'
 import { useTimeout } from '~/hooks/timeout'
-import { useTitle } from '~/hooks/title'
 import { dateStr } from '~/util/date-str'
 import { useTVQuery } from './query'
 
@@ -44,8 +44,6 @@ export function TVPage() {
   const [res] = useTVQuery(gqlQuery, { id })
   const tv = res.data?.tv
 
-  useTitle(tv?.name)
-
   const [debounce, setDebounce] = useState(query)
   useTimeout(() => {
     if (debounce !== query) {
@@ -61,45 +59,47 @@ export function TVPage() {
   const props = { id, query, page }
 
   return (
-    <>
-      <div className='col m-2'>
-        <BackdropCard
-          backdrop={tv?.backdrop_path}
-          pri={tv?.name}
-          sec={tv?.tagline}
-          ter={dateStr(tv?.first_air_date)}
-          className='xl:p-16'
+    <div className='m-2'>
+      <Head>
+        <title>TMDB NEXT | {tv?.name}</title>
+      </Head>
+
+      <BackdropCard
+        backdrop={tv?.backdrop_path}
+        pri={tv?.name}
+        sec={tv?.tagline}
+        ter={dateStr(tv?.first_air_date)}
+        className='xl:p-16'
+      />
+
+      <TabBar
+        tabs={tabs}
+        currentTab={curTab}
+        onTabClicked={(tab) => replace({ tab })}
+      />
+
+      {showQueryBar && (
+        <QueryBar
+          query={query}
+          onInputChange={(e) => setDebounce(e.target.value)}
+          onClearClick={() => replace({ query: '', page: '1' })}
         />
+      )}
 
-        <TabBar
-          tabs={tabs}
-          currentTab={curTab}
-          onTabClicked={(tab) => replace({ tab })}
+      {curTab === 'Info' && <Info {...props} />}
+      {curTab === 'Seasons' && <Seasons {...props} />}
+      {curTab === 'Cast' && <Cast {...props} />}
+      {curTab === 'Crew' && <Crew {...props} />}
+      {curTab === 'Images' && <Images {...props} />}
+      {curTab === 'Videos' && <Videos {...props} />}
+
+      {showPager && (
+        <Pager
+          page={page}
+          onPageDownClick={() => setPage(-1)}
+          onPageUpClick={() => setPage(1)}
         />
-
-        {showQueryBar && (
-          <QueryBar
-            query={query}
-            onInputChange={(e) => setDebounce(e.target.value)}
-            onClearClick={() => replace({ query: '', page: '1' })}
-          />
-        )}
-
-        {curTab === 'Info' && <Info {...props} />}
-        {curTab === 'Seasons' && <Seasons {...props} />}
-        {curTab === 'Cast' && <Cast {...props} />}
-        {curTab === 'Crew' && <Crew {...props} />}
-        {curTab === 'Images' && <Images {...props} />}
-        {curTab === 'Videos' && <Videos {...props} />}
-
-        {showPager && (
-          <Pager
-            page={page}
-            onPageDownClick={() => setPage(-1)}
-            onPageUpClick={() => setPage(1)}
-          />
-        )}
-      </div>
-    </>
+      )}
+    </div>
   )
 }
