@@ -1,4 +1,5 @@
 import { gql } from 'urql'
+import { Overview } from '~/components/reusable/overview'
 import { SeasonProps } from '~/types/props'
 import { useSeasonQuery } from './query'
 
@@ -16,9 +17,7 @@ export default function Info({ id, season_number }: SeasonProps) {
 
   return (
     <>
-      <div className='bubble'>
-        <p>{season?.overview || 'No overview for this season'}</p>
-      </div>
+      <Overview fetching={res.fetching} overview={season?.overview} />
     </>
   )
 }

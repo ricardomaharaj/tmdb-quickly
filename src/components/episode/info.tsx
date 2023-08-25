@@ -1,5 +1,6 @@
 import { gql } from 'urql'
 import { useEpisodeQuery } from '~/components/episode/query'
+import { Overview } from '~/components/reusable/overview'
 import { EpisodeProps } from '~/types/props'
 
 const gqlQuery = gql`
@@ -20,9 +21,7 @@ export default function Info(props: EpisodeProps) {
 
   return (
     <>
-      <div className='bubble'>
-        <p>{episode?.overview || 'No overview for this episode'}</p>
-      </div>
+      <Overview fetching={res.fetching} overview={episode?.overview} />
     </>
   )
 }

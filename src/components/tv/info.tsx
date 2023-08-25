@@ -1,4 +1,5 @@
 import { gql } from 'urql'
+import { Overview } from '~/components/reusable/overview'
 import { TVProps } from '~/types/props'
 import { dateStr } from '~/util/date-str'
 import { useTVQuery } from './query'
@@ -43,9 +44,7 @@ export default function Info({ id }: TVProps) {
 
   return (
     <>
-      <div className='row bubble'>
-        <div>{tv?.overview ?? 'No overview for this show'}</div>
-      </div>
+      <Overview fetching={res.fetching} overview={tv?.overview} />
 
       <div className='col bubble'>
         {tv?.status && <div>Status: {tv?.status}</div>}

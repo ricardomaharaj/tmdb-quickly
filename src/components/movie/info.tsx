@@ -1,4 +1,5 @@
 import { gql } from 'urql'
+import { Overview } from '~/components/reusable/overview'
 import { MovieProps } from '~/types/props'
 import { dateStr } from '~/util/date-str'
 import { releaseTypes } from '~/util/release-types'
@@ -50,9 +51,7 @@ export default function Info({ id }: MovieProps) {
 
   return (
     <>
-      <div className='row bubble'>
-        <div>{movie?.overview}</div>
-      </div>
+      <Overview fetching={res.fetching} overview={movie?.overview} />
 
       <div className='col bubble'>
         {movie?.status && <div>Status: {movie?.status}</div>}
