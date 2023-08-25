@@ -69,9 +69,9 @@ export function PersonPage() {
         <div className='row rounded-xl bg-primary-800 p-2 lg:p-4'>
           {person?.profile_path && (
             <Image
-              src={`${imageUrls.w500}${person.profile_path}`}
+              src={`${imageUrls.w130h195}${person.profile_path}`}
               className='mr-3 rounded-xl'
-              width={100}
+              width={110}
               height={0}
               alt=''
             />

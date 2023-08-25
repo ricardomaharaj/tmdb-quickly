@@ -12,6 +12,8 @@ const nextConfig = {
   reactStrictMode: false,
   images: {
     domains: ['image.tmdb.org', 'i.ytimg.com'],
+    unoptimized: true,
+    disableStaticImages: true,
   },
   experimental: {
     scrollRestoration: true,

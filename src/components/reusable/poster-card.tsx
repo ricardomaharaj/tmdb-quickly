@@ -14,14 +14,14 @@ export function PosterCard({ path, pri, sec, ter }: Props) {
       <div className='row hover-hint rounded-xl bg-primary-800 p-2'>
         {path ? (
           <Image
-            src={`${imageUrls.w500}/${path}`}
-            width={100}
+            src={`${imageUrls.w130h195}/${path}`}
+            width={110}
             height={0}
             className='mr-2 rounded-xl'
             alt=''
           />
         ) : (
-          <i className='mr-2 h-[150px] w-[100px] rounded-xl bg-primary-700' />
+          <i className='mr-2 h-[165px] w-[100px] rounded-xl bg-primary-700' />
         )}
         <div className='col'>
           {pri && <div>{pri}</div>}
