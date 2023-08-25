@@ -1,5 +1,5 @@
 const capitals = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-const prefixes = ['Dr', 'Mr', 'Ms', 'Mrs', 'Jr', 'Lt', 'Vol']
+const prefixes = ['Dr', 'Mr', 'Ms', 'Mrs', 'Jr', 'Lt', 'Vol', 'Inc']
 
 export function bioSplitter(bio: string) {
   bio = bio.replaceAll('. ', '.\n')
