@@ -138,9 +138,7 @@ export function ShowPage() {
                 )}
               </Bubble>
               <FlowRow>
-                {show?.genres?.map((x) => (
-                  <Tag key={x.name}>{x.name}</Tag>
-                ))}
+                {show?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
               </FlowRow>
               <FlowRow>
                 {companies?.map((x) => (

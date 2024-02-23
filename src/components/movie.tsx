@@ -123,9 +123,7 @@ export function MoviePage() {
               )}
             </Bubble>
             <FlowRow>
-              {movie?.genres?.map((x, i) => (
-                <Tag key={i}>{x.name}</Tag>
-              ))}
+              {movie?.genres?.map((x, i) => <Tag key={i}>{x.name}</Tag>)}
             </FlowRow>
             <FlowRow>
               {releaseDates?.map((x, i) => (

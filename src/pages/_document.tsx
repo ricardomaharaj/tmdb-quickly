@@ -2,7 +2,7 @@ import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
   return (
-    <Html lang='en' className='bg-slate-900 text-slate-100 font-[Ubuntu]'>
+    <Html lang='en' className='bg-slate-900 font-[Ubuntu] text-slate-100'>
       <Head>
         <meta name='application-name' content='TMDB Quickly' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
