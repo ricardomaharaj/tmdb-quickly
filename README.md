@@ -1,6 +1,8 @@
 ## TMDB Quickly
 
-Frontend for The Movie Database written in React and Typescript
+Frontend for The Movie Database written in React and Typescript designed for speed
+
+pairs with [tmdb-gql-api](https://github.com/ricardomaharaj/tmdb-gql-api)
 
 ### Features
 
