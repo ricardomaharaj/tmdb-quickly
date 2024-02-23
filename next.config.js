@@ -8,6 +8,14 @@ const withPWA = require('next-pwa')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  output: 'standalone',
+  images: {
+    unoptimized: true,
+    disableStaticImages: true,
+  },
+  experimental: {
+    scrollRestoration: true,
+  },
 }
 
 module.exports = withPWA(nextConfig)
