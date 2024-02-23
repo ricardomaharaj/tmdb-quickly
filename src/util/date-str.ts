@@ -1,11 +1,4 @@
-export function dateStr(str?: string) {
-  if (!str) return ''
-
-  if (str.includes('T')) {
-    str = str.split('T')[0]
-  }
-
-  const date = new Date(str.replaceAll('-', '/'))
-
-  return date.toDateString().substring(4)
+export function toDateStr(date?: string) {
+  if (!date) return ''
+  return new Date(date).toDateString().substring(4)
 }

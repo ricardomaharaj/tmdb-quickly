@@ -1,11 +1,13 @@
+type Unknown = unknown
+
 export type Search = {
   page?: number
-  results?: Result[]
+  results?: SearchResult[]
   total_pages?: number
   total_results?: number
 }
 
-export type Result = {
+export type SearchResult = {
   adult?: boolean
   backdrop_path?: string
   id?: number
@@ -31,7 +33,7 @@ export type Result = {
 export type Movie = {
   adult?: boolean
   backdrop_path?: string
-  belongs_to_collection?: BelongsToCollection
+  belongs_to_collection?: Unknown
   budget?: number
   genres?: Genre[]
   homepage?: string
@@ -56,21 +58,37 @@ export type Movie = {
   vote_count?: number
   credits?: Credits
   images?: Images
-  videos?: Videos
   release_dates?: ReleaseDates
+  videos?: Videos
 }
 
-export type BelongsToCollection = {
+export type Genre = {
   id?: number
   name?: string
-  poster_path?: string
-  backdrop_path?: string
+}
+
+export type ProductionCompany = {
+  id?: number
+  logo_path?: string
+  name?: string
+  origin_country?: string
+}
+
+export type ProductionCountry = {
+  iso_3166_1?: string
+  name?: string
+}
+
+export type SpokenLanguage = {
+  english_name?: string
+  iso_639_1?: string
+  name?: string
 }
 
 export type Credits = {
+  id?: number
   cast?: Cast[]
   crew?: Crew[]
-  guest_stars?: Cast[]
 }
 
 export type Cast = {
@@ -102,13 +120,9 @@ export type Crew = {
   job?: string
 }
 
-export type Genre = {
-  id?: number
-  name?: string
-}
-
 export type Images = {
   backdrops?: Image[]
+  id?: number
   logos?: Image[]
   posters?: Image[]
   stills?: Image[]
@@ -125,23 +139,12 @@ export type Image = {
   width?: number
 }
 
-export type ProductionCompany = {
-  id?: number
-  logo_path?: string
-  name?: string
-  origin_country?: string
-}
-
-export type ProductionCountry = {
-  iso_3166_1?: string
-  name?: string
-}
-
 export type ReleaseDates = {
-  results?: ReleaseDatesResult[]
+  id?: number
+  results?: ReleaseDateResult[]
 }
 
-export type ReleaseDatesResult = {
+export type ReleaseDateResult = {
   iso_3166_1?: string
   release_dates?: ReleaseDate[]
 }
@@ -155,13 +158,8 @@ export type ReleaseDate = {
   type?: number
 }
 
-export type SpokenLanguage = {
-  english_name?: string
-  iso_639_1?: string
-  name?: string
-}
-
 export type Videos = {
+  id?: number
   results?: VideoResult[]
 }
 
@@ -176,19 +174,6 @@ export type VideoResult = {
   official?: boolean
   published_at?: string
   id?: string
-}
-
-export type ExternalIds = {
-  id?: number
-  imdb_id?: string
-  freebase_mid?: string
-  freebase_id?: string
-  tvdb_id?: number
-  tvrage_id?: number
-  wikidata_id?: string
-  facebook_id?: string
-  instagram_id?: string
-  twitter_id?: string
 }
 
 export type TV = {
@@ -212,9 +197,9 @@ export type TV = {
   overview?: string
   popularity?: number
   poster_path?: string
-  production_companies?: Network[]
+  production_companies?: ProductionCompany[]
   production_countries?: ProductionCountry[]
-  seasons?: TVSeason[]
+  seasons?: Season[]
   spoken_languages?: SpokenLanguage[]
   status?: string
   tagline?: string
@@ -222,14 +207,33 @@ export type TV = {
   vote_average?: number
   vote_count?: number
   aggregate_credits?: AggregateCredits
+  external_ids?: ExternalIds
   images?: Images
   videos?: Videos
-  external_ids?: ExternalIds
+}
+
+export type Network = {
+  id?: number
+  logo_path?: string
+  name?: string
+  origin_country?: string
+}
+
+export type Season = {
+  air_date?: string
+  episode_count?: number
+  id?: number
+  name?: string
+  overview?: string
+  poster_path?: string
+  season_number?: number
+  vote_average?: number
 }
 
 export type AggregateCredits = {
   cast?: AggregateCast[]
   crew?: AggregateCrew[]
+  id?: number
 }
 
 export type AggregateCast = {
@@ -272,38 +276,35 @@ export type Job = {
   episode_count?: number
 }
 
-export type Network = {
+export type ExternalIds = {
   id?: number
-  logo_path?: string
-  name?: string
-  origin_country?: string
+  imdb_id?: string
+  freebase_mid?: string
+  freebase_id?: string
+  tvdb_id?: number
+  tvrage_id?: number
+  wikidata_id?: string
+  facebook_id?: string
+  instagram_id?: string
+  twitter_id?: string
 }
 
 export type TVSeason = {
-  air_date?: string
-  episode_count?: number
-  id?: number
-  name?: string
-  overview?: string
-  poster_path?: string
-  season_number?: number
-}
-
-export type Season = {
   _id?: string
   air_date?: string
-  episodes?: SeasonEpisode[]
+  episodes?: Episode[]
   name?: string
   overview?: string
   id?: number
   poster_path?: string
   season_number?: number
+  vote_average?: number
   credits?: Credits
   images?: Images
   videos?: Videos
 }
 
-export type SeasonEpisode = {
+export type Episode = {
   air_date?: string
   episode_number?: number
   id?: number
@@ -320,7 +321,7 @@ export type SeasonEpisode = {
   guest_stars?: Cast[]
 }
 
-export type Episode = {
+export type TVEpisode = {
   air_date?: string
   crew?: Crew[]
   episode_number?: number
@@ -334,12 +335,36 @@ export type Episode = {
   still_path?: string
   vote_average?: number
   vote_count?: number
-  credits?: Credits
   images?: Images
   videos?: Videos
 }
 
-export type CombinedCredit = {
+export type Person = {
+  adult?: boolean
+  also_known_as?: string[]
+  biography?: string
+  birthday?: string
+  deathday?: string
+  gender?: number
+  homepage?: string
+  id?: number
+  imdb_id?: string
+  known_for_department?: string
+  name?: string
+  place_of_birth?: string
+  popularity?: number
+  profile_path?: string
+  combined_credits?: CombinedCredits
+  images?: Images
+}
+
+export type CombinedCredits = {
+  cast?: CombinedCast[]
+  crew?: CombinedCrew[]
+  id?: number
+}
+
+export type CombinedCast = {
   adult?: boolean
   backdrop_path?: string
   genre_ids?: number[]
@@ -363,30 +388,30 @@ export type CombinedCredit = {
   first_air_date?: string
   name?: string
   episode_count?: number
+}
+
+export type CombinedCrew = {
+  adult?: boolean
+  backdrop_path?: string
+  genre_ids?: number[]
+  id?: number
+  original_language?: string
+  original_title?: string
+  overview?: string
+  popularity?: number
+  poster_path?: string
+  release_date?: string
+  title?: string
+  video?: boolean
+  vote_average?: number
+  vote_count?: number
+  credit_id?: string
   department?: string
   job?: string
-}
-
-export type CombinedCredits = {
-  cast?: CombinedCredit[]
-  crew?: CombinedCredit[]
-}
-
-export type Person = {
-  adult?: boolean
-  also_known_as?: string[]
-  biography?: string
-  birthday?: string
-  deathday?: string
-  gender?: number
-  homepage?: string
-  id?: number
-  imdb_id?: string
-  known_for_department?: string
+  media_type?: string
+  origin_country?: string[]
+  original_name?: string
+  first_air_date?: string
   name?: string
-  place_of_birth?: string
-  popularity?: number
-  profile_path?: string
-  combined_credits?: CombinedCredits
-  images?: Images
+  episode_count?: number
 }

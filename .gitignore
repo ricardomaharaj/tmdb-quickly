@@ -1,9 +1,4 @@
 node_modules
 .next
 .env
-public/sw*
-public/workbox*
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-tsconfig.tsbuildinfo
+bun*

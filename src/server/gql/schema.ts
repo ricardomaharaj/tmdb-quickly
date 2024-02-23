@@ -1,15 +1,25 @@
+import { createSchema } from 'graphql-yoga'
+import { movieResolver } from './resolvers/movie'
+import { personResolver } from './resolvers/person'
+import { searchResolver } from './resolvers/search'
+import { tvResolver } from './resolvers/tv'
+import { tvEpisodeResolver } from './resolvers/tv-episode'
+import { tvSeasonResolver } from './resolvers/tv-season'
+
 export const typeDefs = /* GraphQL */ `
+  scalar Unknown
+
   type Search {
     page: Int
-    results: [Result]
+    results: [SearchResult]
     total_pages: Int
     total_results: Int
   }
 
-  type Result {
+  type SearchResult {
     adult: Boolean
     backdrop_path: String
-    id: String
+    id: Int
     title: String
     original_language: String
     original_title: String
@@ -18,7 +28,7 @@ export const typeDefs = /* GraphQL */ `
     profile_path: String
     media_type: String
     genre_ids: [Int]
-    popularity: Float
+    popularity: Int
     release_date: String
     video: Boolean
     vote_average: Float
@@ -32,21 +42,21 @@ export const typeDefs = /* GraphQL */ `
   type Movie {
     adult: Boolean
     backdrop_path: String
-    belongs_to_collection: BelongsToCollection
+    belongs_to_collection: Unknown
     budget: Int
     genres: [Genre]
     homepage: String
-    id: String
+    id: Int
     imdb_id: String
     original_language: String
     original_title: String
     overview: String
-    popularity: Float
+    popularity: Int
     poster_path: String
     production_companies: [ProductionCompany]
     production_countries: [ProductionCountry]
     release_date: String
-    revenue: Int
+    revenue: Float
     runtime: Int
     spoken_languages: [SpokenLanguage]
     status: String
@@ -57,33 +67,49 @@ export const typeDefs = /* GraphQL */ `
     vote_count: Int
     credits: Credits
     images: Images
-    videos: Videos
     release_dates: ReleaseDates
+    videos: Videos
   }
 
-  type BelongsToCollection {
-    id: String
+  type Genre {
+    id: Int
     name: String
-    poster_path: String
-    backdrop_path: String
+  }
+
+  type ProductionCompany {
+    id: Int
+    logo_path: String
+    name: String
+    origin_country: String
+  }
+
+  type ProductionCountry {
+    iso_3166_1: String
+    name: String
+  }
+
+  type SpokenLanguage {
+    english_name: String
+    iso_639_1: String
+    name: String
   }
 
   type Credits {
+    id: Int
     cast: [Cast]
     crew: [Crew]
-    guest_stars: [Cast]
   }
 
   type Cast {
     adult: Boolean
     gender: Int
-    id: String
+    id: Int
     known_for_department: String
     name: String
     original_name: String
-    popularity: Float
+    popularity: Int
     profile_path: String
-    cast_id: String
+    cast_id: Int
     character: String
     credit_id: String
     order: Int
@@ -92,24 +118,20 @@ export const typeDefs = /* GraphQL */ `
   type Crew {
     adult: Boolean
     gender: Int
-    id: String
+    id: Int
     known_for_department: String
     name: String
     original_name: String
-    popularity: Float
+    popularity: Int
     profile_path: String
     credit_id: String
     department: String
     job: String
   }
 
-  type Genre {
-    id: String
-    name: String
-  }
-
   type Images {
     backdrops: [Image]
+    id: Int
     logos: [Image]
     posters: [Image]
     stills: [Image]
@@ -126,23 +148,12 @@ export const typeDefs = /* GraphQL */ `
     width: Int
   }
 
-  type ProductionCompany {
-    id: String
-    logo_path: String
-    name: String
-    origin_country: String
-  }
-
-  type ProductionCountry {
-    iso_3166_1: String
-    name: String
-  }
-
   type ReleaseDates {
-    results: [ReleaseDatesResult]
+    id: Int
+    results: [ReleaseDateResult]
   }
 
-  type ReleaseDatesResult {
+  type ReleaseDateResult {
     iso_3166_1: String
     release_dates: [ReleaseDate]
   }
@@ -156,13 +167,8 @@ export const typeDefs = /* GraphQL */ `
     type: Int
   }
 
-  type SpokenLanguage {
-    english_name: String
-    iso_639_1: String
-    name: String
-  }
-
   type Videos {
+    id: Int
     results: [VideoResult]
   }
 
@@ -179,19 +185,6 @@ export const typeDefs = /* GraphQL */ `
     id: String
   }
 
-  type ExternalIds {
-    id: Int
-    imdb_id: String
-    freebase_mid: String
-    freebase_id: String
-    tvdb_id: Int
-    tvrage_id: Int
-    wikidata_id: String
-    facebook_id: String
-    instagram_id: String
-    twitter_id: String
-  }
-
   type TV {
     adult: Boolean
     backdrop_path: String
@@ -199,7 +192,7 @@ export const typeDefs = /* GraphQL */ `
     first_air_date: String
     genres: [Genre]
     homepage: String
-    id: String
+    id: Int
     in_production: Boolean
     languages: [String]
     last_air_date: String
@@ -211,11 +204,11 @@ export const typeDefs = /* GraphQL */ `
     original_language: String
     original_name: String
     overview: String
-    popularity: Float
+    popularity: Int
     poster_path: String
-    production_companies: [Network]
+    production_companies: [ProductionCompany]
     production_countries: [ProductionCountry]
-    seasons: [TVSeason]
+    seasons: [Season]
     spoken_languages: [SpokenLanguage]
     status: String
     tagline: String
@@ -223,24 +216,43 @@ export const typeDefs = /* GraphQL */ `
     vote_average: Float
     vote_count: Int
     aggregate_credits: AggregateCredits
+    external_ids: ExternalIds
     images: Images
     videos: Videos
-    external_ids: ExternalIds
+  }
+
+  type Network {
+    id: Int
+    logo_path: String
+    name: String
+    origin_country: String
+  }
+
+  type Season {
+    air_date: String
+    episode_count: Int
+    id: Int
+    name: String
+    overview: String
+    poster_path: String
+    season_number: Int
+    vote_average: Float
   }
 
   type AggregateCredits {
     cast: [AggregateCast]
     crew: [AggregateCrew]
+    id: Int
   }
 
   type AggregateCast {
     adult: Boolean
     gender: Int
-    id: String
+    id: Int
     known_for_department: String
     name: String
     original_name: String
-    popularity: Float
+    popularity: Int
     profile_path: String
     roles: [Role]
     total_episode_count: Int
@@ -256,11 +268,11 @@ export const typeDefs = /* GraphQL */ `
   type AggregateCrew {
     adult: Boolean
     gender: Int
-    id: String
+    id: Int
     known_for_department: String
     name: String
     original_name: String
-    popularity: Float
+    popularity: Int
     profile_path: String
     jobs: [Job]
     department: String
@@ -273,104 +285,67 @@ export const typeDefs = /* GraphQL */ `
     episode_count: Int
   }
 
-  type Network {
-    id: String
-    logo_path: String
-    name: String
-    origin_country: String
+  type ExternalIds {
+    id: Int
+    imdb_id: String
+    freebase_mid: String
+    freebase_id: String
+    tvdb_id: Int
+    tvrage_id: Int
+    wikidata_id: String
+    facebook_id: String
+    instagram_id: String
+    twitter_id: String
   }
 
   type TVSeason {
-    air_date: String
-    episode_count: Int
-    id: String
-    name: String
-    overview: String
-    poster_path: String
-    season_number: Int
-  }
-
-  type Season {
     _id: String
     air_date: String
-    episodes: [SeasonEpisode]
+    episodes: [Episode]
     name: String
     overview: String
-    id: String
+    id: Int
     poster_path: String
     season_number: Int
+    vote_average: Float
     credits: Credits
     images: Images
     videos: Videos
-  }
-
-  type SeasonEpisode {
-    air_date: String
-    episode_number: Int
-    id: String
-    name: String
-    overview: String
-    production_code: String
-    runtime: Int
-    season_number: Int
-    show_id: String
-    still_path: String
-    vote_average: Float
-    vote_count: Int
-    crew: [Crew]
-    guest_stars: [Cast]
   }
 
   type Episode {
     air_date: String
+    episode_number: Int
+    id: Int
+    name: String
+    overview: String
+    production_code: String
+    runtime: Int
+    season_number: Int
+    show_id: Int
+    still_path: String
+    vote_average: Float
+    vote_count: Int
+    crew: [Crew]
+    guest_stars: [Cast]
+  }
+
+  type TVEpisode {
+    air_date: String
     crew: [Crew]
     episode_number: Int
     guest_stars: [Cast]
     name: String
     overview: String
-    id: String
+    id: Int
     production_code: String
     runtime: Int
     season_number: Int
     still_path: String
     vote_average: Float
     vote_count: Int
-    credits: Credits
     images: Images
     videos: Videos
-  }
-
-  type CombinedCredit {
-    adult: Boolean
-    backdrop_path: String
-    genre_ids: Int
-    id: Int
-    original_language: String
-    original_title: String
-    overview: String
-    popularity: Int
-    poster_path: String
-    release_date: String
-    title: String
-    video: Boolean
-    vote_average: Int
-    vote_count: Int
-    character: String
-    credit_id: String
-    order: Int
-    media_type: String
-    origin_country: [String]
-    original_name: String
-    first_air_date: String
-    name: String
-    episode_count: Int
-    department: String
-    job: String
-  }
-
-  type CombinedCredits {
-    cast: [CombinedCredit]
-    crew: [CombinedCredit]
   }
 
   type Person {
@@ -392,18 +367,95 @@ export const typeDefs = /* GraphQL */ `
     images: Images
   }
 
+  type CombinedCredits {
+    cast: [CombinedCast]
+    crew: [CombinedCrew]
+    id: Int
+  }
+
+  type CombinedCast {
+    adult: Boolean
+    backdrop_path: String
+    genre_ids: [Int]
+    id: Int
+    original_language: String
+    original_title: String
+    overview: String
+    popularity: Int
+    poster_path: String
+    release_date: String
+    title: String
+    video: Boolean
+    vote_average: Float
+    vote_count: Int
+    character: String
+    credit_id: String
+    order: Int
+    media_type: String
+    origin_country: [String]
+    original_name: String
+    first_air_date: String
+    name: String
+    episode_count: Int
+  }
+
+  type CombinedCrew {
+    adult: Boolean
+    backdrop_path: String
+    genre_ids: [Int]
+    id: Int
+    original_language: String
+    original_title: String
+    overview: String
+    popularity: Int
+    poster_path: String
+    release_date: String
+    title: String
+    video: Boolean
+    vote_average: Float
+    vote_count: Int
+    credit_id: String
+    department: String
+    job: String
+    media_type: String
+    origin_country: [String]
+    original_name: String
+    first_air_date: String
+    name: String
+    episode_count: Int
+  }
+
   type Query {
     search(query: String, page: Int): Search
     movie(id: String!, query: String, page: Int): Movie
     tv(id: String!, query: String, page: Int): TV
-    season(id: String!, season_number: Int!, query: String, page: Int): Season
-    episode(
+    tvSeason(
       id: String!
-      season_number: Int!
-      episode_number: Int!
+      season_number: String!
       query: String
       page: Int
-    ): Episode
-    person(id: String!, query: String, filter: String, page: Int): Person
+    ): TVSeason
+    tvEpisode(
+      id: String!
+      season_number: String!
+      episode_number: String!
+      query: String
+      page: Int
+    ): TVEpisode
+    person(id: String!, query: String, page: Int, filter: String): Person
   }
 `
+
+export const schema = createSchema({
+  typeDefs: typeDefs,
+  resolvers: {
+    Query: {
+      search: searchResolver,
+      movie: movieResolver,
+      tv: tvResolver,
+      tvSeason: tvSeasonResolver,
+      tvEpisode: tvEpisodeResolver,
+      person: personResolver,
+    },
+  },
+})
