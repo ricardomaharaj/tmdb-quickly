@@ -1,8 +1,12 @@
+const { addDynamicIconSelectors } = require('@iconify/tailwind')
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: ['./src/**/*.tsx'],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [addDynamicIconSelectors()],
 }
+
+module.exports = config

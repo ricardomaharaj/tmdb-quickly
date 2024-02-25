@@ -1,5 +1,5 @@
+import { getPaginatePos } from '~/server/util/paginate-pos'
 import { CombinedCast } from '~/types/tmdb'
-import { getPaginatePos } from './paginate-pos'
 
 export function filterCombinedCast(args: {
   cast?: CombinedCast[]
@@ -14,6 +14,15 @@ export function filterCombinedCast(args: {
     if (x.media_type === args.filter) return true
     return false
   })
+
+  let tmpCast: CombinedCast[] = []
+  cast?.forEach((x) => {
+    const i = tmpCast.findIndex((y) => y.id === x.id)
+    if (i !== -1) tmpCast[i].character += ` | ${x.character}`
+    else tmpCast.push(x)
+  })
+
+  cast = tmpCast
 
   cast = cast?.filter((x) => {
     if (!q) return true

@@ -1,5 +1,5 @@
+import { getPaginatePos } from '~/server/util/paginate-pos'
 import { Crew } from '~/types/tmdb'
-import { getPaginatePos } from './paginate-pos'
 
 export function filterCrew(args: {
   crew?: Crew[]
@@ -10,7 +10,7 @@ export function filterCrew(args: {
 
   let crew = args.crew
 
-  const tmpCrew: Crew[] = []
+  let tmpCrew: Crew[] = []
   crew?.forEach((x) => {
     const i = tmpCrew.findIndex((y) => y.id === x.id)
     if (i !== -1) tmpCrew[i].job += ` | ${x.job}`

@@ -7,7 +7,7 @@ import { TV } from '~/types/tmdb'
 
 export async function tvResolver(
   _: unknown,
-  args: { id: string; query: string; page: number },
+  args: { id: String; query: string; page: number },
 ) {
   const res = await tmdbFetch(`/tv/${args.id}`, {
     append_to_response: 'aggregate_credits,external_ids,images,videos',

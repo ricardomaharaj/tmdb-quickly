@@ -2,24 +2,29 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useQuery } from 'urql'
-import { Btn } from '~/components/ui/btn'
+import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Card } from '~/components/ui/card'
+import { Div } from '~/components/ui/div'
+import { EpisodeCard } from '~/components/ui/episode-card'
 import { ErrorMsg } from '~/components/ui/error-msg'
-import { FlowRow } from '~/components/ui/flow-row'
-import { Grid } from '~/components/ui/grid'
-import { Img } from '~/components/ui/img'
+import { CardGrid, MediaGrid } from '~/components/ui/grid'
 import { InputBar } from '~/components/ui/input-bar'
+import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
-import { VidCard } from '~/components/ui/vid-card'
+import { Taber } from '~/components/ui/taber'
 import { seasonDoc } from '~/gql/season'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
-import { imgUrls } from '~/util/img'
-import { genRuntimeStr } from '~/util/runtime'
-import { rmVoiceTag } from '~/util/voice'
+import { genShowText } from '~/util/show-text'
 
-const tabs = ['Episodes', 'Cast', 'Crew', 'Images', 'Videos']
+const tabs = [
+  { key: 'Episodes', val: 'Episodes' },
+  { key: 'Cast', val: 'Cast' },
+  { key: 'Crew', val: 'Crew' },
+  { key: 'Images', val: 'Images' },
+  { key: 'Videos', val: 'Videos' },
+]
 
 export function SeasonPage() {
   const router = useRouter()
@@ -36,11 +41,12 @@ export function SeasonPage() {
 
   const pageInt = parseInt(sp.page)
 
-  const pgUp = () => rplSp({ page: `${pageInt + 1}` })
-  const pgDown = () => rplSp({ page: `${pageInt - 1}` })
+  const setQuery = (query: string) => rplSp({ query, page: '1' })
+  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
+  const setTab = (tab: string) => rplSp({ tab, page: '1' })
 
   const [db, setDb] = useState(sp.query)
-  useTimeout(() => rplSp({ query: db, page: '1' }), [db])
+  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
   const [res] = useQuery({
     query: seasonDoc,
@@ -52,7 +58,7 @@ export function SeasonPage() {
     },
   })
 
-  const { data, error } = res
+  const { data, fetching, error } = res
   const show = data?.tv
   const season = data?.tvSeason
 
@@ -68,108 +74,84 @@ export function SeasonPage() {
   if (error) return <ErrorMsg msg={error.message} />
 
   return (
-    <>
-      <>
-        <div className='flex flex-col gap-2'>
-          <Card
-            noHover
-            img={season?.poster_path}
-            to={`/tv/${params.id!}`}
-            pri={show?.name}
-            sec={season?.name}
-            ter={season?.air_date}
-          />
-          <FlowRow>
-            {tabs.map((tab) => (
-              <Btn
-                withHover
-                isActive={sp.tab === tab}
-                onClick={() => rplSp({ tab: tab, page: '1' })}
-                key={tab}
-              >
-                {tab}
-              </Btn>
-            ))}
-          </FlowRow>
-          {sp.tab === 'Episodes' && (
-            <Grid variant='234'>
-              {season?.episodes?.map((x) => (
-                <Link
-                  href={`/tv/${params.id}/season/${params.season_number}/episode/${x.episode_number}`}
-                  key={x.id}
-                >
-                  <div className='flex flex-col rounded-xl bg-slate-800 transition-colors hover:bg-slate-700'>
-                    <Img
-                      src={`${imgUrls.w320h180}${x.still_path}`}
-                      className='rounded-t-xl'
-                    />
-                    <div className='flex flex-col gap-1 p-2'>
-                      <div className='line-clamp-1 font-medium'>
-                        {x.episode_number} | {x.name}
-                      </div>
-                      <div className='line-clamp-2'>{x.overview}</div>
-                      <div className='line-clamp-1 text-sm text-slate-400'>
-                        {x.air_date} | {genRuntimeStr(x.runtime)}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </Grid>
-          )}
-          {showInputBar && (
-            <InputBar
-              defaultValue={sp.query}
-              onValueChange={(val) => setDb(val)}
-              className='pl-3'
-            />
-          )}
-          {sp.tab === 'Cast' && (
-            <Grid variant='123'>
-              {season?.credits?.cast?.map((x) => (
-                <Link href={`/person/${x.id}`} key={x.id}>
-                  <Card
-                    img={x.profile_path}
-                    pri={x.name}
-                    ter={rmVoiceTag(x.character)}
-                  />
-                </Link>
-              ))}
-            </Grid>
-          )}
-          {sp.tab === 'Crew' && (
-            <Grid variant='123'>
-              {season?.credits?.crew?.map((x) => (
-                <Link href={`/person/${x.id}`} key={x.id}>
-                  <Card img={x.profile_path} pri={x.name} ter={x.job} />
-                </Link>
-              ))}
-            </Grid>
-          )}
-          {sp.tab === 'Images' && (
-            <Grid variant='234'>
-              {season?.images?.posters?.map((x) => (
-                <a
-                  href={`${imgUrls.original}${x.file_path}`}
-                  target='_blank'
-                  rel='noreferrer'
-                  key={x.file_path}
-                >
-                  <Img src={`${imgUrls.w500}${x.file_path}`} />
-                </a>
-              ))}
-            </Grid>
-          )}
-          {sp.tab === 'Videos' && (
-            <Grid variant='234'>
-              {season?.videos?.results?.map((x) => (
-                <VidCard vid={x} key={x.key} />
-              ))}
-            </Grid>
-          )}
-          {showPager && <Pager page={pageInt} pgUp={pgUp} pgDown={pgDown} />}
+    <div className='flex flex-col gap-2'>
+      <BackdropCard
+        bgImg={show?.backdrop_path}
+        to={`/tv/${params.id!}`}
+        toText={show?.name}
+        sec={season?.name}
+        ter={season?.air_date}
+      />
+
+      <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
+
+      <Div value={fetching}>
+        <Loading />
+      </Div>
+
+      {showInputBar && (
+        <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
+      )}
+
+      {sp.tab === 'Episodes' && (
+        <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4'>
+          {season?.episodes?.map((x) => (
+            <Link
+              href={`/tv/${params.id}/season/${params.season_number}/episode/${x.episode_number}`}
+              key={x.id}
+            >
+              <EpisodeCard x={x} />
+            </Link>
+          ))}
         </div>
-      </>
-    </>
+      )}
+
+      {sp.tab === 'Cast' && (
+        <CardGrid>
+          {season?.credits?.cast?.map((x) => {
+            const sec = genShowText({
+              pri: x?.character,
+              rmVoice: true,
+            })
+
+            return (
+              <Link href={`/person/${x.id}`} key={x.id}>
+                <Card img={x.profile_path} pri={x.name} sec={sec} />
+              </Link>
+            )
+          })}
+        </CardGrid>
+      )}
+
+      {sp.tab === 'Crew' && (
+        <CardGrid>
+          {season?.credits?.crew?.map((x) => {
+            const sec = genShowText({ pri: x?.job })
+
+            return (
+              <Link href={`/person/${x.id}`} key={x.id}>
+                <Card img={x.profile_path} pri={x.name} sec={sec} />
+              </Link>
+            )
+          })}
+        </CardGrid>
+      )}
+
+      {sp.tab === 'Images' && (
+        <MediaGrid variant='234' images={season?.images?.posters} />
+      )}
+
+      {sp.tab === 'Videos' && (
+        <MediaGrid variant='234' videos={season?.videos?.results} />
+      )}
+
+      {showPager && (
+        <Pager
+          page={pageInt}
+          pgUp={() => setPage(1)}
+          pgDown={() => setPage(-1)}
+        />
+      )}
+    </div>
   )
 }

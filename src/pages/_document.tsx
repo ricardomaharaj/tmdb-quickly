@@ -2,16 +2,13 @@ import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
   return (
-    <Html lang='en' className='bg-slate-900 font-[Ubuntu] text-slate-100'>
+    <Html lang='en'>
       <Head>
         <meta name='application-name' content='TMDB Quickly' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='default' />
         <meta name='apple-mobile-web-app-title' content='TMDB Quickly' />
-        <meta
-          name='description'
-          content='a TMDB application designed for speed'
-        />
+        <meta name='description' content='a TMDB client designed for speed' />
         <meta name='format-detection' content='telephone=no' />
         <meta name='mobile-web-app-capable' content='yes' />
         <meta name='theme-color' content='#1e293b' />
@@ -32,10 +29,11 @@ export default function Document() {
           sizes='512x512'
           href='/icon-512.png'
         />
+
         <link rel='manifest' href='/manifest.json' />
         <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
-      <body className='container mx-auto'>
+      <body>
         <Main />
         <NextScript />
       </body>

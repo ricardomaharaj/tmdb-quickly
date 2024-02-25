@@ -1,3 +1,5 @@
+import { filterCast } from '~/server/util/filter-cast'
+import { filterCrew } from '~/server/util/filter-crew'
 import { filterImages } from '~/server/util/filter-images'
 import { getPaginatePos } from '~/server/util/paginate-pos'
 import { tmdbFetch } from '~/server/util/tmdb-fetch'
@@ -25,6 +27,16 @@ export async function tvEpisodeResolver(
 
   return {
     ...tvEpisode,
+    guest_stars: filterCast({
+      cast: tvEpisode.guest_stars,
+      query: args.query,
+      page: args.page,
+    }),
+    crew: filterCrew({
+      crew: tvEpisode.crew,
+      query: args.query,
+      page: args.page,
+    }),
     images: {
       stills: filterImages({
         images: tvEpisode.images?.stills,

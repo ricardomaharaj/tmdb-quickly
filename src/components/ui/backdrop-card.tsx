@@ -1,12 +1,9 @@
 import Link from 'next/link'
-import { Card } from '~/components/ui/card'
 import { Div } from '~/components/ui/div'
-import { Img } from '~/components/ui/img'
 import { imgUrls } from '~/util/img'
 
 export function BackdropCard({
   bgImg,
-  img,
 
   to,
   toText,
@@ -16,7 +13,6 @@ export function BackdropCard({
   ter,
 }: {
   bgImg?: string
-  img?: string
 
   to?: string
   toText?: string
@@ -25,42 +21,27 @@ export function BackdropCard({
   sec?: string
   ter?: string
 }) {
-  if (!bgImg) {
-    return <Card noHover img={img} pri={pri} sec={sec} ter={ter} />
-  }
+  const shouldLink = !!to && !!toText
 
   return (
-    <>
-      <div
-        className='rounded-xl bg-cover bg-center'
-        style={{
-          backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
-        }}
-      >
-        <div
-          className={`
-            flex min-h-[150px] flex-row rounded-xl bg-black bg-opacity-75
-            ${img ? 'p-2 md:p-8' : 'p-8 md:p-16'}
-          `}
-        >
-          {img && (
-            <Img
-              src={`${imgUrls.w94h141}${img}`}
-              className='mr-2 h-[141px] w-[94px] rounded-xl'
-            />
+    <div
+      className='rounded-xl bg-cover bg-center'
+      style={{
+        backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
+      }}
+    >
+      <div className='rounded-xl bg-black bg-opacity-60 p-10 md:p-20 lg:backdrop-blur-sm xl:p-24 2xl:p-28'>
+        <div className='flex flex-col gap-1 xl:text-lg'>
+          {shouldLink && (
+            <Link href={to} className='font-medium'>
+              {toText}
+            </Link>
           )}
-          <div className='flex flex-col gap-1'>
-            {to && toText && (
-              <Link href={to}>
-                <Div value={toText} className='font-medium' />
-              </Link>
-            )}
-            <Div value={pri} />
-            <Div value={sec} />
-            <Div value={ter} />
-          </div>
+          <Div value={pri} />
+          <Div value={sec} />
+          <Div value={ter} />
         </div>
       </div>
-    </>
+    </div>
   )
 }

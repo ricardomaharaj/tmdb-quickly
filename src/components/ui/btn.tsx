@@ -1,16 +1,18 @@
 export function Btn({
   onClick,
+
   disabled,
+
   isActive,
-  withHover,
 
   className,
   children,
 }: {
   onClick?: () => void
+
   disabled?: boolean
+
   isActive?: boolean
-  withHover?: boolean
 
   className?: string
   children?: React.ReactNode
@@ -20,10 +22,9 @@ export function Btn({
       disabled={disabled}
       onClick={onClick}
       className={`
-        rounded-xl px-4 py-2 md:px-3 md:py-1
+        rounded-xl
         ${isActive ? 'bg-slate-700' : 'bg-slate-800'}
-        ${withHover ? 'transition-colors hover:bg-slate-600' : ''}
-        disabled:bg-slate-900 disabled:text-slate-400 disabled:hover:bg-slate-900
+        disabled:bg-slate-900 disabled:text-slate-400 disabled:hover:bg-slate-900 md:transition-colors md:hover:bg-slate-600
         ${className}
       `}
     >

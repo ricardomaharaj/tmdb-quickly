@@ -1,23 +1,24 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useQuery } from 'urql'
-import { Btn } from '~/components/ui/btn'
 import { Card } from '~/components/ui/card'
+import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
-import { FlowRow } from '~/components/ui/flow-row'
-import { Grid } from '~/components/ui/grid'
+import { CardGrid } from '~/components/ui/grid'
 import { InputBar } from '~/components/ui/input-bar'
+import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
+import { Taber } from '~/components/ui/taber'
 import { searchDoc } from '~/gql/search'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
 
-const filters: Record<string, string> = {
-  Movies: 'movie',
-  Shows: 'tv',
-  People: 'person',
-}
+const filters = [
+  { key: 'Movies', val: 'movie' },
+  { key: 'Shows', val: 'tv' },
+  { key: 'People', val: 'person' },
+]
 
 export function SearchPage() {
   const [sp, rplSp] = useSp({
@@ -28,11 +29,15 @@ export function SearchPage() {
 
   const pageInt = parseInt(sp.page)
 
-  const pgUp = () => rplSp({ page: `${pageInt + 1}` })
-  const pgDown = () => rplSp({ page: `${pageInt - 1}` })
+  const setQuery = (query: string) => rplSp({ query, page: '1' })
+  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
+  const setFilter = (filter: string) => {
+    const sameFilter = sp.filter === filter
+    rplSp({ filter: sameFilter ? '' : filter, page: '1' })
+  }
 
   const [db, setDb] = useState(sp.query)
-  useTimeout(() => rplSp({ query: db, page: '1' }), [db])
+  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
   const [res] = useQuery({
     query: searchDoc,
@@ -42,14 +47,10 @@ export function SearchPage() {
     },
   })
 
-  const { data, error } = res
+  const { data, fetching, error } = res
   const search = data?.search
 
   useTitle()
-
-  function setFilter(val: string) {
-    rplSp({ filter: sp.filter == val ? '' : val, page: '1' })
-  }
 
   const results = search?.results?.filter((x) => {
     if (sp.filter === '') return true
@@ -60,46 +61,45 @@ export function SearchPage() {
   if (error) return <ErrorMsg msg={error.message} />
 
   return (
-    <>
-      <div className='flex flex-col gap-2'>
-        <InputBar
-          defaultValue={sp.query}
-          onValueChange={(val) => setDb(val)}
-          className='text-center text-xl'
-        />
-        <FlowRow>
-          {Object.entries(filters).map(([key, val], i) => (
-            <Btn
-              withHover
-              isActive={sp.filter === val}
-              onClick={() => setFilter(val)}
-              key={i}
-            >
-              {key}
-            </Btn>
-          ))}
-        </FlowRow>
-        <Grid variant='123'>
+    <div className='flex flex-col gap-2'>
+      <InputBar
+        defaultValue={sp.query}
+        onValueChange={(val) => setDb(val)}
+        className='text-center text-xl'
+      />
+
+      <Taber tabs={filters} activeTab={sp.filter} onTabClicked={setFilter} />
+
+      <Div value={fetching}>
+        <Loading />
+      </Div>
+
+      <Div value={!fetching}>
+        <CardGrid>
           {results?.map((x) => {
             const img = x.poster_path || x.profile_path
-
-            const pri = x.title || x.name
-            const sec = sp.query
-              ? x.release_date || x.first_air_date
-              : undefined
-            const ter = x.overview
-
-            const props = { img, pri, sec, ter }
+            const name = x.name || x.title
+            const date = (x.first_air_date || x.release_date)?.substring(0, 4)
 
             return (
-              <Link href={`/${x.media_type}/${x.id}`} key={x.id}>
-                <Card {...props} />
+              <Link
+                href={`/${x.media_type}/${x.id}`}
+                key={`${x.media_type} - ${x.id}`}
+              >
+                <Card img={img} pri={name} ter={sp.query ? date : undefined} />
               </Link>
             )
           })}
-        </Grid>
-        {sp.query && <Pager page={pageInt} pgUp={pgUp} pgDown={pgDown} />}
-      </div>
-    </>
+        </CardGrid>
+      </Div>
+
+      {sp.query && (
+        <Pager
+          page={pageInt}
+          pgUp={() => setPage(1)}
+          pgDown={() => setPage(-1)}
+        />
+      )}
+    </div>
   )
 }

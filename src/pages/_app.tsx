@@ -6,7 +6,7 @@ import { Urql } from '~/util/urql'
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <main className='m-2'>
+      <main>
         <Urql>
           <Header />
           <Component {...pageProps} />

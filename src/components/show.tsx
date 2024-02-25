@@ -2,29 +2,40 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useQuery } from 'urql'
+import { Anchor } from '~/components/ui/anchor'
 import { BackdropCard } from '~/components/ui/backdrop-card'
-import { Btn } from '~/components/ui/btn'
 import { Bubble } from '~/components/ui/bubble'
 import { Card } from '~/components/ui/card'
+import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
 import { FlowRow } from '~/components/ui/flow-row'
-import { Grid } from '~/components/ui/grid'
-import { Img } from '~/components/ui/img'
+import { CardGrid, MediaGrid } from '~/components/ui/grid'
 import { InputBar } from '~/components/ui/input-bar'
+import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
+import { Taber } from '~/components/ui/taber'
 import { Tag } from '~/components/ui/tag'
-import { VidCard } from '~/components/ui/vid-card'
 import { showDoc } from '~/gql/show'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
-import { imgUrls } from '~/util/img'
 import { genRuntimeStr } from '~/util/runtime'
+import { genShowText } from '~/util/show-text'
 import { numGt0 } from '~/util/validation'
-import { rmVoiceTag } from '~/util/voice'
 
-const tabs = ['Info', 'Seasons', 'Cast', 'Crew', 'Images', 'Videos']
-const imageTabs = ['Posters', 'Backdrops']
+const tabs = [
+  { key: 'Info', val: 'Info' },
+  { key: 'Seasons', val: 'Seasons' },
+  { key: 'Cast', val: 'Cast' },
+  { key: 'Crew', val: 'Crew' },
+  { key: 'Images', val: 'Images' },
+  { key: 'Videos', val: 'Videos' },
+]
+
+const imageTabs = [
+  { key: 'Posters', val: 'Posters' },
+  { key: 'Backdrops', val: 'Backdrops' },
+]
 
 export function ShowPage() {
   const router = useRouter()
@@ -41,11 +52,13 @@ export function ShowPage() {
 
   const pageInt = parseInt(sp.page)
 
-  const pgUp = () => rplSp({ page: `${pageInt + 1}` })
-  const pgDown = () => rplSp({ page: `${pageInt - 1}` })
+  const setQuery = (query: string) => rplSp({ query, page: '1' })
+  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
+  const setTab = (tab: string) => rplSp({ tab, page: '1' })
+  const setImageTab = (imageTab: string) => rplSp({ imageTab, page: '1' })
 
   const [db, setDb] = useState(sp.query)
-  useTimeout(() => rplSp({ query: db, page: '1' }), [db])
+  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
   const [res] = useQuery({
     query: showDoc,
@@ -56,7 +69,7 @@ export function ShowPage() {
     },
   })
 
-  const { data, error } = res
+  const { data, fetching, error } = res
   const show = data?.tv
 
   useTitle(show?.name)
@@ -78,207 +91,173 @@ export function ShowPage() {
   if (error) return <ErrorMsg msg={error.message} />
 
   return (
-    <>
-      <>
-        <div className='flex flex-col gap-2'>
-          <BackdropCard
-            bgImg={show?.backdrop_path}
-            img={show?.poster_path}
-            pri={show?.name}
-            sec={show?.tagline}
-            ter={show?.first_air_date}
-          />
-          <FlowRow>
-            {tabs.map((tab) => (
-              <Btn
-                withHover
-                isActive={sp.tab === tab}
-                onClick={() => rplSp({ tab: tab, page: '1' })}
-                key={tab}
+    <div className='flex flex-col gap-2'>
+      <BackdropCard
+        bgImg={show?.backdrop_path}
+        to={`/tv/${params.id!}`}
+        toText={show?.name}
+        sec={show?.tagline}
+        ter={show?.first_air_date}
+      />
+
+      <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
+
+      {showInputBar && (
+        <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
+      )}
+
+      <Div value={fetching}>
+        <Loading />
+      </Div>
+
+      {sp.tab === 'Info' && (
+        <>
+          <Div value={show?.overview}>
+            <Bubble>{show?.overview}</Bubble>
+          </Div>
+          <Bubble>
+            <Div value={show?.status}>Status: {show?.status}</Div>
+            <Div value={show?.type}>Show Type: {show?.type}</Div>
+            <Div value={show?.episode_run_time?.at(0)}>
+              Runtime: {genRuntimeStr(show?.episode_run_time?.at(0))}{' '}
+            </Div>
+            <Div value={show?.number_of_seasons}>
+              Seasons: {show?.number_of_seasons}
+            </Div>
+            <Div value={show?.number_of_episodes}>
+              Episodes: {show?.number_of_episodes}
+            </Div>
+            <Div value={show?.first_air_date}>
+              First Aired: {show?.first_air_date}
+            </Div>
+            <Div value={show?.last_air_date}>
+              Last Aired: {show?.last_air_date}
+            </Div>
+            <Div
+              value={show?.external_ids?.imdb_id}
+              className='flex flex-row gap-1'
+            >
+              <Anchor
+                href={`https://www.imdb.com/title/${show?.external_ids?.imdb_id}/`}
+                className='font-medium'
               >
-                {tab}
-              </Btn>
+                IMDB:
+              </Anchor>
+              <div>{show?.external_ids?.imdb_id}</div>
+            </Div>
+            <Div value={show?.id} className='flex flex-row gap-1'>
+              <Anchor
+                href={`https://www.themoviedb.org/tv/${show?.id}`}
+                className='font-medium'
+              >
+                TMDB:
+              </Anchor>
+              <div>{show?.id}</div>
+            </Div>
+          </Bubble>
+          <FlowRow>
+            {show?.genres?.map((x) => (
+              <Tag key={x.name}>{x.name}</Tag>
             ))}
           </FlowRow>
-          {sp.tab === 'Info' && (
-            <>
-              <Bubble>{show?.overview}</Bubble>
-              <Bubble>
-                {show?.status && <div>Status: {show?.status}</div>}
-                {show?.type && <div>Show Type: {show?.type}</div>}
-                {numGt0(show?.episode_run_time?.at(0)) && (
-                  <div>
-                    Runtime: {genRuntimeStr(show?.episode_run_time?.at(0))}{' '}
-                  </div>
-                )}
-                {numGt0(show?.number_of_seasons) && (
-                  <div>Seasons: {show?.number_of_seasons}</div>
-                )}
-                {numGt0(show?.number_of_episodes) && (
-                  <div>Episodes: {show?.number_of_episodes}</div>
-                )}
-                {show?.first_air_date && (
-                  <div>First Aired: {show.first_air_date}</div>
-                )}
-                {show?.last_air_date && (
-                  <div>Last Aired: {show.last_air_date}</div>
-                )}
-                {show?.external_ids?.imdb_id && (
-                  <div className='flex flex-row gap-1'>
-                    <a
-                      href={`https://www.imdb.com/title/${show?.external_ids?.imdb_id}/`}
-                      target='_blank'
-                      rel='noreferrer'
-                      className='font-medium'
-                    >
-                      IMDB:
-                    </a>
-                    <div>{show?.external_ids?.imdb_id}</div>
-                  </div>
-                )}
-              </Bubble>
-              <FlowRow>
-                {show?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
-              </FlowRow>
-              <FlowRow>
-                {companies?.map((x) => (
-                  <Tag className='text-sm' key={x}>
-                    {x}
-                  </Tag>
-                ))}
-              </FlowRow>
-            </>
+          <FlowRow>
+            {companies?.map((x) => (
+              <Tag className='text-sm' key={x}>
+                {x}
+              </Tag>
+            ))}
+          </FlowRow>
+        </>
+      )}
+
+      {sp.tab === 'Seasons' && (
+        <CardGrid>
+          {show?.seasons?.map((x) => {
+            let sec = ''
+            if (numGt0(x.episode_count)) sec += `${x.episode_count} Episodes`
+
+            return (
+              <Link
+                href={`/tv/${params.id}/season/${x.season_number}`}
+                key={x.id}
+              >
+                <Card
+                  img={x.poster_path}
+                  pri={x.name}
+                  sec={sec}
+                  ter={x.air_date}
+                />
+              </Link>
+            )
+          })}
+        </CardGrid>
+      )}
+
+      {sp.tab === 'Cast' && (
+        <CardGrid>
+          {show?.aggregate_credits?.cast?.map((x) => {
+            const role = x.roles?.at(0)
+            const sec = genShowText({
+              pri: role?.character,
+              count: role?.episode_count,
+              rmVoice: true,
+            })
+
+            return (
+              <Link href={`/person/${x.id}`} key={x.id}>
+                <Card img={x.profile_path} pri={x.name} sec={sec} />
+              </Link>
+            )
+          })}
+        </CardGrid>
+      )}
+
+      {sp.tab === 'Crew' && (
+        <CardGrid>
+          {show?.aggregate_credits?.crew?.map((x) => {
+            const role = x.jobs?.at(0)
+            const sec = genShowText({
+              pri: role?.job,
+              count: role?.episode_count,
+              rmVoice: true,
+            })
+
+            return (
+              <Link href={`/person/${x.id}`} key={x.id}>
+                <Card img={x.profile_path} pri={x.name} sec={sec} />
+              </Link>
+            )
+          })}
+        </CardGrid>
+      )}
+
+      {sp.tab === 'Images' && (
+        <>
+          <Taber
+            tabs={imageTabs}
+            activeTab={sp.imageTab}
+            onTabClicked={setImageTab}
+          />
+          {sp.imageTab === 'Posters' && (
+            <MediaGrid variant='234' images={show?.images?.posters} />
           )}
-          {sp.tab === 'Seasons' && (
-            <>
-              <Grid variant='123'>
-                {show?.seasons?.map((x) => (
-                  <Link
-                    href={`/tv/${params.id}/season/${x.season_number}`}
-                    key={x.id}
-                  >
-                    <Card
-                      img={x.poster_path}
-                      pri={x.name}
-                      sec={
-                        numGt0(x.episode_count)
-                          ? `${x.episode_count} Episodes`
-                          : undefined
-                      }
-                      ter={x.air_date}
-                    />
-                  </Link>
-                ))}
-              </Grid>
-            </>
+          {sp.imageTab === 'Backdrops' && (
+            <MediaGrid variant='123' images={show?.images?.backdrops} />
           )}
-          {showInputBar && (
-            <InputBar
-              defaultValue={sp.query}
-              onValueChange={(val) => setDb(val)}
-              className='pl-3'
-            />
-          )}
-          {sp.tab === 'Cast' && (
-            <Grid variant='123'>
-              {show?.aggregate_credits?.cast?.map((x) => (
-                <Link href={`/person/${x.id}`} key={x.id}>
-                  <Card
-                    img={x.profile_path}
-                    pri={x.name}
-                    ter={x.roles
-                      ?.slice(0, 3)
-                      ?.map(
-                        (x) =>
-                          `${rmVoiceTag(x.character) ?? 'Unknown'} ${
-                            numGt0(x.episode_count)
-                              ? `(${x.episode_count} Eps)`
-                              : ''
-                          }`,
-                      )
-                      ?.join(' | ')}
-                  />
-                </Link>
-              ))}
-            </Grid>
-          )}
-          {sp.tab === 'Crew' && (
-            <Grid variant='123'>
-              {show?.aggregate_credits?.crew?.map((x) => (
-                <Link href={`/person/${x.id}`} key={x.id}>
-                  <Card
-                    img={x.profile_path}
-                    pri={x.name}
-                    ter={x.jobs
-                      ?.slice(0, 3)
-                      ?.map(
-                        (x) =>
-                          `${x.job} ${
-                            numGt0(x.episode_count)
-                              ? `(${x.episode_count} Eps)`
-                              : ''
-                          }`,
-                      )
-                      ?.join(' | ')}
-                  />
-                </Link>
-              ))}
-            </Grid>
-          )}
-          {sp.tab === 'Images' && (
-            <>
-              <FlowRow>
-                {imageTabs.map((tab) => (
-                  <Btn
-                    withHover
-                    isActive={sp.imageTab === tab}
-                    onClick={() => rplSp({ imageTab: tab })}
-                    key={tab}
-                  >
-                    {tab}
-                  </Btn>
-                ))}
-              </FlowRow>
-              {sp.imageTab === 'Posters' && (
-                <Grid variant='234'>
-                  {show?.images?.posters?.map((x) => (
-                    <a
-                      href={`${imgUrls.original}${x.file_path}`}
-                      target='_blank'
-                      rel='noreferrer'
-                      key={x.file_path}
-                    >
-                      <Img src={`${imgUrls.w500}${x.file_path}`} />
-                    </a>
-                  ))}
-                </Grid>
-              )}
-              {sp.imageTab === 'Backdrops' && (
-                <Grid variant='123'>
-                  {show?.images?.backdrops?.map((x) => (
-                    <a
-                      href={`${imgUrls.original}${x.file_path}`}
-                      target='_blank'
-                      rel='noreferrer'
-                      key={x.file_path}
-                    >
-                      <Img src={`${imgUrls.w500}${x.file_path}`} />
-                    </a>
-                  ))}
-                </Grid>
-              )}
-            </>
-          )}
-          {sp.tab === 'Videos' && (
-            <Grid variant='234'>
-              {show?.videos?.results?.map((x) => (
-                <VidCard vid={x} key={x.key} />
-              ))}
-            </Grid>
-          )}
-          {showPager && <Pager page={pageInt} pgUp={pgUp} pgDown={pgDown} />}
-        </div>
-      </>
-    </>
+        </>
+      )}
+
+      {sp.tab === 'Videos' && (
+        <MediaGrid variant='234' videos={show?.videos?.results} />
+      )}
+
+      {showPager && (
+        <Pager
+          page={pageInt}
+          pgUp={() => setPage(1)}
+          pgDown={() => setPage(-1)}
+        />
+      )}
+    </div>
   )
 }

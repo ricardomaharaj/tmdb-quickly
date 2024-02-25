@@ -1,5 +1,5 @@
 export function genRuntimeStr(runtime?: number) {
-  if (!runtime) return ''
+  if (!runtime) return
 
   if (runtime < 60) return `${runtime}m`
   if (runtime === 60) return '1h'

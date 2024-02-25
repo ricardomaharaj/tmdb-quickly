@@ -14,15 +14,14 @@ export const searchDoc = gql<Data, Vars>`
   query ($query: String, $page: Int) {
     search(query: $query, page: $page) {
       results {
-        first_air_date
         id
         media_type
-        name
-        overview
         poster_path
         profile_path
-        release_date
+        name
         title
+        first_air_date
+        release_date
       }
     }
   }

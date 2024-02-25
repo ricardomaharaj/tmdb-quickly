@@ -4,35 +4,26 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "fmt": "prettier -w ./src"
+    "start": "next start"
   },
   "dependencies": {
     "@graphql-yoga/plugin-response-cache": "latest",
-    "graphql": "latest",
-    "graphql-yoga": "latest",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "urql": "latest",
-    "zod": "latest"
-  },
-  "devDependencies": {
+    "@iconify-json/ic": "latest",
+    "@iconify/tailwind": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
     "autoprefixer": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
+    "graphql": "latest",
+    "graphql-yoga": "latest",
+    "next": "latest",
     "next-pwa": "latest",
     "postcss": "latest",
-    "prettier": "latest",
-    "prettier-plugin-organize-imports": "latest",
-    "prettier-plugin-tailwindcss": "latest",
+    "react": "latest",
+    "react-dom": "latest",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "urql": "latest",
+    "zod": "latest"
   }
 }

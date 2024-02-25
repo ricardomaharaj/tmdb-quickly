@@ -4,5 +4,5 @@ export function Img(
     HTMLImageElement
   >,
 ) {
-  return <img {...props} loading='lazy' alt='' />
+  return <img loading='lazy' alt='' {...props} />
 }
