@@ -1,7 +1,7 @@
 {
   "name": "TMDB Quickly",
   "short_name": "TMDB Quickly",
-  "description": "A TMDB client",
+  "description": "A TMDB client designed for speed",
   "icons": [
     {
       "src": "icon-16.png",
