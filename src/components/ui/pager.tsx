@@ -1,5 +1,4 @@
 import { Btn } from '~/components/ui/btn'
-import { FlowRow } from '~/components/ui/flow-row'
 
 export function Pager({
   page,
@@ -11,19 +10,20 @@ export function Pager({
   pgDown: () => void
 }) {
   return (
-    <FlowRow>
+    <div className='flex flex-row justify-evenly md:justify-start md:gap-2'>
       <Btn
-        withHover
-        className='px-6 py-2 md:px-4'
+        className='px-8 py-0.5 md:px-6 md:py-0'
         disabled={page === 1}
         onClick={pgDown}
       >
-        {'<'}
+        <i className='icon-[ic--round-keyboard-arrow-left] mt-2 text-2xl' />
       </Btn>
-      <div className='p-2'>{page}</div>
-      <Btn withHover className='px-6 py-2 md:px-4' onClick={pgUp}>
-        {'>'}
+
+      <div className='mt-2 px-8 py-0.5 md:px-6 md:py-0'>{page}</div>
+
+      <Btn className='px-8 py-0.5 md:px-6 md:py-0' onClick={pgUp}>
+        <i className='icon-[ic--round-keyboard-arrow-right] mt-2 text-2xl' />
       </Btn>
-    </FlowRow>
+    </div>
   )
 }

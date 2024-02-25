@@ -8,28 +8,29 @@ export default defineConfig({
     tsconfigPaths(),
     react(),
     VitePWA({
+      manifestFilename: 'manifest.json',
       manifest: {
         name: 'TMDB Quickly',
         short_name: 'TMDB Quickly',
-        description: 'A TMDB client',
+        description: 'a React TMDB client designed for speed',
         icons: [
           {
-            src: 'icon-16.png',
+            src: '/icon-16.png',
             sizes: '16x16',
             type: 'image/png',
           },
           {
-            src: 'icon-32.png',
+            src: '/icon-32.png',
             sizes: '32x32',
             type: 'image/png',
           },
           {
-            src: 'icon-192.png',
+            src: '/icon-192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'icon-512.png',
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
           },
@@ -37,6 +38,8 @@ export default defineConfig({
         start_url: '.',
         theme_color: '#1e293b',
         background_color: '#0f172a',
+        display: 'standalone',
+        orientation: 'portrait',
       },
     }),
   ],

@@ -17,7 +17,9 @@ export const seasonDoc = gql<Data, Vars>`
   query ($id: String!, $season_number: String!, $query: String, $page: Int) {
     tv(id: $id) {
       name
+      backdrop_path
     }
+
     tvSeason(
       id: $id
       season_number: $season_number
@@ -61,6 +63,7 @@ export const seasonDoc = gql<Data, Vars>`
 
       videos {
         results {
+          key
           name
           published_at
         }
