@@ -6,7 +6,6 @@ export function BackdropCard({
   bgImg,
 
   to,
-  toText,
 
   pri,
   sec,
@@ -15,14 +14,11 @@ export function BackdropCard({
   bgImg?: string
 
   to?: string
-  toText?: string
 
   pri?: string
   sec?: string
   ter?: string
 }) {
-  const shouldLink = !!to && !!toText
-
   return (
     <div
       className='rounded-xl bg-cover bg-center'
@@ -30,14 +26,13 @@ export function BackdropCard({
         backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
       }}
     >
-      <div className='rounded-xl bg-black bg-opacity-60 p-10 md:p-20 lg:backdrop-blur-sm xl:p-24 2xl:p-28'>
+      <div className='rounded-xl bg-black bg-opacity-70 p-10 md:p-20 lg:backdrop-blur-sm xl:p-24 2xl:p-28'>
         <div className='flex flex-col gap-1 xl:text-lg'>
-          {shouldLink && (
-            <Link href={to} className='font-medium'>
-              {toText}
+          <Div value={pri}>
+            <Link href={to ?? '/'} className='font-medium'>
+              {pri}
             </Link>
-          )}
-          <Div value={pri} />
+          </Div>
           <Div value={sec} />
           <Div value={ter} />
         </div>

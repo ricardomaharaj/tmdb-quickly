@@ -87,6 +87,7 @@ export function MoviePage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={movie?.backdrop_path}
+        to={`/movie/${params.id}`}
         pri={movie?.title}
         sec={movie?.tagline}
         ter={movie?.release_date}

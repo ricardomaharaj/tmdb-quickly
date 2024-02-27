@@ -17,6 +17,7 @@ import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
 import { genShowText } from '~/util/show-text'
+import { numGt0 } from '~/util/validation'
 
 const tabs = [
   { key: 'Episodes', val: 'Episodes' },
@@ -62,11 +63,34 @@ export function SeasonPage() {
   const show = data?.tv
   const season = data?.tvSeason
 
-  useTitle(
-    show?.name
-      ? `${show.name} S${params.season_number!.padStart(2, '0')}`
-      : undefined,
-  )
+  function genSeasonShortHand() {
+    let str = ''
+    str += 'S'
+    str += `${params.season_number}`.padStart(2, '0')
+    return str
+  }
+
+  function genTitle() {
+    const content: string[] = []
+
+    if (show?.name) content.push(show.name)
+    content.push(genSeasonShortHand())
+
+    return content.join(' | ')
+  }
+
+  function genTerText() {
+    const content: string[] = []
+
+    if (season?.air_date) content.push(season.air_date)
+    if (numGt0(season?.episodes?.length)) {
+      content.push(`${season?.episodes?.length} Episodes`)
+    }
+
+    return content.join(' | ')
+  }
+
+  useTitle(genTitle())
 
   const showInputBar = ['Cast', 'Crew'].includes(sp.tab)
   const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(sp.tab)
@@ -78,9 +102,9 @@ export function SeasonPage() {
       <BackdropCard
         bgImg={show?.backdrop_path}
         to={`/tv/${params.id!}`}
-        toText={show?.name}
+        pri={show?.name}
         sec={season?.name}
-        ter={season?.air_date}
+        ter={genTerText()}
       />
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
