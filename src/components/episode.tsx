@@ -17,6 +17,7 @@ import { useTimeout } from '~/hooks/timeout'
 import { genRuntimeStr } from '~/util/runtime'
 import { genShowText } from '~/util/show-text'
 import { setTitle } from '~/util/title'
+import { numGt0 } from '~/util/validation'
 
 const tabs = [
   { key: 'Info', val: 'Info' },
@@ -62,15 +63,47 @@ export function EpisodePage() {
   const showInputBar = ['Guests', 'Crew'].includes(sp.tab)
   const showPager = ['Guests', 'Crew', 'Images', 'Videos'].includes(sp.tab)
 
-  const epTitle = (() => {
+  function genEpShortHand() {
     let str = ''
-    str += 'S' + `${episode?.season_number}`.padStart(2, '0')
+    str += 'S' + `${params.season_number}`.padStart(2, '0')
     str += ' '
-    str += 'E' + `${episode?.episode_number}`.padStart(2, '0')
-    return str
-  })()
+    str += 'E' + `${params.episode_number}`.padStart(2, '0')
 
-  setTitle(show?.name ? `${show.name} ${epTitle}` : undefined)
+    return str
+  }
+
+  function genTitle() {
+    const content: string[] = []
+
+    if (show?.name) content.push(show.name)
+    if (episode?.name) content.push(episode.name)
+
+    content.push(genEpShortHand())
+
+    return content.join(' | ')
+  }
+
+  function genSecTxt() {
+    const content: string[] = []
+
+    if (episode?.name) content.push(episode.name)
+    content.push(genEpShortHand())
+
+    return content.join(' | ')
+  }
+
+  function genTerText() {
+    const content: string[] = []
+
+    if (episode?.air_date) content.push(episode.air_date)
+    if (numGt0(episode?.runtime)) {
+      content.push(genRuntimeStr(episode!.runtime!)!)
+    }
+
+    return content.join(' | ')
+  }
+
+  setTitle(genTitle())
 
   if (error) return <ErrorMsg msg={error.message} />
 
@@ -78,11 +111,10 @@ export function EpisodePage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={episode?.still_path}
-        to={`/tv/${params.id!}`}
-        toText={show?.name}
-        pri={episode?.name}
-        sec={epTitle}
-        ter={`${episode?.air_date} ${genRuntimeStr(episode?.runtime)}`}
+        to={`/tv/${params.id}`}
+        pri={show?.name}
+        sec={genSecTxt()}
+        ter={genTerText()}
       />
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />

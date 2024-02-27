@@ -68,9 +68,22 @@ export function ShowPage() {
   const { data, fetching, error } = res
   const show = data?.tv
 
+  function genTerTxt() {
+    const data: string[] = []
+
+    if (show?.first_air_date) {
+      data.push(show.first_air_date)
+      if (show?.last_air_date) {
+        data.push(show.last_air_date)
+      }
+    }
+
+    return data.join(' - ')
+  }
+
   setTitle(show?.name)
 
-  const companies = (() => {
+  function genCompanies() {
     const tmp: string[] = []
     show?.networks?.map((x) => {
       if (x.name) tmp.push(x.name)
@@ -79,7 +92,9 @@ export function ShowPage() {
       if (x.name) tmp.push(x.name)
     })
     return tmp
-  })()
+  }
+
+  const companies = genCompanies()
 
   const showInputBar = ['Cast', 'Crew'].includes(sp.tab)
   const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(sp.tab)
@@ -91,9 +106,9 @@ export function ShowPage() {
       <BackdropCard
         bgImg={show?.backdrop_path}
         to={`/tv/${params.id!}`}
-        toText={show?.name}
+        pri={show?.name}
         sec={show?.tagline}
-        ter={show?.first_air_date}
+        ter={genTerTxt()}
       />
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
