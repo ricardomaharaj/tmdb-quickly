@@ -15,7 +15,14 @@ export function filterCombinedCast(args: {
     return false
   })
 
+  cast = cast?.sort((a, b) => {
+    const aDate = new Date(a.release_date! || a.first_air_date!)
+    const bDate = new Date(b.release_date! || b.first_air_date!)
+    return aDate > bDate ? -1 : 1
+  })
+
   let tmpCast: CombinedCast[] = []
+
   cast?.forEach((x) => {
     const i = tmpCast.findIndex((y) => y.id === x.id)
     if (i !== -1) tmpCast[i].character += ` | ${x.character}`
@@ -34,11 +41,5 @@ export function filterCombinedCast(args: {
 
   const { start, end } = getPaginatePos(args.page ?? 1)
 
-  return cast
-    ?.sort((a, b) => {
-      const aDate = new Date(a.release_date! || a.first_air_date!)
-      const bDate = new Date(b.release_date! || b.first_air_date!)
-      return aDate > bDate ? -1 : 1
-    })
-    .slice(start, end)
+  return cast?.slice(start, end)
 }

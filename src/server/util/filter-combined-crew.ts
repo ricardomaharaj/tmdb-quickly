@@ -15,7 +15,14 @@ export function filterCombinedCrew(args: {
     return false
   })
 
+  crew = crew?.sort((a, b) => {
+    const aDate = new Date(a.release_date! || a.first_air_date!)
+    const bDate = new Date(b.release_date! || b.first_air_date!)
+    return aDate > bDate ? -1 : 1
+  })
+
   let tmpCrew: CombinedCrew[] = []
+
   crew?.forEach((x) => {
     const i = tmpCrew.findIndex((y) => y.id === x.id)
     if (i !== -1) tmpCrew[i].job += ` | ${x.job}`
@@ -34,11 +41,5 @@ export function filterCombinedCrew(args: {
 
   const { start, end } = getPaginatePos(args.page ?? 1)
 
-  return crew
-    ?.sort((a, b) => {
-      const aDate = new Date(a.release_date! || a.first_air_date!)
-      const bDate = new Date(b.release_date! || b.first_air_date!)
-      return aDate > bDate ? -1 : 1
-    })
-    .slice(start, end)
+  return crew?.slice(start, end)
 }
