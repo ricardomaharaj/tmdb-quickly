@@ -17,8 +17,8 @@ import { Tag } from '~/components/ui/tag'
 import { showDoc } from '~/gql/show'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
+import { genMediaStr } from '~/util/media-str'
 import { genRuntimeStr } from '~/util/runtime'
-import { genShowText } from '~/util/show-text'
 import { setTitle } from '~/util/title'
 import { numGt0 } from '~/util/validation'
 
@@ -167,7 +167,9 @@ export function ShowPage() {
             </Div>
           </Bubble>
           <FlowRow>
-            {show?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
+            {show?.genres?.map((x) => (
+              <Tag key={x.name}>{x.name}</Tag>
+            ))}
           </FlowRow>
           <FlowRow>
             {companies?.map((x) => (
@@ -203,7 +205,7 @@ export function ShowPage() {
         <CardGrid>
           {show?.aggregate_credits?.cast?.map((x) => {
             const role = x.roles?.at(0)
-            const sec = genShowText({
+            const sec = genMediaStr({
               pri: role?.character,
               count: role?.episode_count,
               rmVoice: true,
@@ -222,7 +224,7 @@ export function ShowPage() {
         <CardGrid>
           {show?.aggregate_credits?.crew?.map((x) => {
             const role = x.jobs?.at(0)
-            const sec = genShowText({
+            const sec = genMediaStr({
               pri: role?.job,
               count: role?.episode_count,
               rmVoice: true,

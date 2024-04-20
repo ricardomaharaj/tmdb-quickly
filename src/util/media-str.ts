@@ -1,7 +1,7 @@
 import { numGt0 } from '~/util/validation'
 import { rmVoiceTag } from '~/util/voice'
 
-export function genShowText({
+export function genMediaStr({
   pri,
   count,
   rmVoice,

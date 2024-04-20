@@ -14,7 +14,7 @@ import { Taber } from '~/components/ui/taber'
 import { seasonDoc } from '~/gql/season'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
-import { genShowText } from '~/util/show-text'
+import { genMediaStr } from '~/util/media-str'
 import { setTitle } from '~/util/title'
 import { numGt0 } from '~/util/validation'
 
@@ -125,7 +125,7 @@ export function SeasonPage() {
       {sp.tab === 'Cast' && (
         <CardGrid>
           {season?.credits?.cast?.map((x) => {
-            const sec = genShowText({
+            const sec = genMediaStr({
               pri: x?.character,
               rmVoice: true,
             })
@@ -142,7 +142,7 @@ export function SeasonPage() {
       {sp.tab === 'Crew' && (
         <CardGrid>
           {season?.credits?.crew?.map((x) => {
-            const sec = genShowText({ pri: x?.job })
+            const sec = genMediaStr({ pri: x?.job })
 
             return (
               <Link to={`/person/${x.id}`} key={x.id}>
