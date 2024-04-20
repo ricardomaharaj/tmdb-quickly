@@ -1,7 +1,7 @@
 import { numGt0 } from '~/util/validation'
 import { rmVoiceTag } from '~/util/voice'
 
-export function genShowText({
+export function genMediaStr({
   pri,
   count,
   rmVoice,
@@ -10,7 +10,7 @@ export function genShowText({
   count?: number
   rmVoice?: boolean
 }) {
-  let str = pri ? pri : 'Unknown'
+  let str = pri || 'Unknown'
   if (numGt0(count)) str += ` (${count})`
   return rmVoice ? rmVoiceTag(str) : str
 }

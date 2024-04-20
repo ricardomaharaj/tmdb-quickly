@@ -16,7 +16,7 @@ import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
 import { imgUrls } from '~/util/img'
-import { genShowText } from '~/util/show-text'
+import { genMediaStr } from '~/util/media-str'
 
 const tabs = [
   { key: 'Cast', val: 'Cast' },
@@ -109,7 +109,7 @@ export function PersonPage() {
       {sp.tab === 'Cast' && (
         <CardGrid>
           {person?.combined_credits?.cast?.map((x) => {
-            const sec = genShowText({
+            const sec = genMediaStr({
               pri: x.character,
               count: x.episode_count,
               rmVoice: true,
@@ -135,7 +135,7 @@ export function PersonPage() {
       {sp.tab === 'Crew' && (
         <CardGrid>
           {person?.combined_credits?.crew?.map((x) => {
-            const sec = genShowText({
+            const sec = genMediaStr({
               pri: x.job,
               count: x.episode_count,
               rmVoice: true,

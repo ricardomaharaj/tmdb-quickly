@@ -16,8 +16,8 @@ import { episodeDoc } from '~/gql/episode'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
+import { genMediaStr } from '~/util/media-str'
 import { genRuntimeStr } from '~/util/runtime'
-import { genShowText } from '~/util/show-text'
 import { numGt0 } from '~/util/validation'
 
 const tabs = [
@@ -142,7 +142,7 @@ export function EpisodePage() {
       {sp.tab === 'Guests' && (
         <CardGrid>
           {episode?.guest_stars?.map((x) => {
-            const sec = genShowText({
+            const sec = genMediaStr({
               pri: x?.character,
               rmVoice: true,
             })
@@ -159,7 +159,7 @@ export function EpisodePage() {
       {sp.tab === 'Crew' && (
         <CardGrid>
           {episode?.crew?.map((x) => {
-            const sec = genShowText({ pri: x?.job })
+            const sec = genMediaStr({ pri: x?.job })
 
             return (
               <Link href={`/person/${x.id}`} key={x.id}>
