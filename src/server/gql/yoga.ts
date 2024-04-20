@@ -2,9 +2,11 @@ import { useResponseCache as responseCache } from '@graphql-yoga/plugin-response
 import { createYoga } from 'graphql-yoga'
 import { schema } from './schema'
 
+const gqlEndpoint = '/api/gql'
+
 export const yoga = createYoga({
   schema: schema,
-  graphqlEndpoint: '/api/gql',
+  graphqlEndpoint: gqlEndpoint,
   plugins: [
     responseCache({
       session: () => null,

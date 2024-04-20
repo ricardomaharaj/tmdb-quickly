@@ -43,5 +43,5 @@ export async function tvSeasonResolver(
     videos: {
       results: tvSeason.videos?.results?.slice(start, end),
     },
-  } as TVSeason
+  }
 }

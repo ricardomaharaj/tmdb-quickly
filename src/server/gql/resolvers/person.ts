@@ -40,5 +40,5 @@ export async function personResolver(
         page: args.page,
       }),
     },
-  } as Person
+  }
 }

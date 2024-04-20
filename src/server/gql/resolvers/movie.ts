@@ -49,5 +49,5 @@ export async function movieResolver(
         releaseDates: movie.release_dates,
       }),
     },
-  } as Movie
+  }
 }

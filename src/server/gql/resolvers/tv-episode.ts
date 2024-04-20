@@ -46,5 +46,5 @@ export async function tvEpisodeResolver(
     videos: {
       results: tvEpisode.videos?.results?.slice(start, end),
     },
-  } as TVEpisode
+  }
 }

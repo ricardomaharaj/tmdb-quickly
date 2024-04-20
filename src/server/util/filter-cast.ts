@@ -11,6 +11,7 @@ export function filterCast(args: {
   let cast = args.cast
 
   let tmpCast: Cast[] = []
+
   cast?.forEach((x) => {
     const i = tmpCast.findIndex((y) => y.id === x.id)
     if (i !== -1) tmpCast[i].character += ` | ${x.character}`

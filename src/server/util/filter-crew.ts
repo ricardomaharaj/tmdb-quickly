@@ -11,6 +11,7 @@ export function filterCrew(args: {
   let crew = args.crew
 
   let tmpCrew: Crew[] = []
+
   crew?.forEach((x) => {
     const i = tmpCrew.findIndex((y) => y.id === x.id)
     if (i !== -1) tmpCrew[i].job += ` | ${x.job}`
