@@ -4,9 +4,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "gqty": "gqty generate"
   },
   "dependencies": {
+    "@gqty/cli": "3",
+    "@gqty/react": "2",
     "@graphql-yoga/plugin-response-cache": "latest",
     "@iconify-json/ic": "latest",
     "@iconify/tailwind": "latest",
@@ -14,6 +17,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "autoprefixer": "latest",
+    "gqty": "2",
     "graphql": "latest",
     "graphql-yoga": "latest",
     "next": "latest",
@@ -23,7 +27,6 @@
     "react-dom": "latest",
     "tailwindcss": "latest",
     "typescript": "latest",
-    "urql": "latest",
     "zod": "latest"
   }
 }

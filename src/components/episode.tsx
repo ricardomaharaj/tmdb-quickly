@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useQuery } from 'urql'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Bubble } from '~/components/ui/bubble'
 import { Card } from '~/components/ui/card'
@@ -12,7 +11,7 @@ import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
-import { episodeDoc } from '~/gql/episode'
+import { useQuery } from '~/gqty'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -51,20 +50,17 @@ export function EpisodePage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const [res] = useQuery({
-    query: episodeDoc,
-    variables: {
-      id: params.id!,
-      season_number: params.season_number!,
-      episode_number: params.episode_number!,
-      query: sp.query,
-      page: pageInt,
-    },
+  const q = useQuery()
+  const show = q.tv({ id: params.id! })
+  const episode = q.tvEpisode({
+    id: params.id!,
+    season_number: params.season_number!,
+    episode_number: params.episode_number!,
+    query: sp.query,
+    page: pageInt,
   })
 
-  const { data, fetching, error } = res
-  const show = data?.tv
-  const episode = data?.tvEpisode
+  const { isLoading, error } = q.$state
 
   const showInputBar = ['Guests', 'Crew'].includes(sp.tab)
   const showPager = ['Guests', 'Crew', 'Images', 'Videos'].includes(sp.tab)
@@ -129,7 +125,7 @@ export function EpisodePage() {
         <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
       )}
 
-      <Div value={fetching}>
+      <Div value={isLoading}>
         <Loading />
       </Div>
 
@@ -148,7 +144,7 @@ export function EpisodePage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
@@ -162,7 +158,7 @@ export function EpisodePage() {
             const sec = genMediaStr({ pri: x?.job })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )

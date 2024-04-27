@@ -1,7 +1,7 @@
 import { Anchor } from '~/components/ui/anchor'
 import { Div } from '~/components/ui/div'
 import { Img } from '~/components/ui/img'
-import { VideoResult } from '~/types/tmdb'
+import { VideoResult } from '~/gqty'
 import { toDateStr } from '~/util/date-str'
 
 export function VideoCard({ x }: { x: VideoResult }) {

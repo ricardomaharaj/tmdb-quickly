@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useQuery } from 'urql'
 import { Anchor } from '~/components/ui/anchor'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Bubble } from '~/components/ui/bubble'
@@ -15,7 +14,7 @@ import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
 import { Tag } from '~/components/ui/tag'
-import { showDoc } from '~/gql/show'
+import { useQuery } from '~/gqty'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -60,17 +59,14 @@ export function ShowPage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const [res] = useQuery({
-    query: showDoc,
-    variables: {
-      id: params.id!,
-      query: sp.query,
-      page: pageInt,
-    },
+  const q = useQuery()
+  const show = q.tv({
+    id: params.id!,
+    query: sp.query,
+    page: pageInt,
   })
 
-  const { data, fetching, error } = res
-  const show = data?.tv
+  const { isLoading, error } = q.$state
 
   function genTerTxt() {
     const data: string[] = []
@@ -121,7 +117,7 @@ export function ShowPage() {
         <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
       )}
 
-      <Div value={fetching}>
+      <Div value={isLoading}>
         <Loading />
       </Div>
 
@@ -172,12 +168,12 @@ export function ShowPage() {
           </Bubble>
           <FlowRow>
             {show?.genres?.map((x) => (
-              <Tag key={x.name}>{x.name}</Tag>
+              <Tag key={x.name ?? 0}>{x.name}</Tag>
             ))}
           </FlowRow>
           <FlowRow>
             {companies?.map((x) => (
-              <Tag className='text-sm' key={x}>
+              <Tag className='text-sm' key={x ?? 0}>
                 {x}
               </Tag>
             ))}
@@ -194,7 +190,7 @@ export function ShowPage() {
             return (
               <Link
                 href={`/tv/${params.id}/season/${x.season_number}`}
-                key={x.id}
+                key={x.id ?? 0}
               >
                 <Card
                   img={x.poster_path}
@@ -219,7 +215,7 @@ export function ShowPage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
@@ -238,7 +234,7 @@ export function ShowPage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )

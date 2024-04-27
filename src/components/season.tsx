@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useQuery } from 'urql'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Card } from '~/components/ui/card'
 import { Div } from '~/components/ui/div'
@@ -12,7 +11,7 @@ import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
-import { seasonDoc } from '~/gql/season'
+import { useQuery } from '~/gqty'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -49,19 +48,16 @@ export function SeasonPage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const [res] = useQuery({
-    query: seasonDoc,
-    variables: {
-      id: params.id!,
-      season_number: params.season_number!,
-      query: sp.query,
-      page: pageInt,
-    },
+  const q = useQuery()
+  const show = q.tv({ id: params.id! })
+  const season = q.tvSeason({
+    id: params.id!,
+    season_number: params.season_number!,
+    query: sp.query,
+    page: pageInt,
   })
 
-  const { data, fetching, error } = res
-  const show = data?.tv
-  const season = data?.tvSeason
+  const { isLoading, error } = q.$state
 
   function genSeasonShortHand() {
     let str = ''
@@ -109,7 +105,7 @@ export function SeasonPage() {
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
 
-      <Div value={fetching}>
+      <Div value={isLoading}>
         <Loading />
       </Div>
 
@@ -122,7 +118,7 @@ export function SeasonPage() {
           {season?.episodes?.map((x) => (
             <Link
               href={`/tv/${params.id}/season/${params.season_number}/episode/${x.episode_number}`}
-              key={x.id}
+              key={x.id ?? 0}
             >
               <EpisodeCard x={x} />
             </Link>
@@ -139,7 +135,7 @@ export function SeasonPage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
@@ -153,7 +149,7 @@ export function SeasonPage() {
             const sec = genMediaStr({ pri: x?.job })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )

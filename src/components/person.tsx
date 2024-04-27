@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useQuery } from 'urql'
 import { Card } from '~/components/ui/card'
 import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
@@ -11,7 +10,7 @@ import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
-import { personDoc } from '~/gql/person'
+import { useQuery } from '~/gqty'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -55,18 +54,15 @@ export function PersonPage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const [res] = useQuery({
-    query: personDoc,
-    variables: {
-      id: params.id!,
-      query: sp.query,
-      page: pageInt,
-      filter: sp.filter,
-    },
+  const q = useQuery()
+  const person = q.person({
+    id: params.id!,
+    query: sp.query,
+    page: pageInt,
+    filter: sp.filter,
   })
 
-  const { data, fetching, error } = res
-  const person = data?.person
+  const { isLoading, error } = q.$state
 
   useTitle(person?.name)
 
@@ -102,7 +98,7 @@ export function PersonPage() {
         />
       )}
 
-      <Div value={fetching}>
+      <Div value={isLoading}>
         <Loading />
       </Div>
 

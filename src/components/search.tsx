@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { useState } from 'react'
-import { useQuery } from 'urql'
 import { Card } from '~/components/ui/card'
 import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
@@ -9,7 +8,7 @@ import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
-import { searchDoc } from '~/gql/search'
+import { useQuery } from '~/gqty'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -39,16 +38,13 @@ export function SearchPage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const [res] = useQuery({
-    query: searchDoc,
-    variables: {
-      query: sp.query,
-      page: pageInt,
-    },
+  const q = useQuery()
+  const search = q.search({
+    query: sp.query,
+    page: pageInt,
   })
 
-  const { data, fetching, error } = res
-  const search = data?.search
+  const { error, isLoading } = q.$state
 
   useTitle()
 
@@ -70,11 +66,11 @@ export function SearchPage() {
 
       <Taber tabs={filters} activeTab={sp.filter} onTabClicked={setFilter} />
 
-      <Div value={fetching}>
+      <Div value={isLoading}>
         <Loading />
       </Div>
 
-      <Div value={!fetching}>
+      <Div value={!isLoading}>
         <CardGrid>
           {results?.map((x) => {
             const img = x.poster_path || x.profile_path

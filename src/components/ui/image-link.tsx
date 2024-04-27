@@ -1,6 +1,6 @@
 import { Anchor } from '~/components/ui/anchor'
 import { Img } from '~/components/ui/img'
-import { Image } from '~/types/tmdb'
+import { Image } from '~/gqty'
 import { imgUrls } from '~/util/img'
 
 export function ImageLink({ x }: { x: Image }) {
