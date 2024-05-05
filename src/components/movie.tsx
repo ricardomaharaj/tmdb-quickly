@@ -135,19 +135,21 @@ export function MoviePage() {
             </Div>
           </Bubble>
           <FlowRow>
-            {movie?.genres?.map((x, i) => <Tag key={i}>{x.name}</Tag>)}
+            {movie?.genres?.map((x) => (
+              <Tag key={x.name}>{x.name}</Tag>
+            ))}
           </FlowRow>
           <FlowRow>
-            {releaseDates?.map((x, i) => (
-              <Tag className='text-sm' key={i}>
+            {releaseDates?.map((x) => (
+              <Tag className='text-sm' key={x.release_date}>
                 <div>{releaseType[x.type!]}</div>
                 <div>{toDateStr(x.release_date)}</div>
               </Tag>
             ))}
           </FlowRow>
           <FlowRow>
-            {movie?.production_companies?.map((x, i) => (
-              <Tag className='text-sm' key={i}>
+            {movie?.production_companies?.map((x) => (
+              <Tag className='text-sm' key={x.name}>
                 {x.name}
               </Tag>
             ))}
