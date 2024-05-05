@@ -1,6 +1,6 @@
 import { ImageLink } from '~/components/ui/image-link'
 import { VideoCard } from '~/components/ui/video-card'
-import { Image, VideoResult } from '~/gqty'
+import { Image, VideoResult } from '~/types/tmdb'
 
 export function CardGrid({ children }: { children?: React.ReactNode }) {
   return (
@@ -22,9 +22,8 @@ export function MediaGrid({
   if (variant === '123') {
     return (
       <div className='grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3'>
-        {!!images &&
-          images.map((x) => <ImageLink x={x} key={x.file_path ?? 0} />)}
-        {!!videos && videos.map((x) => <VideoCard x={x} key={x.key ?? 0} />)}
+        {!!images && images.map((x) => <ImageLink x={x} key={x.file_path} />)}
+        {!!videos && videos.map((x) => <VideoCard x={x} key={x.key} />)}
       </div>
     )
   }
@@ -32,9 +31,8 @@ export function MediaGrid({
   if (variant === '234') {
     return (
       <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4'>
-        {!!images &&
-          images.map((x) => <ImageLink x={x} key={x.file_path ?? 0} />)}
-        {!!videos && videos.map((x) => <VideoCard x={x} key={x.key ?? 0} />)}
+        {!!images && images.map((x) => <ImageLink x={x} key={x.file_path} />)}
+        {!!videos && videos.map((x) => <VideoCard x={x} key={x.key} />)}
       </div>
     )
   }

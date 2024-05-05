@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { useQuery } from 'urql'
 import { Anchor } from '~/components/ui/anchor'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Bubble } from '~/components/ui/bubble'
@@ -14,7 +14,7 @@ import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
 import { Tag } from '~/components/ui/tag'
-import { useQuery } from '~/gqty'
+import { showDoc } from '~/gql/show'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -37,9 +37,6 @@ const imageTabs = [
 ]
 
 export function ShowPage() {
-  const router = useRouter()
-  const params = router.query as Record<string, string | undefined>
-
   const [sp, rplSp] = useSp({
     query: '',
     page: '1',
@@ -59,14 +56,17 @@ export function ShowPage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const q = useQuery()
-  const show = q.tv({
-    id: params.id!,
-    query: sp.query,
-    page: pageInt,
+  const [res] = useQuery({
+    query: showDoc,
+    variables: {
+      id: sp.id,
+      query: sp.query,
+      page: pageInt,
+    },
   })
 
-  const { isLoading, error } = q.$state
+  const { fetching, error } = res
+  const show = res.data?.tv
 
   function genTerTxt() {
     const data: string[] = []
@@ -105,7 +105,7 @@ export function ShowPage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={show?.backdrop_path}
-        to={`/tv/${params.id!}`}
+        to={`/tv/${sp.id}`}
         pri={show?.name}
         sec={show?.tagline}
         ter={genTerTxt()}
@@ -117,7 +117,7 @@ export function ShowPage() {
         <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
       )}
 
-      <Div value={isLoading}>
+      <Div value={fetching}>
         <Loading />
       </Div>
 
@@ -168,12 +168,12 @@ export function ShowPage() {
           </Bubble>
           <FlowRow>
             {show?.genres?.map((x) => (
-              <Tag key={x.name ?? 0}>{x.name}</Tag>
+              <Tag key={x.name}>{x.name}</Tag>
             ))}
           </FlowRow>
           <FlowRow>
             {companies?.map((x) => (
-              <Tag className='text-sm' key={x ?? 0}>
+              <Tag className='text-sm' key={x}>
                 {x}
               </Tag>
             ))}
@@ -188,10 +188,7 @@ export function ShowPage() {
             if (numGt0(x.episode_count)) sec += `${x.episode_count} Episodes`
 
             return (
-              <Link
-                href={`/tv/${params.id}/season/${x.season_number}`}
-                key={x.id ?? 0}
-              >
+              <Link href={`/tv/${sp.id}/season/${x.season_number}`} key={x.id}>
                 <Card
                   img={x.poster_path}
                   pri={x.name}
@@ -215,7 +212,7 @@ export function ShowPage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+              <Link href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
@@ -234,7 +231,7 @@ export function ShowPage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+              <Link href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )

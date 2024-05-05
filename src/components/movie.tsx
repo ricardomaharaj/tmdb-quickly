@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { useQuery } from 'urql'
 import { Anchor } from '~/components/ui/anchor'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Bubble } from '~/components/ui/bubble'
@@ -14,7 +14,7 @@ import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
 import { Tag } from '~/components/ui/tag'
-import { useQuery } from '~/gqty'
+import { movieDoc } from '~/gql/movie'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -37,9 +37,6 @@ const imageTabs = [
 ]
 
 export function MoviePage() {
-  const router = useRouter()
-  const params = router.query as Record<string, string | undefined>
-
   const [sp, rplSp] = useSp({
     query: '',
     page: '1',
@@ -59,14 +56,17 @@ export function MoviePage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const q = useQuery()
-  const movie = q.movie({
-    id: params.id!,
-    query: sp.query,
-    page: pageInt,
+  const [res] = useQuery({
+    query: movieDoc,
+    variables: {
+      id: sp.id,
+      query: sp.query,
+      page: pageInt,
+    },
   })
 
-  const { isLoading, error } = q.$state
+  const { fetching, error } = res
+  const movie = res.data?.movie
 
   useTitle(movie?.title)
 
@@ -83,7 +83,7 @@ export function MoviePage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={movie?.backdrop_path}
-        to={`/movie/${params.id}`}
+        to={`/movie/${sp.id}`}
         pri={movie?.title}
         sec={movie?.tagline}
         ter={movie?.release_date}
@@ -95,7 +95,7 @@ export function MoviePage() {
         <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
       )}
 
-      <Div value={isLoading}>
+      <Div value={fetching}>
         <Loading />
       </Div>
 
@@ -136,12 +136,12 @@ export function MoviePage() {
           </Bubble>
           <FlowRow>
             {movie?.genres?.map((x) => (
-              <Tag key={x.name ?? 0}>{x.name}</Tag>
+              <Tag key={x.name}>{x.name}</Tag>
             ))}
           </FlowRow>
           <FlowRow>
             {releaseDates?.map((x) => (
-              <Tag className='text-sm' key={x.release_date ?? 0}>
+              <Tag className='text-sm' key={x.release_date}>
                 <div>{releaseType[x.type!]}</div>
                 <div>{toDateStr(x.release_date)}</div>
               </Tag>
@@ -149,7 +149,7 @@ export function MoviePage() {
           </FlowRow>
           <FlowRow>
             {movie?.production_companies?.map((x) => (
-              <Tag className='text-sm' key={x.name ?? 0}>
+              <Tag className='text-sm' key={x.name}>
                 {x.name}
               </Tag>
             ))}
@@ -160,7 +160,7 @@ export function MoviePage() {
       {sp.tab === 'Cast' && (
         <CardGrid>
           {movie?.credits?.cast?.map((x) => (
-            <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+            <Link href={`/person/${x.id}`} key={x.id}>
               <Card
                 img={x.profile_path}
                 pri={x.name}
@@ -174,7 +174,7 @@ export function MoviePage() {
       {sp.tab === 'Crew' && (
         <CardGrid>
           {movie?.credits?.crew?.map((x) => (
-            <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+            <Link href={`/person/${x.id}`} key={x.id}>
               <Card img={x.profile_path} pri={x.name} sec={x.job} />
             </Link>
           ))}

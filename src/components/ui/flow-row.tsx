@@ -7,7 +7,9 @@ export function FlowRow({
 }) {
   return (
     <div
-      className={`flex flex-row gap-2 overflow-x-scroll md:overflow-x-hidden ${className ?? ''}`}
+      className={`flex flex-row gap-2 overflow-x-scroll md:overflow-x-hidden ${
+        className ?? ''
+      }`}
     >
       {children}
     </div>

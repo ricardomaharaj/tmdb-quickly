@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { useQuery } from 'urql'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Bubble } from '~/components/ui/bubble'
 import { Card } from '~/components/ui/card'
@@ -11,7 +11,7 @@ import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
-import { useQuery } from '~/gqty'
+import { episodeDoc } from '~/gql/episode'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -28,9 +28,6 @@ const tabs = [
 ]
 
 export function EpisodePage() {
-  const router = useRouter()
-  const params = router.query as Record<string, string | undefined>
-
   const [sp, rplSp] = useSp({
     query: '',
     page: '1',
@@ -50,26 +47,29 @@ export function EpisodePage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const q = useQuery()
-  const show = q.tv({ id: params.id! })
-  const episode = q.tvEpisode({
-    id: params.id!,
-    season_number: params.season_number!,
-    episode_number: params.episode_number!,
-    query: sp.query,
-    page: pageInt,
+  const [res] = useQuery({
+    query: episodeDoc,
+    variables: {
+      id: sp.id,
+      season_number: sp.season_number,
+      episode_number: sp.episode_number,
+      query: sp.query,
+      page: pageInt,
+    },
   })
 
-  const { isLoading, error } = q.$state
+  const { fetching, error } = res
+  const show = res.data?.tv
+  const episode = res.data?.tvEpisode
 
   const showInputBar = ['Guests', 'Crew'].includes(sp.tab)
   const showPager = ['Guests', 'Crew', 'Images', 'Videos'].includes(sp.tab)
 
   function genEpShortHand() {
     let str = ''
-    str += 'S' + `${params.season_number}`.padStart(2, '0')
+    str += 'S' + `${sp.season_number}`.padStart(2, '0')
     str += ' '
-    str += 'E' + `${params.episode_number}`.padStart(2, '0')
+    str += 'E' + `${sp.episode_number}`.padStart(2, '0')
 
     return str
   }
@@ -113,7 +113,7 @@ export function EpisodePage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={episode?.still_path}
-        to={`/tv/${params.id}`}
+        to={`/tv/${sp.id}`}
         pri={show?.name}
         sec={genSecTxt()}
         ter={genTerText()}
@@ -125,7 +125,7 @@ export function EpisodePage() {
         <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
       )}
 
-      <Div value={isLoading}>
+      <Div value={fetching}>
         <Loading />
       </Div>
 
@@ -144,7 +144,7 @@ export function EpisodePage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+              <Link href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
@@ -158,7 +158,7 @@ export function EpisodePage() {
             const sec = genMediaStr({ pri: x?.job })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+              <Link href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )

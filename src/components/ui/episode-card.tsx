@@ -1,6 +1,6 @@
 import { Div } from '~/components/ui/div'
 import { Img } from '~/components/ui/img'
-import { Episode } from '~/gqty'
+import { Episode } from '~/types/tmdb'
 import { imgUrls } from '~/util/img'
 import { genRuntimeStr } from '~/util/runtime'
 

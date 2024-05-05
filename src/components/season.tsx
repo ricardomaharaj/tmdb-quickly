@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { useQuery } from 'urql'
 import { BackdropCard } from '~/components/ui/backdrop-card'
 import { Card } from '~/components/ui/card'
 import { Div } from '~/components/ui/div'
@@ -11,7 +11,7 @@ import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
 import { Taber } from '~/components/ui/taber'
-import { useQuery } from '~/gqty'
+import { seasonDoc } from '~/gql/season'
 import { useSp } from '~/hooks/search-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
@@ -27,9 +27,6 @@ const tabs = [
 ]
 
 export function SeasonPage() {
-  const router = useRouter()
-  const params = router.query as Record<string, string | undefined>
-
   const [sp, rplSp] = useSp({
     query: '',
     page: '1',
@@ -48,21 +45,24 @@ export function SeasonPage() {
   const [db, setDb] = useState(sp.query)
   useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
 
-  const q = useQuery()
-  const show = q.tv({ id: params.id! })
-  const season = q.tvSeason({
-    id: params.id!,
-    season_number: params.season_number!,
-    query: sp.query,
-    page: pageInt,
+  const [res] = useQuery({
+    query: seasonDoc,
+    variables: {
+      id: sp.id,
+      season_number: sp.season_number,
+      query: sp.query,
+      page: pageInt,
+    },
   })
 
-  const { isLoading, error } = q.$state
+  const { fetching, error } = res
+  const show = res.data?.tv
+  const season = res.data?.tvSeason
 
   function genSeasonShortHand() {
     let str = ''
     str += 'S'
-    str += `${params.season_number}`.padStart(2, '0')
+    str += `${sp.season_number}`.padStart(2, '0')
     return str
   }
 
@@ -97,7 +97,7 @@ export function SeasonPage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={show?.backdrop_path}
-        to={`/tv/${params.id!}`}
+        to={`/tv/${sp.id!}`}
         pri={show?.name}
         sec={season?.name}
         ter={genTerText()}
@@ -105,7 +105,7 @@ export function SeasonPage() {
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
 
-      <Div value={isLoading}>
+      <Div value={fetching}>
         <Loading />
       </Div>
 
@@ -117,8 +117,8 @@ export function SeasonPage() {
         <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4'>
           {season?.episodes?.map((x) => (
             <Link
-              href={`/tv/${params.id}/season/${params.season_number}/episode/${x.episode_number}`}
-              key={x.id ?? 0}
+              href={`/tv/${sp.id}/season/${sp.season_number}/episode/${x.episode_number}`}
+              key={x.id}
             >
               <EpisodeCard x={x} />
             </Link>
@@ -135,7 +135,7 @@ export function SeasonPage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+              <Link href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
@@ -149,7 +149,7 @@ export function SeasonPage() {
             const sec = genMediaStr({ pri: x?.job })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id ?? 0}>
+              <Link href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
               </Link>
             )
