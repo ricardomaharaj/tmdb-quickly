@@ -1,11 +1,11 @@
 import { createSchema } from 'graphql-yoga'
-import { movieResolver } from './resolvers/movie'
-import { personResolver } from './resolvers/person'
-import { searchResolver } from './resolvers/search'
-import { tvResolver } from './resolvers/tv'
-import { tvEpisodeResolver } from './resolvers/tv-episode'
-import { tvSeasonResolver } from './resolvers/tv-season'
-import { typeDefs } from './typeDefs'
+import { movieResolver } from '~/server/gql/resolvers/movie'
+import { personResolver } from '~/server/gql/resolvers/person'
+import { searchResolver } from '~/server/gql/resolvers/search'
+import { tvResolver } from '~/server/gql/resolvers/tv'
+import { tvEpisodeResolver } from '~/server/gql/resolvers/tv-episode'
+import { tvSeasonResolver } from '~/server/gql/resolvers/tv-season'
+import { typeDefs } from '~/server/gql/typeDefs'
 
 export const schema = createSchema({
   typeDefs: typeDefs,

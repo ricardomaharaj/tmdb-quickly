@@ -4,15 +4,20 @@ import { filterImages } from '~/server/util/filter-images'
 import { filterReleaseDates } from '~/server/util/filter-release-dates'
 import { getPaginatePos } from '~/server/util/paginate-pos'
 import { tmdbFetch } from '~/server/util/tmdb-fetch'
+import { Resolver } from '~/types/resolver'
 import { Movie } from '~/types/tmdb'
 
-export async function movieResolver(
-  _: unknown,
-  args: { id: string; query?: string; page?: number },
-) {
+type Args = {
+  id: string
+  query?: string
+  page?: number
+}
+
+export const movieResolver: Resolver<Movie, Args> = async (_, args) => {
   const res = await tmdbFetch(`/movie/${args.id}`, {
     append_to_response: 'credits,images,release_dates,videos',
   })
+
   const movie: Movie = await res.json()
 
   const { start, end } = getPaginatePos(args.page ?? 1)

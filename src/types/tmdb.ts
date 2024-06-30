@@ -30,6 +30,11 @@ export type SearchResult = {
   origin_country?: string[]
 }
 
+export type Find = {
+  movie_results: SearchResult[]
+  tv_results: SearchResult[]
+}
+
 export type Movie = {
   adult?: boolean
   backdrop_path?: string
