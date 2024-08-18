@@ -4,3 +4,4 @@ node_modules
 bun*
 public/sw.js
 public/workbox*.js
+tmp
