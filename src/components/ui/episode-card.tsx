@@ -56,12 +56,10 @@ export function EpisodeCard({ x }: { x: Episode }) {
           width={500}
         />
       </div>
-      <div className='flex flex-col gap-1 p-2 text-sm md:text-base'>
+      <div className='flex flex-col gap-1 p-2 text-xs md:text-sm'>
         <div className='line-clamp-1'>{pri}</div>
         <Div value={x.overview} className='line-clamp-1' />
-        <div className='line-clamp-1 text-xs text-slate-400 md:text-sm'>
-          {sec}
-        </div>
+        <div className='line-clamp-1 text-slate-400'>{sec}</div>
       </div>
     </div>
   )

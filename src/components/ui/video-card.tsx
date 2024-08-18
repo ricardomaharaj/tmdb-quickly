@@ -15,12 +15,9 @@ export function VideoCard({ x }: { x: VideoResult }) {
         className='aspect-video rounded-t-xl'
       />
 
-      <div className='flex flex-col p-2'>
-        <Div value={x.name} className='line-clamp-2 text-sm md:text-base' />
-        <Div
-          value={toDateStr(x.published_at)}
-          className='text-sm text-slate-400'
-        />
+      <div className='flex flex-col p-2 text-xs md:text-sm'>
+        <Div value={x.name} className='line-clamp-1' />
+        <Div value={toDateStr(x.published_at)} className='text-slate-400' />
       </div>
     </Anchor>
   )

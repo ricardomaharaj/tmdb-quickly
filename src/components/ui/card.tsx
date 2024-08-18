@@ -23,9 +23,9 @@ export function Card({
         <div className='h-full w-full rounded-t-xl bg-slate-600' />
       )}
 
-      <div className='rounded-b-xl p-2 text-sm'>
-        <Div value={pri} className='line-clamp-2' />
-        <Div value={sec} className='line-clamp-2 text-slate-400' />
+      <div className='rounded-b-xl p-2 text-xs md:text-sm'>
+        <Div value={pri} className='line-clamp-1' />
+        <Div value={sec} className='line-clamp-1 text-slate-400' />
         <Div value={ter} className='line-clamp-1 text-slate-400' />
       </div>
     </div>
