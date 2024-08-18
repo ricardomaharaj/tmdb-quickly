@@ -85,7 +85,7 @@ export function EpisodePage() {
     return content.join(' | ')
   }
 
-  function genSecTxt() {
+  function genSecText() {
     const content: string[] = []
 
     if (episode?.name) content.push(episode.name)
@@ -115,7 +115,7 @@ export function EpisodePage() {
         bgImg={episode?.still_path}
         to={`/tv/${sp.id}`}
         pri={show?.name}
-        sec={genSecTxt()}
+        sec={genSecText()}
         ter={genTerText()}
       />
 

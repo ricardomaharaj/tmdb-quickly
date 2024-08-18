@@ -75,6 +75,15 @@ export function SeasonPage() {
     return content.join(' | ')
   }
 
+  function genPriText() {
+    const content: string[] = []
+
+    if (show?.name) content.push(show.name)
+    if (sp.season_number) content.push(`Season ${sp.season_number}`)
+
+    return content.join(' | ')
+  }
+
   function genTerText() {
     const content: string[] = []
 
@@ -98,9 +107,8 @@ export function SeasonPage() {
       <BackdropCard
         bgImg={show?.backdrop_path}
         to={`/tv/${sp.id!}`}
-        pri={show?.name}
-        sec={season?.name}
-        ter={genTerText()}
+        pri={genPriText()}
+        sec={genTerText()}
       />
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />

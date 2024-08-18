@@ -7,9 +7,10 @@ export function Tag({
 }) {
   return (
     <div
+      // prettier-ignore
       className={`
         whitespace-nowrap rounded-xl bg-slate-800 px-3 py-1 
-        ${className ?? ''}
+        ${className ?? ''} 
       `}
     >
       {children}

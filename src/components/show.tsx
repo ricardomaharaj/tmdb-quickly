@@ -107,8 +107,7 @@ export function ShowPage() {
         bgImg={show?.backdrop_path}
         to={`/tv/${sp.id}`}
         pri={show?.name}
-        sec={show?.tagline}
-        ter={genTerTxt()}
+        sec={genTerTxt()}
       />
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
@@ -167,9 +166,7 @@ export function ShowPage() {
             </Div>
           </Bubble>
           <FlowRow>
-            {show?.genres?.map((x) => (
-              <Tag key={x.name}>{x.name}</Tag>
-            ))}
+            {show?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
           </FlowRow>
           <FlowRow>
             {companies?.map((x) => (

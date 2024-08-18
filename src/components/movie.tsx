@@ -85,8 +85,7 @@ export function MoviePage() {
         bgImg={movie?.backdrop_path}
         to={`/movie/${sp.id}`}
         pri={movie?.title}
-        sec={movie?.tagline}
-        ter={movie?.release_date}
+        sec={movie?.release_date}
       />
 
       <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
@@ -135,9 +134,7 @@ export function MoviePage() {
             </Div>
           </Bubble>
           <FlowRow>
-            {movie?.genres?.map((x) => (
-              <Tag key={x.name}>{x.name}</Tag>
-            ))}
+            {movie?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
           </FlowRow>
           <FlowRow>
             {releaseDates?.map((x) => (
