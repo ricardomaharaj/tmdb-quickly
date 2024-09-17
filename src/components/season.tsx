@@ -6,7 +6,7 @@ import { Card } from '~/components/ui/card'
 import { Div } from '~/components/ui/div'
 import { EpisodeCard } from '~/components/ui/episode-card'
 import { ErrorMsg } from '~/components/ui/error-msg'
-import { CardGrid, MediaGrid } from '~/components/ui/grid'
+import { CardGrid, EpisodeGrid, MediaGrid } from '~/components/ui/grid'
 import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
@@ -122,7 +122,7 @@ export function SeasonPage() {
       )}
 
       {sp.tab === 'Episodes' && (
-        <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4'>
+        <EpisodeGrid>
           {season?.episodes?.map((x) => (
             <Link
               href={`/tv/${sp.id}/season/${sp.season_number}/episode/${x.episode_number}`}
@@ -131,7 +131,7 @@ export function SeasonPage() {
               <EpisodeCard x={x} />
             </Link>
           ))}
-        </div>
+        </EpisodeGrid>
       )}
 
       {sp.tab === 'Cast' && (
