@@ -1,16 +1,4 @@
-import { gql } from 'urql'
-import { Search } from '~/types/tmdb'
-
-type Data = {
-  search: Search
-}
-
-type Vars = {
-  query?: string
-  page?: number
-}
-
-export const searchDoc = gql<Data, Vars>`
+export let searchDoc = /* GraphQL */ `
   query ($query: String, $page: Int) {
     search(query: $query, page: $page) {
       results {

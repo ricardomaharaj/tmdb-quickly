@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'preact/hooks'
 
 export function useBool(init?: boolean) {
   const [bool, setBool] = useState(init ?? false)

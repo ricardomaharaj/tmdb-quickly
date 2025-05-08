@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
-
-const appName = 'TMDB Quickly'
+import { useEffect } from 'preact/hooks'
+import { appName } from '~/util/consts'
 
 export function useTitle(str?: string) {
   useEffect(() => {

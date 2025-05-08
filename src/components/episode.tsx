@@ -1,59 +1,53 @@
-import Link from 'next/link'
-import { useState } from 'react'
+import { useRoute } from 'preact-iso'
+import { useState } from 'preact/hooks'
 import { useQuery } from 'urql'
 import { BackdropCard } from '~/components/ui/backdrop-card'
+import { Bio } from '~/components/ui/bio'
 import { Bubble } from '~/components/ui/bubble'
 import { Card } from '~/components/ui/card'
-import { Div } from '~/components/ui/div'
+import { IconChip } from '~/components/ui/chip'
 import { ErrorMsg } from '~/components/ui/error-msg'
-import { CardGrid, MediaGrid } from '~/components/ui/grid'
+import { FlowRow } from '~/components/ui/flow-row'
+import { Frag } from '~/components/ui/frag'
+import { ImageLink } from '~/components/ui/image-link'
 import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
-import { Taber } from '~/components/ui/taber'
+import { VideoCard } from '~/components/ui/video-card'
 import { episodeDoc } from '~/gql/episode'
-import { useSp } from '~/hooks/search-params'
+import { useQueryParams } from '~/hooks/query-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
+import { Data, Vars } from '~/types/query'
+import { icon } from '~/util/consts'
 import { genMediaStr } from '~/util/media-str'
 import { genRuntimeStr } from '~/util/runtime'
 import { numGt0 } from '~/util/validation'
 
-const tabs = [
-  { key: 'Info', val: 'Info' },
-  { key: 'Guests', val: 'Guests' },
-  { key: 'Crew', val: 'Crew' },
-  { key: 'Images', val: 'Images' },
-  { key: 'Videos', val: 'Videos' },
-]
-
 export function EpisodePage() {
-  const [sp, rplSp] = useSp({
+  const route = useRoute()
+  const [params, setParams] = useQueryParams({
     query: '',
     page: '1',
-    tab: 'Info',
-
-    id: '',
-    season_number: '',
-    episode_number: '',
   })
 
-  const pageInt = parseInt(sp.page)
+  const { id, season_number, episode_number } = route.params
 
-  const setQuery = (query: string) => rplSp({ query, page: '1' })
-  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
-  const setTab = (tab: string) => rplSp({ tab, page: '1' })
+  const pageInt = parseInt(params.page)
 
-  const [db, setDb] = useState(sp.query)
-  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
+  const setQuery = (query: string) => setParams({ query, page: '1' })
+  const setPage = (dir: number) => setParams({ page: `${pageInt + dir}` })
 
-  const [res] = useQuery({
+  const [db, setDb] = useState(params.query)
+  useTimeout(() => (db !== params.query ? setQuery(db) : null), [db])
+
+  const [res] = useQuery<Data, Vars>({
     query: episodeDoc,
     variables: {
-      id: sp.id,
-      season_number: sp.season_number,
-      episode_number: sp.episode_number,
-      query: sp.query,
+      id: id,
+      season_number: season_number,
+      episode_number: episode_number,
+      query: params.query,
       page: pageInt,
     },
   })
@@ -62,14 +56,11 @@ export function EpisodePage() {
   const show = res.data?.tv
   const episode = res.data?.tvEpisode
 
-  const showInputBar = ['Guests', 'Crew'].includes(sp.tab)
-  const showPager = ['Guests', 'Crew', 'Images', 'Videos'].includes(sp.tab)
-
   function genEpShortHand() {
     let str = ''
-    str += 'S' + `${sp.season_number}`.padStart(2, '0')
+    str += 'S' + `${season_number}`.padStart(2, '0')
     str += ' '
-    str += 'E' + `${sp.episode_number}`.padStart(2, '0')
+    str += 'E' + `${episode_number}`.padStart(2, '0')
 
     return str
   }
@@ -107,36 +98,41 @@ export function EpisodePage() {
 
   useTitle(genTitle())
 
+  if (fetching && !res.data) return <Loading />
   if (error) return <ErrorMsg msg={error.message} />
 
   return (
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={episode?.still_path}
-        to={`/tv/${sp.id}`}
+        to={`/tv/${id}`}
         pri={show?.name}
         sec={genSecText()}
         ter={genTerText()}
       />
 
-      <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
+      <Frag value={episode?.overview}>
+        <Bubble>
+          <Bio bio={episode?.overview} />
+        </Bubble>
+      </Frag>
 
-      {showInputBar && (
-        <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
-      )}
+      <div className='flex flex-row gap-2'>
+        <InputBar
+          defaultValue={params.query}
+          onValueChange={(val) => setDb(val)}
+        />
+        <Pager
+          page={pageInt}
+          pgUp={() => setPage(+1)}
+          pgDown={() => setPage(-1)}
+          loading={fetching}
+        />
+      </div>
 
-      <Div value={fetching}>
-        <Loading />
-      </Div>
-
-      {sp.tab === 'Info' && (
-        <Div value={episode?.overview}>
-          <Bubble>{episode?.overview}</Bubble>
-        </Div>
-      )}
-
-      {sp.tab === 'Guests' && (
-        <CardGrid>
+      <Frag value={episode?.guest_stars?.length}>
+        <IconChip icon={icon.people} label='Guests' />
+        <FlowRow>
           {episode?.guest_stars?.map((x) => {
             const sec = genMediaStr({
               pri: x?.character,
@@ -144,43 +140,44 @@ export function EpisodePage() {
             })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <a href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </Link>
+              </a>
             )
           })}
-        </CardGrid>
-      )}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Crew' && (
-        <CardGrid>
+      <Frag value={episode?.crew?.length}>
+        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <FlowRow>
           {episode?.crew?.map((x) => {
             const sec = genMediaStr({ pri: x?.job })
 
             return (
-              <Link href={`/person/${x.id}`} key={x.id}>
+              <a href={`/person/${x.id}`} key={x.id}>
                 <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </Link>
+              </a>
             )
           })}
-        </CardGrid>
-      )}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Images' && (
-        <MediaGrid variant='234' images={episode?.images?.stills} />
-      )}
+      <Frag value={episode?.images?.stills?.length}>
+        <IconChip icon={icon.image} label='Stills' />
+        <FlowRow>
+          {episode?.images?.stills?.map((x) => (
+            <ImageLink x={x} variant='landscape' key={x.file_path} />
+          ))}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Videos' && (
-        <MediaGrid variant='234' videos={episode?.videos?.results} />
-      )}
-
-      {showPager && (
-        <Pager
-          page={pageInt}
-          pgUp={() => setPage(1)}
-          pgDown={() => setPage(-1)}
-        />
-      )}
+      <Frag value={episode?.videos?.results?.length}>
+        <IconChip icon={icon.video} label='Videos' />
+        <FlowRow>
+          {episode?.videos?.results?.map((x) => <VideoCard x={x} key={x.id} />)}
+        </FlowRow>
+      </Frag>
     </div>
   )
 }

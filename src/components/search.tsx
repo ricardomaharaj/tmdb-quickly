@@ -1,48 +1,40 @@
-import Link from 'next/link'
-import { useState } from 'react'
+import { useState } from 'preact/hooks'
 import { useQuery } from 'urql'
 import { Card } from '~/components/ui/card'
+import { IconChip } from '~/components/ui/chip'
 import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
-import { CardGrid } from '~/components/ui/grid'
+import { FlowRow } from '~/components/ui/flow-row'
+import { Frag } from '~/components/ui/frag'
 import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
-import { Taber } from '~/components/ui/taber'
 import { searchDoc } from '~/gql/search'
-import { useSp } from '~/hooks/search-params'
+import { useQueryParams } from '~/hooks/query-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
-
-const filters = [
-  { key: 'Movies', val: 'movie' },
-  { key: 'Shows', val: 'tv' },
-  { key: 'People', val: 'person' },
-]
+import { SearchResult } from '~/types/gql'
+import { Data, Vars } from '~/types/query'
+import { icon } from '~/util/consts'
 
 export function SearchPage() {
-  const [sp, rplSp] = useSp({
+  const [params, setParams] = useQueryParams({
     query: '',
     page: '1',
-    filter: '',
   })
 
-  const pageInt = parseInt(sp.page)
+  const pageInt = parseInt(params.page)
 
-  const setQuery = (query: string) => rplSp({ query, page: '1' })
-  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
-  const setFilter = (filter: string) => {
-    const sameFilter = sp.filter === filter
-    rplSp({ filter: sameFilter ? '' : filter, page: '1' })
-  }
+  const setQuery = (query: string) => setParams({ query, page: '1' })
+  const setPage = (dir: number) => setParams({ page: `${pageInt + dir}` })
 
-  const [db, setDb] = useState(sp.query)
-  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
+  const [db, setDb] = useState(params.query)
+  useTimeout(() => (db !== params.query ? setQuery(db) : null), [db])
 
-  const [res] = useQuery({
+  const [res] = useQuery<Data, Vars>({
     query: searchDoc,
     variables: {
-      query: sp.query,
+      query: params.query,
       page: pageInt,
     },
   })
@@ -52,9 +44,18 @@ export function SearchPage() {
 
   useTitle()
 
-  const results = search?.results?.filter((x) => {
-    if (sp.filter === '') return true
-    if (x.media_type === sp.filter) return true
+  const movieResults = search?.results?.filter((x) => {
+    if (x.media_type === 'movie') return true
+    return false
+  })
+
+  const tvResults = search?.results?.filter((x) => {
+    if (x.media_type === 'tv') return true
+    return false
+  })
+
+  const peopleResults = search?.results?.filter((x) => {
+    if (x.media_type === 'person') return true
     return false
   })
 
@@ -63,43 +64,70 @@ export function SearchPage() {
   return (
     <div className='flex flex-col gap-2'>
       <InputBar
-        defaultValue={sp.query}
+        defaultValue={params.query}
         onValueChange={(val) => setDb(val)}
         className='text-center text-xl'
       />
 
-      <Taber tabs={filters} activeTab={sp.filter} onTabClicked={setFilter} />
+      {params.query && (
+        <div className='flex flex-row justify-end gap-2'>
+          <Pager
+            page={pageInt}
+            pgUp={() => setPage(+1)}
+            pgDown={() => setPage(-1)}
+            loading={fetching}
+          />
+        </div>
+      )}
 
       <Div value={fetching}>
         <Loading />
       </Div>
 
-      <Div value={!fetching}>
-        <CardGrid>
-          {results?.map((x) => {
-            const img = x.poster_path || x.profile_path
-            const name = x.name || x.title
-            const date = (x.first_air_date || x.release_date)?.substring(0, 4)
+      <Frag value={movieResults?.length}>
+        <IconChip icon={icon.movie} label='Movies' />
+        <FlowRow>
+          {movieResults?.map((x) => (
+            <SearchResultCard x={x} showDate={!!params.query} key={x.id} />
+          ))}
+        </FlowRow>
+      </Frag>
 
-            return (
-              <Link
-                href={`/${x.media_type}/${x.id}`}
-                key={`${x.media_type} - ${x.id}`}
-              >
-                <Card img={img} pri={name} ter={sp.query ? date : undefined} />
-              </Link>
-            )
-          })}
-        </CardGrid>
-      </Div>
+      <Frag value={tvResults?.length}>
+        <IconChip icon={icon.tv} label='Shows' />
+        <FlowRow>
+          {tvResults?.map((x) => (
+            <SearchResultCard x={x} showDate={!!params.query} key={x.id} />
+          ))}
+        </FlowRow>
+      </Frag>
 
-      {sp.query && (
-        <Pager
-          page={pageInt}
-          pgUp={() => setPage(1)}
-          pgDown={() => setPage(-1)}
-        />
-      )}
+      <Frag value={peopleResults?.length}>
+        <IconChip icon={icon.people} label='People' />
+        <FlowRow>
+          {peopleResults?.map((x) => (
+            <SearchResultCard x={x} showDate={!!params.query} key={x.id} />
+          ))}
+        </FlowRow>
+      </Frag>
     </div>
+  )
+}
+
+function SearchResultCard({
+  x,
+  showDate,
+}: {
+  x: SearchResult
+  showDate?: boolean
+}) {
+  const img = x.poster_path || x.profile_path
+  const name = x.name || x.title
+  const date = (x.first_air_date || x.release_date)?.substring(0, 4)
+
+  return (
+    <a href={`/${x.media_type}/${x.id}`}>
+      <Card img={img} pri={name} ter={showDate ? date : undefined} />
+    </a>
   )
 }

@@ -1,66 +1,58 @@
-import Link from 'next/link'
-import { useState } from 'react'
+import { useRoute } from 'preact-iso'
+import { useState } from 'preact/hooks'
 import { useQuery } from 'urql'
 import { Anchor } from '~/components/ui/anchor'
 import { BackdropCard } from '~/components/ui/backdrop-card'
+import { Bio } from '~/components/ui/bio'
 import { Bubble } from '~/components/ui/bubble'
 import { Card } from '~/components/ui/card'
+import { IconChip } from '~/components/ui/chip'
 import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
 import { FlowRow } from '~/components/ui/flow-row'
-import { CardGrid, MediaGrid } from '~/components/ui/grid'
+import { Frag } from '~/components/ui/frag'
+import { ImageLink } from '~/components/ui/image-link'
 import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
-import { Taber } from '~/components/ui/taber'
 import { Tag } from '~/components/ui/tag'
+import { VideoCard } from '~/components/ui/video-card'
 import { movieDoc } from '~/gql/movie'
-import { useSp } from '~/hooks/search-params'
+import { useQueryParams } from '~/hooks/query-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
+import { Data, Vars } from '~/types/query'
+import { icon } from '~/util/consts'
 import { toDateStr } from '~/util/date-str'
 import { releaseType } from '~/util/release-type'
 import { genRuntimeStr } from '~/util/runtime'
 import { rmVoiceTag } from '~/util/voice'
 
-const tabs = [
-  { key: 'Info', val: 'Info' },
-  { key: 'Cast', val: 'Cast' },
-  { key: 'Crew', val: 'Crew' },
-  { key: 'Images', val: 'Images' },
-  { key: 'Videos', val: 'Videos' },
-]
-
-const imageTabs = [
-  { key: 'Posters', val: 'Posters' },
-  { key: 'Backdrops', val: 'Backdrops' },
-]
-
 export function MoviePage() {
-  const [sp, rplSp] = useSp({
+  const route = useRoute()
+  const [params, setParams] = useQueryParams({
     query: '',
     page: '1',
-    tab: 'Info',
-    imageTab: 'Posters',
-
-    id: '',
   })
 
-  const pageInt = parseInt(sp.page)
+  const id = route.params.id
 
-  const setQuery = (query: string) => rplSp({ query, page: '1' })
-  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
-  const setTab = (tab: string) => rplSp({ tab, page: '1' })
-  const setImageTab = (imageTab: string) => rplSp({ imageTab, page: '1' })
+  const pageInt = parseInt(params.page)
 
-  const [db, setDb] = useState(sp.query)
-  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
+  const setQuery = (query: string) => setParams({ query, page: '1' })
+  const setPage = (dir: number) => setParams({ page: `${pageInt + dir}` })
 
-  const [res] = useQuery({
+  const [debounce, setDebounce] = useState(params.query)
+  useTimeout(
+    () => (debounce !== params.query ? setQuery(debounce) : null),
+    [debounce],
+  )
+
+  const [res] = useQuery<Data, Vars>({
     query: movieDoc,
     variables: {
-      id: sp.id,
-      query: sp.query,
+      id: id,
+      query: params.query,
       page: pageInt,
     },
   })
@@ -74,137 +66,134 @@ export function MoviePage() {
     (x) => x.release_dates,
   )[0]
 
-  const showInputBar = ['Cast', 'Crew'].includes(sp.tab)
-  const showPager = ['Cast', 'Crew', 'Images', 'Videos'].includes(sp.tab)
-
+  if (fetching && !res.data) return <Loading />
   if (error) return <ErrorMsg msg={error.message} />
 
   return (
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={movie?.backdrop_path}
-        to={`/movie/${sp.id}`}
+        to={`/movie/${id}`}
         pri={movie?.title}
         sec={movie?.release_date}
       />
 
-      <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
+      <Frag value={movie?.overview}>
+        <Bubble>
+          <Bio bio={movie?.overview} />
+        </Bubble>
+      </Frag>
 
-      {showInputBar && (
-        <InputBar defaultValue={sp.query} onValueChange={(val) => setDb(val)} />
-      )}
+      <div className='flex flex-row gap-2'>
+        <InputBar defaultValue={params.query} onValueChange={setDebounce} />
+        <Pager
+          page={pageInt}
+          pgUp={() => setPage(+1)}
+          pgDown={() => setPage(-1)}
+          loading={fetching}
+        />
+      </div>
 
-      <Div value={fetching}>
-        <Loading />
-      </Div>
-
-      {sp.tab === 'Info' && (
-        <>
-          <Div value={movie?.overview}>
-            <Bubble>{movie?.overview}</Bubble>
-          </Div>
-          <Bubble>
-            <Div value={movie?.status}>Status: {movie?.status}</Div>
-            <Div value={movie?.runtime}>
-              Runtime: {genRuntimeStr(movie?.runtime)}{' '}
-            </Div>
-            <Div value={movie?.budget}>
-              Budget: ${movie?.budget?.toLocaleString()}
-            </Div>
-            <Div value={movie?.revenue}>
-              Revenue: ${movie?.revenue?.toLocaleString()}
-            </Div>
-            <Div value={movie?.imdb_id} className='flex flex-row gap-1'>
-              <Anchor
-                href={`https://www.imdb.com/title/${movie?.imdb_id}/`}
-                className='font-medium'
-              >
-                IMDB:
-              </Anchor>
-              <div>{movie?.imdb_id}</div>
-            </Div>
-            <Div value={movie?.id} className='flex flex-row gap-1'>
-              <Anchor
-                href={`https://www.themoviedb.org/movie/${movie?.id}`}
-                className='font-medium'
-              >
-                TMDB:
-              </Anchor>
-              <div>{movie?.id}</div>
-            </Div>
-          </Bubble>
-          <FlowRow>
-            {movie?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
-          </FlowRow>
-          <FlowRow>
-            {releaseDates?.map((x) => (
-              <Tag className='text-sm' key={x.release_date}>
-                <div>{releaseType[x.type!]}</div>
-                <div>{toDateStr(x.release_date)}</div>
-              </Tag>
-            ))}
-          </FlowRow>
-          <FlowRow>
-            {movie?.production_companies?.map((x) => (
-              <Tag className='text-sm' key={x.name}>
-                {x.name}
-              </Tag>
-            ))}
-          </FlowRow>
-        </>
-      )}
-
-      {sp.tab === 'Cast' && (
-        <CardGrid>
+      <Frag value={movie?.credits?.cast?.length}>
+        <IconChip icon={icon.people} label='Cast' />
+        <FlowRow>
           {movie?.credits?.cast?.map((x) => (
-            <Link href={`/person/${x.id}`} key={x.id}>
+            <a href={`/person/${x.id}`} key={x.id}>
               <Card
                 img={x.profile_path}
                 pri={x.name}
                 sec={rmVoiceTag(x.character) ?? 'Unknown'}
               />
-            </Link>
+            </a>
           ))}
-        </CardGrid>
-      )}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Crew' && (
-        <CardGrid>
+      <Frag value={movie?.credits?.crew?.length}>
+        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <FlowRow>
           {movie?.credits?.crew?.map((x) => (
-            <Link href={`/person/${x.id}`} key={x.id}>
+            <a href={`/person/${x.id}`} key={x.id}>
               <Card img={x.profile_path} pri={x.name} sec={x.job} />
-            </Link>
+            </a>
           ))}
-        </CardGrid>
-      )}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Images' && (
-        <>
-          <Taber
-            tabs={imageTabs}
-            activeTab={sp.imageTab}
-            onTabClicked={setImageTab}
-          />
-          {sp.imageTab === 'Posters' && (
-            <MediaGrid variant='234' images={movie?.images?.posters} />
-          )}
-          {sp.imageTab === 'Backdrops' && (
-            <MediaGrid variant='123' images={movie?.images?.backdrops} />
-          )}
-        </>
-      )}
+      <Frag
+        value={
+          movie?.images?.posters?.length || movie?.images?.backdrops?.length
+        }
+      >
+        <IconChip icon={icon.image} label='Images' />
+        <FlowRow>
+          {movie?.images?.posters?.map((x) => (
+            <ImageLink x={x} variant='portrait' key={x.file_path} />
+          ))}
+        </FlowRow>
+        <FlowRow>
+          {movie?.images?.backdrops?.map((x) => (
+            <ImageLink x={x} variant='landscape' key={x.file_path} />
+          ))}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Videos' && (
-        <MediaGrid variant='234' videos={movie?.videos?.results} />
-      )}
+      <Frag value={movie?.videos?.results?.length}>
+        <IconChip icon={icon.video} label='Videos' />
+        <FlowRow>
+          {movie?.videos?.results?.map((x) => <VideoCard x={x} key={x.id} />)}
+        </FlowRow>
+      </Frag>
 
-      {showPager && (
-        <Pager
-          page={pageInt}
-          pgUp={() => setPage(1)}
-          pgDown={() => setPage(-1)}
-        />
-      )}
+      <IconChip icon={icon.text} label='More Info' />
+      <Bubble>
+        <Div value={movie?.status}>Status: {movie?.status}</Div>
+        <Div value={movie?.runtime}>
+          Runtime: {genRuntimeStr(movie?.runtime)}{' '}
+        </Div>
+        <Div value={movie?.budget}>
+          Budget: ${movie?.budget?.toLocaleString()}
+        </Div>
+        <Div value={movie?.revenue}>
+          Revenue: ${movie?.revenue?.toLocaleString()}
+        </Div>
+        <Div value={movie?.imdb_id} className='flex flex-row gap-1'>
+          <Anchor
+            href={`https://www.imdb.com/title/${movie?.imdb_id}/`}
+            className='font-bold underline'
+          >
+            IMDB:
+          </Anchor>
+          <div>{movie?.imdb_id}</div>
+        </Div>
+        <Div value={movie?.id} className='flex flex-row gap-1'>
+          <Anchor
+            href={`https://www.themoviedb.org/movie/${movie?.id}`}
+            className='font-bold underline'
+          >
+            TMDB:
+          </Anchor>
+          <div>{movie?.id}</div>
+        </Div>
+      </Bubble>
+      <FlowRow>
+        {movie?.genres?.map((x) => <Tag key={x.name}>{x.name}</Tag>)}
+      </FlowRow>
+      <FlowRow>
+        {releaseDates?.map((x) => (
+          <Tag className='text-sm' key={x.release_date}>
+            <div>{releaseType[x.type!]}</div>
+            <div>{toDateStr(x.release_date)}</div>
+          </Tag>
+        ))}
+      </FlowRow>
+      <FlowRow>
+        {movie?.production_companies?.map((x) => (
+          <Tag className='text-sm' key={x.name}>
+            {x.name}
+          </Tag>
+        ))}
+      </FlowRow>
     </div>
   )
 }

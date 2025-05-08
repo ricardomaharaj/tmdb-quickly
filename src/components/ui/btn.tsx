@@ -16,7 +16,7 @@ export function Btn({
 
   className?: string
   children?: React.ReactNode
-}) {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       disabled={disabled}

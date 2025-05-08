@@ -1,62 +1,66 @@
-import Link from 'next/link'
-import { useState } from 'react'
+import { useRoute } from 'preact-iso'
+import { useState } from 'preact/hooks'
 import { useQuery } from 'urql'
+import { Bio } from '~/components/ui/bio'
+import { Btn } from '~/components/ui/btn'
+import { Bubble } from '~/components/ui/bubble'
 import { Card } from '~/components/ui/card'
+import { IconChip } from '~/components/ui/chip'
 import { Div } from '~/components/ui/div'
 import { ErrorMsg } from '~/components/ui/error-msg'
-import { CardGrid, MediaGrid } from '~/components/ui/grid'
-import { Img } from '~/components/ui/img'
+import { FlowRow } from '~/components/ui/flow-row'
+import { Frag } from '~/components/ui/frag'
+import { ImageLink } from '~/components/ui/image-link'
 import { InputBar } from '~/components/ui/input-bar'
 import { Loading } from '~/components/ui/loading'
 import { Pager } from '~/components/ui/pager'
-import { Taber } from '~/components/ui/taber'
 import { personDoc } from '~/gql/person'
-import { useSp } from '~/hooks/search-params'
+import { useQueryParams } from '~/hooks/query-params'
 import { useTimeout } from '~/hooks/timeout'
 import { useTitle } from '~/hooks/title'
-import { imgUrls } from '~/util/img'
+import { Data, Vars } from '~/types/query'
+import { icon } from '~/util/consts'
 import { genMediaStr } from '~/util/media-str'
-
-const tabs = [
-  { key: 'Cast', val: 'Cast' },
-  { key: 'Crew', val: 'Crew' },
-  { key: 'Images', val: 'Images' },
-]
 
 const filters = [
   { key: 'Movies', val: 'movie' },
   { key: 'Shows', val: 'tv' },
-]
+] as const
+
+const filterIcons = {
+  Movies: icon.movie,
+  Shows: icon.tv,
+} as const
 
 export function PersonPage() {
-  const [sp, rplSp] = useSp({
+  const route = useRoute()
+  const [params, setParams] = useQueryParams({
     query: '',
     page: '1',
-    tab: 'Cast',
     filter: '',
-
-    id: '',
   })
 
-  const pageInt = parseInt(sp.page)
+  const id = route.params.id
 
-  const setQuery = (query: string) => rplSp({ query, page: '1' })
-  const setPage = (dir: number) => rplSp({ page: `${pageInt + dir}` })
-  const setTab = (tab: string) => rplSp({ tab, page: '1' })
-  const setFilter = (filter: string) => {
-    const sameFilter = sp.filter === filter
-    rplSp({ filter: sameFilter ? '' : filter, page: '1' })
-  }
+  const pageInt = parseInt(params.page)
 
-  const [db, setDb] = useState(sp.query)
-  useTimeout(() => (db !== sp.query ? setQuery(db) : null), [db])
+  const setQuery = (query: string) => setParams({ query, page: '1' })
+  const setPage = (dir: number) => setParams({ page: `${pageInt + dir}` })
+  const setFilter = (filter?: string) =>
+    setParams({ filter: filter === params.filter ? '' : filter, page: '1' })
 
-  const [res] = useQuery({
+  const [debounce, setDebounce] = useState(params.query)
+  useTimeout(
+    () => (debounce !== params.query ? setQuery(debounce) : null),
+    [debounce],
+  )
+
+  const [res] = useQuery<Data, Vars>({
     query: personDoc,
     variables: {
-      id: sp.id,
-      query: sp.query,
-      filter: sp.filter,
+      id: id,
+      query: params.query,
+      filter: params.filter,
       page: pageInt,
     },
   })
@@ -66,44 +70,56 @@ export function PersonPage() {
 
   useTitle(person?.name)
 
-  const showInputBar = ['Cast', 'Crew'].includes(sp.tab)
-  const showFilterBar = showInputBar
-  const showPager = ['Cast', 'Crew', 'Images'].includes(sp.tab)
-
+  if (fetching && !res.data) return <Loading />
   if (error) return <ErrorMsg msg={error.message} />
 
   return (
     <div className='flex flex-col gap-2'>
-      <div className='flex flex-row rounded-xl bg-slate-800 p-2'>
-        {person?.profile_path && (
-          <Img
-            src={`${imgUrls.w220h330}${person.profile_path}`}
-            className='mr-2 max-h-[200px] rounded-xl'
-          />
-        )}
-        <Div value={person?.name} />
+      <Bubble className='flex flex-col gap-2'>
+        <Div value={person?.name} className='text-xl font-bold' />
+        <Bio bio={person?.biography} />
+      </Bubble>
+
+      <Frag value={person?.images?.profiles?.length}>
+        <IconChip icon={icon.image} label='Images' />
+        <FlowRow>
+          {person?.images?.profiles?.map((x) => (
+            <ImageLink x={x} variant='portrait' />
+          ))}
+        </FlowRow>
+      </Frag>
+
+      <div className='flex flex-row gap-2'>
+        <InputBar
+          defaultValue={params.query}
+          onValueChange={(val) => setDebounce(val)}
+        />
+        <Pager
+          page={pageInt}
+          pgUp={() => setPage(+1)}
+          pgDown={() => setPage(-1)}
+          loading={fetching}
+        />
       </div>
 
-      <Taber tabs={tabs} activeTab={sp.tab} onTabClicked={setTab} />
+      <div className='flex flex-row justify-end gap-2'>
+        {filters.map((x) => (
+          <Btn
+            className='flex flex-row items-center gap-2 px-4 py-3'
+            isActive={params.filter === x.val}
+            onClick={() => setFilter(x.val)}
+          >
+            <i
+              className={`${filterIcons[x.key]} text-xl`}
+              title={`Show only ${x.key}`}
+            />
+          </Btn>
+        ))}
+      </div>
 
-      {showFilterBar && (
-        <Taber tabs={filters} activeTab={sp.filter} onTabClicked={setFilter} />
-      )}
-
-      {showInputBar && (
-        <InputBar
-          defaultValue={sp.query}
-          onValueChange={(val) => setDb(val)}
-          className='pl-3'
-        />
-      )}
-
-      <Div value={fetching}>
-        <Loading />
-      </Div>
-
-      {sp.tab === 'Cast' && (
-        <CardGrid>
+      <Frag value={person?.combined_credits?.cast?.length}>
+        <IconChip icon={icon.people} label='Cast' />
+        <FlowRow>
           {person?.combined_credits?.cast?.map((x) => {
             const sec = genMediaStr({
               pri: x.character,
@@ -112,7 +128,7 @@ export function PersonPage() {
             })
 
             return (
-              <Link
+              <a
                 href={`/${x.media_type}/${x.id}`}
                 key={`${x.media_type} - ${x.id}`}
               >
@@ -122,14 +138,15 @@ export function PersonPage() {
                   sec={sec}
                   ter={x.first_air_date || x.release_date}
                 />
-              </Link>
+              </a>
             )
           })}
-        </CardGrid>
-      )}
+        </FlowRow>
+      </Frag>
 
-      {sp.tab === 'Crew' && (
-        <CardGrid>
+      <Frag value={person?.combined_credits?.crew?.length}>
+        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <FlowRow>
           {person?.combined_credits?.crew?.map((x) => {
             const sec = genMediaStr({
               pri: x.job,
@@ -138,7 +155,7 @@ export function PersonPage() {
             })
 
             return (
-              <Link
+              <a
                 href={`/${x.media_type}/${x.id}`}
                 key={`${x.media_type} - ${x.id}`}
               >
@@ -148,23 +165,11 @@ export function PersonPage() {
                   sec={sec}
                   ter={x.first_air_date || x.release_date}
                 />
-              </Link>
+              </a>
             )
           })}
-        </CardGrid>
-      )}
-
-      {sp.tab === 'Images' && (
-        <MediaGrid variant='234' images={person?.images?.profiles} />
-      )}
-
-      {showPager && (
-        <Pager
-          page={pageInt}
-          pgUp={() => setPage(1)}
-          pgDown={() => setPage(-1)}
-        />
-      )}
+        </FlowRow>
+      </Frag>
     </div>
   )
 }

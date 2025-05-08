@@ -1,8 +1,9 @@
-import { ReactNode } from 'react'
+import { ReactNode } from 'preact/compat'
 import { Provider, cacheExchange, createClient, fetchExchange } from 'urql'
+import { env } from '~/env'
 
 const client = createClient({
-  url: '/api/gql',
+  url: env.VITE_API_URL,
   exchanges: [cacheExchange, fetchExchange],
 })
 

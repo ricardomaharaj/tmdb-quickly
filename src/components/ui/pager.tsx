@@ -1,29 +1,36 @@
 import { Btn } from '~/components/ui/btn'
+import { icon } from '~/util/consts'
 
 export function Pager({
   page,
   pgUp,
   pgDown,
+  loading,
 }: {
   page: number
   pgUp: () => void
   pgDown: () => void
+  loading?: boolean
 }) {
   return (
-    <div className='flex flex-row justify-evenly md:justify-start md:gap-2'>
+    <>
       <Btn
-        className='px-8 py-0.5 md:px-6 md:py-0'
-        disabled={page === 1}
+        className='flex flex-row items-center px-4 py-3'
+        disabled={page === 1 || loading}
         onClick={pgDown}
+        aria-label='Go back 1 page'
       >
-        <i className='icon-[ic--round-keyboard-arrow-left] mt-2 text-2xl' />
+        <i className={`${icon.arrowLeft} text-xl`} title='Go back 1 page' />
       </Btn>
 
-      <div className='mt-2 px-8 py-0.5 md:px-6 md:py-0'>{page}</div>
-
-      <Btn className='px-8 py-0.5 md:px-6 md:py-0' onClick={pgUp}>
-        <i className='icon-[ic--round-keyboard-arrow-right] mt-2 text-2xl' />
+      <Btn
+        className='flex flex-row items-center px-4 py-3'
+        disabled={loading}
+        onClick={pgUp}
+        aria-label='Go forward 1 page'
+      >
+        <i className={`${icon.arrowRight} text-xl`} title='Go forward 1 page' />
       </Btn>
-    </div>
+    </>
   )
 }

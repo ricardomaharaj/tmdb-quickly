@@ -1,20 +1,4 @@
-import { gql } from 'urql'
-import { TV, TVEpisode } from '~/types/tmdb'
-
-type Data = {
-  tv: TV
-  tvEpisode: TVEpisode
-}
-
-type Vars = {
-  id: string
-  season_number: string
-  episode_number: string
-  query?: string
-  page?: number
-}
-
-export const episodeDoc = gql<Data, Vars>`
+export let episodeDoc = /* GraphQL */ `
   query (
     $id: String!
     $season_number: String!

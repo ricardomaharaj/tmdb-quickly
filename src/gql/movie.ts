@@ -1,17 +1,4 @@
-import { gql } from 'urql'
-import { Movie } from '~/types/tmdb'
-
-type Data = {
-  movie: Movie
-}
-
-type Vars = {
-  id: string
-  query?: string
-  page?: number
-}
-
-export const movieDoc = gql<Data, Vars>`
+export let movieDoc = /* GraphQL */ `
   query ($id: String!, $query: String, $page: Int) {
     movie(id: $id, query: $query, page: $page) {
       id

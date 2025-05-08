@@ -1,14 +1,14 @@
+import { Fragment } from 'preact/jsx-runtime'
 import { numGt0 } from '~/util/validation'
 
-export function Div({
+export function Frag({
   value,
   children,
-
-  ...attr
 }: {
   value?: string | number | boolean
-} & React.HTMLAttributes<HTMLDivElement>) {
+  children?: React.ReactNode
+}) {
   if (!value) return <></>
   if (typeof value === 'number' && !numGt0(value)) return <></>
-  else return <div {...attr}>{children ?? value}</div>
+  else return <Fragment>{children ?? value}</Fragment>
 }

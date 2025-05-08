@@ -1,17 +1,4 @@
-import { gql } from 'urql'
-import { TV } from '~/types/tmdb'
-
-type Data = {
-  tv: TV
-}
-
-type Vars = {
-  id: string
-  query?: string
-  page?: number
-}
-
-export const showDoc = gql<Data, Vars>`
+export let showDoc = /* GraphQL */ `
   query ($id: String!, $query: String, $page: Int) {
     tv(id: $id, query: $query, page: $page) {
       id

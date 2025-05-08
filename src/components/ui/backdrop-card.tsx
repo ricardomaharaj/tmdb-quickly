@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Div } from '~/components/ui/div'
 import { imgUrls } from '~/util/img'
 
@@ -19,6 +18,8 @@ export function BackdropCard({
   sec?: string
   ter?: string
 }) {
+  if (!bgImg || bgImg === 'undefined') return <></>
+
   return (
     <div
       className='rounded-xl bg-cover bg-center'
@@ -26,12 +27,12 @@ export function BackdropCard({
         backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
       }}
     >
-      <div className='rounded-xl bg-black bg-opacity-70 p-10 md:p-20 lg:backdrop-blur-sm xl:p-24 2xl:p-28'>
+      <div className='rounded-xl p-10 backdrop-brightness-50 md:p-20'>
         <div className='flex flex-col gap-1 xl:text-lg'>
           <Div value={pri}>
-            <Link href={to ?? '/'} className='font-medium'>
+            <a href={to ?? '/'} className='font-bold'>
               {pri}
-            </Link>
+            </a>
           </Div>
           <Div value={sec} />
           <Div value={ter} />

@@ -1,21 +1,8 @@
-import { gql } from 'urql'
-import { Person } from '~/types/tmdb'
-
-type Data = {
-  person: Person
-}
-
-type Vars = {
-  id: string
-  query?: string
-  page?: number
-  filter?: string
-}
-
-export const personDoc = gql<Data, Vars>`
+export let personDoc = /* GraphQL */ `
   query ($id: String!, $query: String, $page: Int = 10, $filter: String) {
     person(id: $id, query: $query, page: $page, filter: $filter) {
       name
+      biography
       profile_path
       images {
         profiles {

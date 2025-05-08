@@ -1,8 +1,5 @@
-import { useAtom } from 'jotai'
 import { Div } from '~/components/ui/div'
 import { Img } from '~/components/ui/img'
-import { displaySetting } from '~/lib/state'
-import { DISPLAY_OPTION } from '~/types/enum'
 import { imgUrls } from '~/util/img'
 
 export function Card({
@@ -18,36 +15,28 @@ export function Card({
   sec?: string
   ter?: string
 }) {
-  const [displayOption] = useAtom(displaySetting)
+  const title = (() => {
+    const content: string[] = []
 
-  const rowCard = (
+    if (pri) content.push(pri)
+    if (sec) content.push(sec)
+    if (ter) content.push(ter)
+
+    return content.join(' | ')
+  })()
+
+  return (
     <>
-      <div className='flex h-full flex-row rounded-xl bg-slate-800 md:transition-colors md:hover:bg-slate-700'>
-        {img ? (
-          <Img src={`${imgUrls.w94h141}${img}`} className='rounded-l-xl' />
-        ) : (
-          <div className='h-full w-[94px] rounded-l-xl bg-slate-600' />
-        )}
-
-        <div className='p-2'>
-          <Div value={pri} className='line-clamp-1' />
-          <Div value={sec} className='line-clamp-1 text-slate-400' />
-          <Div value={ter} className='line-clamp-1 text-slate-400' />
-        </div>
-      </div>
-    </>
-  )
-
-  const colCard = (
-    <>
-      <div className='flex h-full flex-col rounded-xl bg-slate-800 md:transition-colors md:hover:bg-slate-700'>
+      <div className='flex h-full w-[110px] flex-col rounded-xl bg-slate-800 md:w-[140px] md:transition-colors md:hover:bg-slate-700'>
         {img ? (
           <Img src={`${imgUrls.w220h330}${img}`} className='rounded-t-xl' />
         ) : (
-          <div className='h-full rounded-t-xl bg-slate-600' />
+          <div className='flex h-full flex-col justify-center'>
+            <i className='icon-[ic--person-outline] mx-auto text-6xl' />
+          </div>
         )}
 
-        <div className='p-2 text-sm'>
+        <div className='p-2 text-xs md:text-sm' title={title}>
           <Div value={pri} className='line-clamp-1' />
           <Div value={sec} className='line-clamp-1 text-slate-400' />
           <Div value={ter} className='line-clamp-1 text-slate-400' />
@@ -55,7 +44,4 @@ export function Card({
       </div>
     </>
   )
-
-  if (displayOption === DISPLAY_OPTION.Rows) return rowCard
-  if (displayOption === DISPLAY_OPTION.Columns) return colCard
 }
