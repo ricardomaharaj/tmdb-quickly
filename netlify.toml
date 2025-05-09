@@ -1,0 +1,4 @@
+[[redirects]]
+  force = true
+  from = "/gql"
+  to = "https://tmdb-quickly-api.netlify.app/"

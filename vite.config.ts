@@ -5,6 +5,12 @@ import tsPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tsPaths(), tailwind(), preact()],
-  server: { port: Number(process.env.PORT || 3000) },
-  preview: { port: Number(process.env.PORT || 3000) },
+  server: {
+    port: Number(process.env.PORT || 3000),
+    proxy: { '/gql': 'http://localhost:4000/' },
+  },
+  preview: {
+    port: Number(process.env.PORT || 3000),
+    proxy: { '/gql': 'http://localhost:4000/' },
+  },
 })
