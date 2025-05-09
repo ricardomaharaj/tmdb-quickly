@@ -7,10 +7,10 @@ export default defineConfig({
   plugins: [tsPaths(), tailwind(), preact()],
   server: {
     port: Number(process.env.PORT || 3000),
-    proxy: { '/gql': 'http://localhost:4000/' },
+    proxy: { '/gql': 'http://localhost:8888/' },
   },
   preview: {
     port: Number(process.env.PORT || 3000),
-    proxy: { '/gql': 'http://localhost:4000/' },
+    proxy: { '/gql': 'http://localhost:8888/' },
   },
 })
