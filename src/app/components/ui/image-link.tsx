@@ -1,4 +1,4 @@
-import { imgUrls } from '~/app/util/img'
+import { imgUrls } from '~/app/util/consts'
 import { Image } from '~/server/types/gql'
 import { Anchor } from './anchor'
 import { Img } from './img'

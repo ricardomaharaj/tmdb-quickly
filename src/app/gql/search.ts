@@ -1,4 +1,4 @@
-export let searchDoc = /* GraphQL */ `
+export const searchDoc: string = /* GraphQL */ `
   query ($query: String, $page: Int) {
     search(query: $query, page: $page) {
       results {

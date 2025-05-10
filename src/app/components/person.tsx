@@ -7,7 +7,7 @@ import { useQueryParams } from '~/app/hooks/query-params'
 import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { genMediaStr } from '~/app/util/media-str'
 
 import { Bio } from './ui/bio'
@@ -30,8 +30,8 @@ const filters = [
 ] as const
 
 const filterIcons = {
-  Movies: icon.movie,
-  Shows: icon.tv,
+  Movies: iconCodes.movie,
+  Shows: iconCodes.tv,
 } as const
 
 export function PersonPage() {
@@ -83,7 +83,7 @@ export function PersonPage() {
       </Bubble>
 
       <Frag value={person?.images?.profiles?.length}>
-        <IconChip icon={icon.image} label='Images' />
+        <IconChip icon={iconCodes.image} label='Images' />
         <FlowRow>
           {person?.images?.profiles?.map((x) => (
             <ImageLink x={x} variant='portrait' />
@@ -120,7 +120,7 @@ export function PersonPage() {
       </div>
 
       <Frag value={person?.combined_credits?.cast?.length}>
-        <IconChip icon={icon.people} label='Cast' />
+        <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {person?.combined_credits?.cast?.map((x) => {
             const sec = genMediaStr({
@@ -147,7 +147,7 @@ export function PersonPage() {
       </Frag>
 
       <Frag value={person?.combined_credits?.crew?.length}>
-        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {person?.combined_credits?.crew?.map((x) => {
             const sec = genMediaStr({

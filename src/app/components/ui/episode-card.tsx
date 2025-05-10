@@ -1,4 +1,4 @@
-import { imgUrls } from '~/app/util/img'
+import { imgUrls } from '~/app/util/consts'
 import { genRuntimeStr } from '~/app/util/runtime'
 import { Episode } from '~/server/types/gql'
 import { Div } from './div'

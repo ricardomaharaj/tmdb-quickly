@@ -1,4 +1,4 @@
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { Btn } from './btn'
 
 export function Pager({
@@ -20,7 +20,10 @@ export function Pager({
         onClick={pgDown}
         aria-label='Go back 1 page'
       >
-        <i className={`${icon.arrowLeft} text-xl`} title='Go back 1 page' />
+        <i
+          className={`${iconCodes.arrowLeft} text-xl`}
+          title='Go back 1 page'
+        />
       </Btn>
 
       <Btn
@@ -29,7 +32,10 @@ export function Pager({
         onClick={pgUp}
         aria-label='Go forward 1 page'
       >
-        <i className={`${icon.arrowRight} text-xl`} title='Go forward 1 page' />
+        <i
+          className={`${iconCodes.arrowRight} text-xl`}
+          title='Go forward 1 page'
+        />
       </Btn>
     </>
   )

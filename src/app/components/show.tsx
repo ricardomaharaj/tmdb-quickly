@@ -7,7 +7,7 @@ import { useQueryParams } from '~/app/hooks/query-params'
 import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { genMediaStr } from '~/app/util/media-str'
 import { genRuntimeStr } from '~/app/util/runtime'
 import { numGt0 } from '~/app/util/validation'
@@ -107,7 +107,7 @@ export function ShowPage() {
         </Bubble>
       </Frag>
 
-      <IconChip icon={icon.tv} label='Seasons' />
+      <IconChip icon={iconCodes.tv} label='Seasons' />
       <FlowRow>
         {show?.seasons?.map((x) => {
           let sec = ''
@@ -137,7 +137,7 @@ export function ShowPage() {
       </div>
 
       <Frag value={show?.aggregate_credits?.cast?.length}>
-        <IconChip icon={icon.people} label='Cast' />
+        <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {show?.aggregate_credits?.cast?.map((x) => {
             const role = x.roles?.at(0)
@@ -157,7 +157,7 @@ export function ShowPage() {
       </Frag>
 
       <Frag value={show?.aggregate_credits?.crew?.length}>
-        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {show?.aggregate_credits?.crew?.map((x) => {
             const role = x.jobs?.at(0)
@@ -179,7 +179,7 @@ export function ShowPage() {
       <Frag
         value={show?.images?.posters?.length || show?.images?.backdrops?.length}
       >
-        <IconChip icon={icon.image} label='Images' />
+        <IconChip icon={iconCodes.image} label='Images' />
         <FlowRow>
           {show?.images?.posters?.map((x) => (
             <ImageLink x={x} variant='portrait' key={x.file_path} />
@@ -193,13 +193,13 @@ export function ShowPage() {
       </Frag>
 
       <Frag value={show?.videos?.results?.length}>
-        <IconChip icon={icon.video} label='Videos' />
+        <IconChip icon={iconCodes.video} label='Videos' />
         <FlowRow>
           {show?.videos?.results?.map((x) => <VideoCard x={x} key={x.id} />)}
         </FlowRow>
       </Frag>
 
-      <IconChip icon={icon.text} label='More Info' />
+      <IconChip icon={iconCodes.text} label='More Info' />
       <Bubble>
         <Div value={show?.status}>Status: {show?.status}</Div>
         <Div value={show?.type}>Show Type: {show?.type}</Div>
@@ -216,26 +216,23 @@ export function ShowPage() {
           First Aired: {show?.first_air_date}
         </Div>
         <Div value={show?.last_air_date}>Last Aired: {show?.last_air_date}</Div>
-        <Div
-          value={show?.external_ids?.imdb_id}
-          className='flex flex-row gap-1'
-        >
+        <Div value={show?.external_ids?.imdb_id} className='flex flex-row'>
           <Anchor
             href={`https://www.imdb.com/title/${show?.external_ids?.imdb_id}/`}
-            className='font-medium'
+            className='font-bold'
           >
-            IMDB:
+            IMDB
           </Anchor>
-          <div>{show?.external_ids?.imdb_id}</div>
+          <div>: {show?.external_ids?.imdb_id}</div>
         </Div>
-        <Div value={show?.id} className='flex flex-row gap-1'>
+        <Div value={show?.id} className='flex flex-row'>
           <Anchor
             href={`https://www.themoviedb.org/tv/${show?.id}`}
-            className='font-medium'
+            className='font-bold'
           >
-            TMDB:
+            TMDB
           </Anchor>
-          <div>{show?.id}</div>
+          <div>: {show?.id}</div>
         </Div>
       </Bubble>
       <FlowRow>

@@ -7,7 +7,7 @@ import { useQueryParams } from '~/app/hooks/query-params'
 import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { genMediaStr } from '~/app/util/media-str'
 import { genRuntimeStr } from '~/app/util/runtime'
 import { numGt0 } from '~/app/util/validation'
@@ -133,7 +133,7 @@ export function EpisodePage() {
       </div>
 
       <Frag value={episode?.guest_stars?.length}>
-        <IconChip icon={icon.people} label='Guests' />
+        <IconChip icon={iconCodes.people} label='Guests' />
         <FlowRow>
           {episode?.guest_stars?.map((x) => {
             const sec = genMediaStr({
@@ -151,7 +151,7 @@ export function EpisodePage() {
       </Frag>
 
       <Frag value={episode?.crew?.length}>
-        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {episode?.crew?.map((x) => {
             const sec = genMediaStr({ pri: x?.job })
@@ -166,7 +166,7 @@ export function EpisodePage() {
       </Frag>
 
       <Frag value={episode?.images?.stills?.length}>
-        <IconChip icon={icon.image} label='Stills' />
+        <IconChip icon={iconCodes.image} label='Stills' />
         <FlowRow>
           {episode?.images?.stills?.map((x) => (
             <ImageLink x={x} variant='landscape' key={x.file_path} />
@@ -175,7 +175,7 @@ export function EpisodePage() {
       </Frag>
 
       <Frag value={episode?.videos?.results?.length}>
-        <IconChip icon={icon.video} label='Videos' />
+        <IconChip icon={iconCodes.video} label='Videos' />
         <FlowRow>
           {episode?.videos?.results?.map((x) => <VideoCard x={x} key={x.id} />)}
         </FlowRow>

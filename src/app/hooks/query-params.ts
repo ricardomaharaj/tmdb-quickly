@@ -6,9 +6,11 @@ export function useQueryParams<T extends Record<string, string>>(defaults: T) {
 
   const queryParams = (() => {
     const tmp: Record<string, string> = {}
+
     for (const key in defaults) {
       tmp[key] = query[key] || defaults[key]
     }
+
     return tmp as T
   })()
 

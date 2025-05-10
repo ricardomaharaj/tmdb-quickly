@@ -6,7 +6,7 @@ import { useQueryParams } from '~/app/hooks/query-params'
 import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { SearchResult } from '~/server/types/gql'
 
 import { Card } from './ui/card'
@@ -84,7 +84,7 @@ export function SearchPage() {
         <Loading />
       </Div>
       <Frag value={movieResults?.length}>
-        <IconChip icon={icon.movie} label='Movies' />
+        <IconChip icon={iconCodes.movie} label='Movies' />
         <FlowRow>
           {movieResults?.map((x) => (
             <SearchResultCard x={x} showDate={!!params.query} key={x.id} />
@@ -92,7 +92,7 @@ export function SearchPage() {
         </FlowRow>
       </Frag>
       <Frag value={tvResults?.length}>
-        <IconChip icon={icon.tv} label='Shows' />
+        <IconChip icon={iconCodes.tv} label='Shows' />
         <FlowRow>
           {tvResults?.map((x) => (
             <SearchResultCard x={x} showDate={!!params.query} key={x.id} />
@@ -100,7 +100,7 @@ export function SearchPage() {
         </FlowRow>
       </Frag>
       <Frag value={peopleResults?.length}>
-        <IconChip icon={icon.people} label='People' />
+        <IconChip icon={iconCodes.people} label='People' />
         <FlowRow>
           {peopleResults?.map((x) => (
             <SearchResultCard x={x} showDate={!!params.query} key={x.id} />

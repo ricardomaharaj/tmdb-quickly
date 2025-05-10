@@ -1,4 +1,4 @@
-export let movieDoc = /* GraphQL */ `
+export const movieDoc: string = /* GraphQL */ `
   query ($id: String!, $query: String, $page: Int) {
     movie(id: $id, query: $query, page: $page) {
       id

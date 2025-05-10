@@ -1,4 +1,4 @@
-export let episodeDoc = /* GraphQL */ `
+export const episodeDoc: string = /* GraphQL */ `
   query (
     $id: String!
     $season_number: String!

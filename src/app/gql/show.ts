@@ -1,4 +1,4 @@
-export let showDoc = /* GraphQL */ `
+export const showDoc: string = /* GraphQL */ `
   query ($id: String!, $query: String, $page: Int) {
     tv(id: $id, query: $query, page: $page) {
       id
@@ -41,6 +41,7 @@ export let showDoc = /* GraphQL */ `
             episode_count
           }
         }
+
         crew {
           id
           name
@@ -56,6 +57,7 @@ export let showDoc = /* GraphQL */ `
         posters {
           file_path
         }
+
         backdrops {
           file_path
         }

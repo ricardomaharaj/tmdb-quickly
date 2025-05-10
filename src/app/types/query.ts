@@ -19,10 +19,10 @@ export type Vars = {
 }
 
 export type Data = {
+  search?: Search
+  movie?: Movie
   tv?: TV
   tvSeason?: TVSeason
   tvEpisode?: TVEpisode
-  movie?: Movie
   person?: Person
-  search?: Search
 }

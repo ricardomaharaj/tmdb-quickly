@@ -1,4 +1,4 @@
-import { imgUrls } from '~/app/util/img'
+import { imgUrls } from '~/app/util/consts'
 import { Div } from './div'
 import { Img } from './img'
 

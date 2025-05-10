@@ -7,7 +7,7 @@ import { useQueryParams } from '~/app/hooks/query-params'
 import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { toDateStr } from '~/app/util/date-str'
 import { releaseType } from '~/app/util/release-type'
 import { genRuntimeStr } from '~/app/util/runtime'
@@ -97,7 +97,7 @@ export function MoviePage() {
       </div>
 
       <Frag value={movie?.credits?.cast?.length}>
-        <IconChip icon={icon.people} label='Cast' />
+        <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {movie?.credits?.cast?.map((x) => (
             <a href={`/person/${x.id}`} key={x.id}>
@@ -112,7 +112,7 @@ export function MoviePage() {
       </Frag>
 
       <Frag value={movie?.credits?.crew?.length}>
-        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {movie?.credits?.crew?.map((x) => (
             <a href={`/person/${x.id}`} key={x.id}>
@@ -127,7 +127,7 @@ export function MoviePage() {
           movie?.images?.posters?.length || movie?.images?.backdrops?.length
         }
       >
-        <IconChip icon={icon.image} label='Images' />
+        <IconChip icon={iconCodes.image} label='Images' />
         <FlowRow>
           {movie?.images?.posters?.map((x) => (
             <ImageLink x={x} variant='portrait' key={x.file_path} />
@@ -141,13 +141,13 @@ export function MoviePage() {
       </Frag>
 
       <Frag value={movie?.videos?.results?.length}>
-        <IconChip icon={icon.video} label='Videos' />
+        <IconChip icon={iconCodes.video} label='Videos' />
         <FlowRow>
           {movie?.videos?.results?.map((x) => <VideoCard x={x} key={x.id} />)}
         </FlowRow>
       </Frag>
 
-      <IconChip icon={icon.text} label='More Info' />
+      <IconChip icon={iconCodes.text} label='More Info' />
       <Bubble>
         <Div value={movie?.status}>Status: {movie?.status}</Div>
         <Div value={movie?.runtime}>
@@ -159,23 +159,23 @@ export function MoviePage() {
         <Div value={movie?.revenue}>
           Revenue: ${movie?.revenue?.toLocaleString()}
         </Div>
-        <Div value={movie?.imdb_id} className='flex flex-row gap-1'>
+        <Div value={movie?.imdb_id} className='flex flex-row'>
           <Anchor
             href={`https://www.imdb.com/title/${movie?.imdb_id}/`}
-            className='font-bold underline'
+            className='font-bold'
           >
-            IMDB:
+            IMDB
           </Anchor>
-          <div>{movie?.imdb_id}</div>
+          <div>: {movie?.imdb_id}</div>
         </Div>
-        <Div value={movie?.id} className='flex flex-row gap-1'>
+        <Div value={movie?.id} className='flex flex-row'>
           <Anchor
             href={`https://www.themoviedb.org/movie/${movie?.id}`}
-            className='font-bold underline'
+            className='font-bold'
           >
-            TMDB:
+            TMDB
           </Anchor>
-          <div>{movie?.id}</div>
+          <div>: {movie?.id}</div>
         </Div>
       </Bubble>
       <FlowRow>

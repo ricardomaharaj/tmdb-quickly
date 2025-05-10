@@ -1,4 +1,5 @@
 import { LocationProvider, Route, Router } from 'preact-iso'
+
 import { EpisodePage } from './components/episode'
 import { MoviePage } from './components/movie'
 import { PersonPage } from './components/person'
@@ -6,6 +7,7 @@ import { SearchPage } from './components/search'
 import { SeasonPage } from './components/season'
 import { ShowPage } from './components/show'
 import { Header } from './components/ui/header'
+
 import { Urql } from './lib/urql'
 
 import '~/app/tailwind.css'

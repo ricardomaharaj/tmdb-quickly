@@ -7,7 +7,7 @@ import { useQueryParams } from '~/app/hooks/query-params'
 import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
-import { icon } from '~/app/util/consts'
+import { iconCodes } from '~/app/util/consts'
 import { genMediaStr } from '~/app/util/media-str'
 import { numGt0 } from '~/app/util/validation'
 
@@ -110,7 +110,7 @@ export function SeasonPage() {
         <Bubble>{season?.overview}</Bubble>
       </Frag>
 
-      <IconChip icon={icon.tv} label='Episodes' />
+      <IconChip icon={iconCodes.tv} label='Episodes' />
       <FlowRow>
         {season?.episodes?.map((x) => (
           <a
@@ -136,7 +136,7 @@ export function SeasonPage() {
       </div>
 
       <Frag value={season?.credits?.cast?.length}>
-        <IconChip icon={icon.people} label='Cast' />
+        <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {season?.credits?.cast?.map((x) => {
             const sec = genMediaStr({
@@ -154,7 +154,7 @@ export function SeasonPage() {
       </Frag>
 
       <Frag value={season?.credits?.crew?.length}>
-        <IconChip icon={icon.peopleAlt} label='Crew' />
+        <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {season?.credits?.crew?.map((x) => {
             const sec = genMediaStr({ pri: x?.job })
@@ -169,7 +169,7 @@ export function SeasonPage() {
       </Frag>
 
       <Frag value={season?.images?.posters?.length}>
-        <IconChip icon={icon.image} label='Images' />
+        <IconChip icon={iconCodes.image} label='Images' />
         <FlowRow>
           {season?.images?.posters?.map((x) => (
             <ImageLink x={x} variant='portrait' key={x.file_path} />
@@ -178,7 +178,7 @@ export function SeasonPage() {
       </Frag>
 
       <Frag value={season?.videos?.results?.length}>
-        <IconChip icon={icon.video} label='Videos' />
+        <IconChip icon={iconCodes.video} label='Videos' />
         <FlowRow>
           {season?.videos?.results?.map((x) => <VideoCard x={x} key={x.id} />)}
         </FlowRow>
