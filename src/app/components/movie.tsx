@@ -116,7 +116,11 @@ export function MoviePage() {
         <FlowRow>
           {movie?.credits?.crew?.map((x) => (
             <a href={`/person/${x.id}`} key={x.id}>
-              <Card img={x.profile_path} pri={x.name} sec={x.job} />
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={x.job || 'Unknown'}
+              />
             </a>
           ))}
         </FlowRow>

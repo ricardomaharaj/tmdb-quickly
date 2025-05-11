@@ -6,18 +6,24 @@ export function filterAggregateCrew(args: {
   query?: string
   page?: number
 }) {
-  const q = args.query?.toLowerCase()
+  const query = args.query?.toLowerCase()
 
-  const cast = args.crew?.filter((x) => {
-    if (!q) return true
-    if (x.name?.toLowerCase().includes(q)) return true
-    if (x.jobs?.some((y) => y.job?.toLowerCase().includes(q))) {
-      return true
-    }
-    return false
+  let crew: AggregateCrew[] = []
+
+  args.crew?.forEach((x) => {
+    const i = crew.findIndex((y) => y.id === x.id)
+
+    if (i === -1) crew.push(x)
+    else crew[i].jobs!.push(...x.jobs!)
+  })
+
+  crew = crew.filter((x) => {
+    if (!query) return true
+    if (x.name?.toLowerCase().includes(query)) return true
+    if (x.jobs?.some((x) => x.job?.toLowerCase().includes(query))) return true
   })
 
   const { start, end } = getPaginatePos(args.page ?? 1)
 
-  return cast?.slice(start, end)
+  return crew?.slice(start, end)
 }

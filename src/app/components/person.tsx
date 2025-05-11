@@ -8,7 +8,8 @@ import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
 import { iconCodes } from '~/app/util/consts'
-import { genMediaStr } from '~/app/util/media-str'
+import { numGt0 } from '~/app/util/validation'
+import { rmVoiceTag } from '~/app/util/voice'
 
 import { Bio } from './ui/bio'
 import { Btn } from './ui/btn'
@@ -113,7 +114,7 @@ export function PersonPage() {
           >
             <i
               className={`${filterIcons[x.key]} text-xl`}
-              title={`Show only ${x.key}`}
+              title={`Filter ${x.key}`}
             />
           </Btn>
         ))}
@@ -122,54 +123,46 @@ export function PersonPage() {
       <Frag value={person?.combined_credits?.cast?.length}>
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
-          {person?.combined_credits?.cast?.map((x) => {
-            const sec = genMediaStr({
-              pri: x.character,
-              count: x.episode_count,
-              rmVoice: true,
-            })
-
-            return (
-              <a
-                href={`/${x.media_type}/${x.id}`}
-                key={`${x.media_type} - ${x.id}`}
-              >
-                <Card
-                  img={x.poster_path}
-                  pri={x.name || x.title}
-                  sec={sec}
-                  ter={x.first_air_date || x.release_date}
-                />
-              </a>
-            )
-          })}
+          {person?.combined_credits?.cast?.map((x) => (
+            <a
+              href={`/${x.media_type}/${x.id}`}
+              key={`${x.media_type} - ${x.id}`}
+            >
+              <Card
+                img={x.poster_path}
+                pri={x.name || x.title}
+                sec={(() => {
+                  let str = rmVoiceTag(x.character) || 'Unknown'
+                  if (numGt0(x.episode_count)) str += ` (${x.episode_count})`
+                  return str
+                })()}
+                ter={x.first_air_date || x.release_date}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 
       <Frag value={person?.combined_credits?.crew?.length}>
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
-          {person?.combined_credits?.crew?.map((x) => {
-            const sec = genMediaStr({
-              pri: x.job,
-              count: x.episode_count,
-              rmVoice: true,
-            })
-
-            return (
-              <a
-                href={`/${x.media_type}/${x.id}`}
-                key={`${x.media_type} - ${x.id}`}
-              >
-                <Card
-                  img={x.poster_path}
-                  pri={x.name || x.title}
-                  sec={sec}
-                  ter={x.first_air_date || x.release_date}
-                />
-              </a>
-            )
-          })}
+          {person?.combined_credits?.crew?.map((x) => (
+            <a
+              href={`/${x.media_type}/${x.id}`}
+              key={`${x.media_type} - ${x.id}`}
+            >
+              <Card
+                img={x.poster_path}
+                pri={x.name || x.title}
+                sec={(() => {
+                  let str = x.job || 'Unknown'
+                  if (numGt0(x.episode_count)) str += ` (${x.episode_count})`
+                  return str
+                })()}
+                ter={x.first_air_date || x.release_date}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
     </div>

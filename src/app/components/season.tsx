@@ -8,8 +8,8 @@ import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
 import { iconCodes } from '~/app/util/consts'
-import { genMediaStr } from '~/app/util/media-str'
 import { numGt0 } from '~/app/util/validation'
+import { rmVoiceTag } from '~/app/util/voice'
 
 import { BackdropCard } from './ui/backdrop-card'
 import { Bubble } from './ui/bubble'
@@ -56,7 +56,7 @@ export function SeasonPage() {
   const show = res.data?.tv
   const season = res.data?.tvSeason
 
-  function genSeasonShortHand() {
+  function genSeasonStr() {
     let str = ''
     str += 'S'
     str += `${season_number}`.padStart(2, '0')
@@ -67,7 +67,7 @@ export function SeasonPage() {
     const content: string[] = []
 
     if (show?.name) content.push(show.name)
-    content.push(genSeasonShortHand())
+    content.push(genSeasonStr())
 
     return content.join(' | ')
   }
@@ -138,33 +138,30 @@ export function SeasonPage() {
       <Frag value={season?.credits?.cast?.length}>
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
-          {season?.credits?.cast?.map((x) => {
-            const sec = genMediaStr({
-              pri: x?.character,
-              rmVoice: true,
-            })
-
-            return (
-              <a href={`/person/${x.id}`} key={x.id}>
-                <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </a>
-            )
-          })}
+          {season?.credits?.cast?.map((x) => (
+            <a href={`/person/${x.id}`} key={x.id}>
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={rmVoiceTag(x.character) || 'Unknown'}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 
       <Frag value={season?.credits?.crew?.length}>
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
-          {season?.credits?.crew?.map((x) => {
-            const sec = genMediaStr({ pri: x?.job })
-
-            return (
-              <a href={`/person/${x.id}`} key={x.id}>
-                <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </a>
-            )
-          })}
+          {season?.credits?.crew?.map((x) => (
+            <a href={`/person/${x.id}`} key={x.id}>
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={x.job || 'Unknown'}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 

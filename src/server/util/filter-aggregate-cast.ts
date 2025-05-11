@@ -6,15 +6,22 @@ export function filterAggregateCast(args: {
   query?: string
   page?: number
 }) {
-  const q = args.query?.toLowerCase()
+  const query = args.query?.toLowerCase()
 
-  const cast = args.cast?.filter((x) => {
-    if (!q) return true
-    if (x.name?.toLowerCase().includes(q)) return true
-    if (x.roles?.some((y) => y.character?.toLowerCase().includes(q))) {
+  let cast: AggregateCast[] = []
+
+  args.cast?.forEach((x) => {
+    const i = cast.findIndex((y) => y.id === x.id)
+
+    if (i === -1) cast.push(x)
+    else cast[i].roles!.push(...x.roles!)
+  })
+
+  cast = cast.filter((x) => {
+    if (!query) return true
+    if (x.name?.toLowerCase().includes(query)) return true
+    if (x.roles?.some((x) => x.character?.toLowerCase().includes(query)))
       return true
-    }
-    return false
   })
 
   const { start, end } = getPaginatePos(args.page ?? 1)

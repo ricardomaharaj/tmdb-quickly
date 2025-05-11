@@ -8,9 +8,9 @@ import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
 import { iconCodes } from '~/app/util/consts'
-import { genMediaStr } from '~/app/util/media-str'
 import { genRuntimeStr } from '~/app/util/runtime'
 import { numGt0 } from '~/app/util/validation'
+import { rmVoiceTag } from '~/app/util/voice'
 
 import { BackdropCard } from './ui/backdrop-card'
 import { Bio } from './ui/bio'
@@ -58,7 +58,7 @@ export function EpisodePage() {
   const show = res.data?.tv
   const episode = res.data?.tvEpisode
 
-  function genEpShortHand() {
+  function genEpisodeStr() {
     let str = ''
     str += 'S' + `${season_number}`.padStart(2, '0')
     str += ' '
@@ -73,7 +73,7 @@ export function EpisodePage() {
     if (show?.name) content.push(show.name)
     if (episode?.name) content.push(episode.name)
 
-    content.push(genEpShortHand())
+    content.push(genEpisodeStr())
 
     return content.join(' | ')
   }
@@ -82,7 +82,7 @@ export function EpisodePage() {
     const content: string[] = []
 
     if (episode?.name) content.push(episode.name)
-    content.push(genEpShortHand())
+    content.push(genEpisodeStr())
 
     return content.join(' | ')
   }
@@ -135,33 +135,30 @@ export function EpisodePage() {
       <Frag value={episode?.guest_stars?.length}>
         <IconChip icon={iconCodes.people} label='Guests' />
         <FlowRow>
-          {episode?.guest_stars?.map((x) => {
-            const sec = genMediaStr({
-              pri: x?.character,
-              rmVoice: true,
-            })
-
-            return (
-              <a href={`/person/${x.id}`} key={x.id}>
-                <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </a>
-            )
-          })}
+          {episode?.guest_stars?.map((x) => (
+            <a href={`/person/${x.id}`} key={x.id}>
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={rmVoiceTag(x.character) || 'Unknown'}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 
       <Frag value={episode?.crew?.length}>
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
-          {episode?.crew?.map((x) => {
-            const sec = genMediaStr({ pri: x?.job })
-
-            return (
-              <a href={`/person/${x.id}`} key={x.id}>
-                <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </a>
-            )
-          })}
+          {episode?.crew?.map((x) => (
+            <a href={`/person/${x.id}`} key={x.id}>
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={x.job || 'Unknown'}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 

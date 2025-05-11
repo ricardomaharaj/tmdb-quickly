@@ -5,7 +5,7 @@
   "scripts": {
     "dev:app": "vite",
     "dev:gql": "bun run --bun --watch src/server/app.ts",
-    "dev:ntl": "ntl dev",
+    "dev:ntl": "ntl dev --no-open",
     "build:app": "vite build",
     "preview": "vite preview"
   },

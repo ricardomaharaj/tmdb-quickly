@@ -8,9 +8,9 @@ import { useTimeout } from '~/app/hooks/timeout'
 import { useTitle } from '~/app/hooks/title'
 import { Data, Vars } from '~/app/types/query'
 import { iconCodes } from '~/app/util/consts'
-import { genMediaStr } from '~/app/util/media-str'
 import { genRuntimeStr } from '~/app/util/runtime'
 import { numGt0 } from '~/app/util/validation'
+import { rmVoiceTag } from '~/app/util/voice'
 
 import { Anchor } from './ui/anchor'
 import { BackdropCard } from './ui/backdrop-card'
@@ -139,40 +139,50 @@ export function ShowPage() {
       <Frag value={show?.aggregate_credits?.cast?.length}>
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
-          {show?.aggregate_credits?.cast?.map((x) => {
-            const role = x.roles?.at(0)
-            const sec = genMediaStr({
-              pri: role?.character,
-              count: role?.episode_count,
-              rmVoice: true,
-            })
+          {show?.aggregate_credits?.cast?.map((x) => (
+            <a href={`/person/${x.id}`} key={x.id}>
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={(() => {
+                  const content: string[] = []
 
-            return (
-              <a href={`/person/${x.id}`} key={x.id}>
-                <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </a>
-            )
-          })}
+                  x.roles?.forEach((y) => {
+                    let str = rmVoiceTag(y.character) || 'Unknown'
+                    if (numGt0(y.episode_count)) str += ` (${y.episode_count})`
+                    content.push(str)
+                  })
+
+                  return content.join(' | ')
+                })()}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 
       <Frag value={show?.aggregate_credits?.crew?.length}>
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
-          {show?.aggregate_credits?.crew?.map((x) => {
-            const role = x.jobs?.at(0)
-            const sec = genMediaStr({
-              pri: role?.job,
-              count: role?.episode_count,
-              rmVoice: true,
-            })
+          {show?.aggregate_credits?.crew?.map((x) => (
+            <a href={`/person/${x.id}`} key={x.id}>
+              <Card
+                img={x.profile_path}
+                pri={x.name}
+                sec={(() => {
+                  const content: string[] = []
 
-            return (
-              <a href={`/person/${x.id}`} key={x.id}>
-                <Card img={x.profile_path} pri={x.name} sec={sec} />
-              </a>
-            )
-          })}
+                  x.jobs?.forEach((y) => {
+                    let str = y.job || 'Unknown'
+                    if (numGt0(y.episode_count)) str += ` (${y.episode_count})`
+                    content.push(str)
+                  })
+
+                  return content.join(' | ')
+                })()}
+              />
+            </a>
+          ))}
         </FlowRow>
       </Frag>
 
