@@ -1,3 +1,3 @@
 export function Img(props: React.ImgHTMLAttributes<HTMLImageElement>) {
-  return <img loading='lazy' alt='' {...props} />
+  return <img loading='lazy' {...props} />
 }

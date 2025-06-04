@@ -96,7 +96,6 @@ export function ShowPage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={show?.backdrop_path}
-        to={`/tv/${id}`}
         pri={show?.name}
         sec={genTerTxt()}
       />
@@ -114,14 +113,14 @@ export function ShowPage() {
           if (numGt0(x.episode_count)) sec += `${x.episode_count} Episodes`
 
           return (
-            <a href={`/tv/${id}/season/${x.season_number}`} key={x.id}>
-              <Card
-                img={x.poster_path}
-                pri={x.name}
-                sec={sec}
-                ter={x.air_date}
-              />
-            </a>
+            <Card
+              href={`/tv/${id}/season/${x.season_number}`}
+              key={x.id}
+              img={x.poster_path}
+              pri={x.name}
+              sec={sec}
+              ter={x.air_date}
+            />
           )
         })}
       </FlowRow>
@@ -140,23 +139,23 @@ export function ShowPage() {
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {show?.aggregate_credits?.cast?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={(() => {
-                  const content: string[] = []
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={(() => {
+                const content: string[] = []
 
-                  x.roles?.forEach((y) => {
-                    let str = rmVoiceTag(y.character) || 'Unknown'
-                    if (numGt0(y.episode_count)) str += ` (${y.episode_count})`
-                    content.push(str)
-                  })
+                x.roles?.forEach((y) => {
+                  let str = rmVoiceTag(y.character) || 'Unknown'
+                  if (numGt0(y.episode_count)) str += ` (${y.episode_count})`
+                  content.push(str)
+                })
 
-                  return content.join(' | ')
-                })()}
-              />
-            </a>
+                return content.join(' | ')
+              })()}
+            />
           ))}
         </FlowRow>
       </Frag>
@@ -165,23 +164,23 @@ export function ShowPage() {
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {show?.aggregate_credits?.crew?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={(() => {
-                  const content: string[] = []
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={(() => {
+                const content: string[] = []
 
-                  x.jobs?.forEach((y) => {
-                    let str = y.job || 'Unknown'
-                    if (numGt0(y.episode_count)) str += ` (${y.episode_count})`
-                    content.push(str)
-                  })
+                x.jobs?.forEach((y) => {
+                  let str = y.job || 'Unknown'
+                  if (numGt0(y.episode_count)) str += ` (${y.episode_count})`
+                  content.push(str)
+                })
 
-                  return content.join(' | ')
-                })()}
-              />
-            </a>
+                return content.join(' | ')
+              })()}
+            />
           ))}
         </FlowRow>
       </Frag>

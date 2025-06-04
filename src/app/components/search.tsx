@@ -80,9 +80,11 @@ export function SearchPage() {
           />
         </div>
       )}
+
       <Div value={fetching}>
         <Loading />
       </Div>
+
       <Frag value={movieResults?.length}>
         <IconChip icon={iconCodes.movie} label='Movies' />
         <FlowRow>
@@ -91,6 +93,7 @@ export function SearchPage() {
           ))}
         </FlowRow>
       </Frag>
+
       <Frag value={tvResults?.length}>
         <IconChip icon={iconCodes.tv} label='Shows' />
         <FlowRow>
@@ -99,6 +102,7 @@ export function SearchPage() {
           ))}
         </FlowRow>
       </Frag>
+
       <Frag value={peopleResults?.length}>
         <IconChip icon={iconCodes.people} label='People' />
         <FlowRow>
@@ -123,8 +127,11 @@ function SearchResultCard({
   const date = (x.first_air_date || x.release_date)?.substring(0, 4)
 
   return (
-    <a href={`/${x.media_type}/${x.id}`}>
-      <Card img={img} pri={name} ter={showDate ? date : undefined} />
-    </a>
+    <Card
+      href={`/${x.media_type}/${x.id}`}
+      img={img}
+      pri={name}
+      ter={showDate ? date : undefined}
+    />
   )
 }

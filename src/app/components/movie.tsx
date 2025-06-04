@@ -75,7 +75,6 @@ export function MoviePage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={movie?.backdrop_path}
-        to={`/movie/${id}`}
         pri={movie?.title}
         sec={movie?.release_date}
       />
@@ -100,13 +99,13 @@ export function MoviePage() {
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {movie?.credits?.cast?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={rmVoiceTag(x.character) ?? 'Unknown'}
-              />
-            </a>
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={rmVoiceTag(x.character) ?? 'Unknown'}
+            />
           ))}
         </FlowRow>
       </Frag>
@@ -115,13 +114,13 @@ export function MoviePage() {
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {movie?.credits?.crew?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={x.job || 'Unknown'}
-              />
-            </a>
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={x.job || 'Unknown'}
+            />
           ))}
         </FlowRow>
       </Frag>

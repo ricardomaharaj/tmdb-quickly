@@ -124,21 +124,18 @@ export function PersonPage() {
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {person?.combined_credits?.cast?.map((x) => (
-            <a
+            <Card
               href={`/${x.media_type}/${x.id}`}
               key={`${x.media_type} - ${x.id}`}
-            >
-              <Card
-                img={x.poster_path}
-                pri={x.name || x.title}
-                sec={(() => {
-                  let str = rmVoiceTag(x.character) || 'Unknown'
-                  if (numGt0(x.episode_count)) str += ` (${x.episode_count})`
-                  return str
-                })()}
-                ter={x.first_air_date || x.release_date}
-              />
-            </a>
+              img={x.poster_path}
+              pri={x.name || x.title}
+              sec={(() => {
+                let str = rmVoiceTag(x.character) || 'Unknown'
+                if (numGt0(x.episode_count)) str += ` (${x.episode_count})`
+                return str
+              })()}
+              ter={x.first_air_date || x.release_date}
+            />
           ))}
         </FlowRow>
       </Frag>
@@ -147,21 +144,18 @@ export function PersonPage() {
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {person?.combined_credits?.crew?.map((x) => (
-            <a
+            <Card
               href={`/${x.media_type}/${x.id}`}
               key={`${x.media_type} - ${x.id}`}
-            >
-              <Card
-                img={x.poster_path}
-                pri={x.name || x.title}
-                sec={(() => {
-                  let str = x.job || 'Unknown'
-                  if (numGt0(x.episode_count)) str += ` (${x.episode_count})`
-                  return str
-                })()}
-                ter={x.first_air_date || x.release_date}
-              />
-            </a>
+              img={x.poster_path}
+              pri={x.name || x.title}
+              sec={(() => {
+                let str = x.job || 'Unknown'
+                if (numGt0(x.episode_count)) str += ` (${x.episode_count})`
+                return str
+              })()}
+              ter={x.first_air_date || x.release_date}
+            />
           ))}
         </FlowRow>
       </Frag>

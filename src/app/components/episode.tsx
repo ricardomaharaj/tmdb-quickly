@@ -107,7 +107,7 @@ export function EpisodePage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={episode?.still_path}
-        to={`/tv/${id}`}
+        href={`/tv/${id}`}
         pri={show?.name}
         sec={genSecText()}
         ter={genTerText()}
@@ -136,13 +136,13 @@ export function EpisodePage() {
         <IconChip icon={iconCodes.people} label='Guests' />
         <FlowRow>
           {episode?.guest_stars?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={rmVoiceTag(x.character) || 'Unknown'}
-              />
-            </a>
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={rmVoiceTag(x.character) || 'Unknown'}
+            />
           ))}
         </FlowRow>
       </Frag>
@@ -151,13 +151,13 @@ export function EpisodePage() {
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {episode?.crew?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={x.job || 'Unknown'}
-              />
-            </a>
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={x.job || 'Unknown'}
+            />
           ))}
         </FlowRow>
       </Frag>

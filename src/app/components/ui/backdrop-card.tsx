@@ -1,10 +1,11 @@
+import { Link } from '~/app/components/ui/link'
 import { imgUrls } from '~/app/util/consts'
 import { Div } from './div'
 
 export function BackdropCard({
   bgImg,
 
-  to,
+  href: href,
 
   pri,
   sec,
@@ -12,7 +13,7 @@ export function BackdropCard({
 }: {
   bgImg?: string
 
-  to?: string
+  href?: string
 
   pri?: string
   sec?: string
@@ -27,12 +28,10 @@ export function BackdropCard({
         backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
       }}
     >
-      <div className='rounded-xl p-10 backdrop-brightness-50 md:p-20'>
+      <div className='rounded-xl p-10 backdrop-brightness-50 md:p-20 md:backdrop-blur-xs'>
         <div className='flex flex-col gap-1 xl:text-lg'>
-          <Div value={pri}>
-            <a href={to ?? '/'} className='font-bold'>
-              {pri}
-            </a>
+          <Div value={pri} className='font-bold'>
+            {href ? <Link href={href ?? '#'}>{pri}</Link> : pri}
           </Div>
           <Div value={sec} />
           <Div value={ter} />

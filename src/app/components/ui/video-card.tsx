@@ -8,22 +8,21 @@ export function VideoCard({ x }: { x: VideoResult }) {
   return (
     <Anchor
       href={`https://m.youtube.com/watch?v=${x.key}`}
-      className='max-w-[220px] min-w-[220px] rounded-xl bg-slate-800 md:min-w-[200px] md:transition-colors md:hover:bg-slate-700'
+      title={`${x.name || ''}`}
     >
-      <Img
-        src={`https://i.ytimg.com/vi/${x.key}/hq720.jpg`}
-        className='aspect-video w-full rounded-t-xl'
-      />
-
-      <div
-        className='flex flex-col p-2 text-xs md:text-sm'
-        title={`${x.name || ''}`}
-      >
-        <Div value={x.name} className='line-clamp-1' />
-        <Div
-          value={toDateStr(x.published_at)}
-          className='text-xs text-slate-400'
+      <div className='w-[200px] rounded-xl bg-slate-800 md:transition-colors md:hover:bg-slate-700'>
+        <Img
+          src={`https://i.ytimg.com/vi/${x.key}/hq720.jpg`}
+          className='aspect-video w-full rounded-t-xl'
         />
+
+        <div className='flex flex-col p-2 text-xs'>
+          <Div value={x.name} className='line-clamp-1' />
+          <Div
+            value={toDateStr(x.published_at)}
+            className='text-xs text-slate-400'
+          />
+        </div>
       </div>
     </Anchor>
   )

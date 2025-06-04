@@ -15,9 +15,9 @@ export function ImageLink({
   return (
     <Anchor
       href={`${imgUrls.original}${x.file_path}`}
-      className={`${variant === 'portrait' ? 'max-w-[120px] min-w-[120px]' : 'max-w-[220px] min-w-[220px]'}`}
+      className={`${variant === 'portrait' ? 'max-w-[100px] min-w-[100px]' : 'max-w-[200px] min-w-[200px]'}`}
     >
-      <Img src={`${imgUrls.w500}${x.file_path}`} />
+      <Img src={`${imgUrls.w500}${x.file_path}`} className='flex' />
     </Anchor>
   )
 }

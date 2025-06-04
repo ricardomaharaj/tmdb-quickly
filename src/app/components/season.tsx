@@ -101,7 +101,7 @@ export function SeasonPage() {
     <div className='flex flex-col gap-2'>
       <BackdropCard
         bgImg={show?.backdrop_path}
-        to={`/tv/${id}`}
+        href={`/tv/${id}`}
         pri={genPriText()}
         sec={genTerText()}
       />
@@ -113,12 +113,11 @@ export function SeasonPage() {
       <IconChip icon={iconCodes.tv} label='Episodes' />
       <FlowRow>
         {season?.episodes?.map((x) => (
-          <a
+          <EpisodeCard
             href={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
             key={x.id}
-          >
-            <EpisodeCard x={x} />
-          </a>
+            x={x}
+          />
         ))}
       </FlowRow>
 
@@ -139,13 +138,13 @@ export function SeasonPage() {
         <IconChip icon={iconCodes.people} label='Cast' />
         <FlowRow>
           {season?.credits?.cast?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={rmVoiceTag(x.character) || 'Unknown'}
-              />
-            </a>
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={rmVoiceTag(x.character) || 'Unknown'}
+            />
           ))}
         </FlowRow>
       </Frag>
@@ -154,13 +153,13 @@ export function SeasonPage() {
         <IconChip icon={iconCodes.peopleAlt} label='Crew' />
         <FlowRow>
           {season?.credits?.crew?.map((x) => (
-            <a href={`/person/${x.id}`} key={x.id}>
-              <Card
-                img={x.profile_path}
-                pri={x.name}
-                sec={x.job || 'Unknown'}
-              />
-            </a>
+            <Card
+              href={`/person/${x.id}`}
+              key={x.id}
+              img={x.profile_path}
+              pri={x.name}
+              sec={x.job || 'Unknown'}
+            />
           ))}
         </FlowRow>
       </Frag>
