@@ -1,26 +1,16 @@
 export function Btn({
-  onClick,
-
-  disabled,
-
   isActive,
 
   className,
   children,
+
+  ...attr
 }: {
-  onClick?: () => void
-
-  disabled?: boolean
-
   isActive?: boolean
-
-  className?: string
   children?: React.ReactNode
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      disabled={disabled}
-      onClick={onClick}
       // prettier-ignore
       className={`
         rounded-xl 
@@ -28,6 +18,7 @@ export function Btn({
         disabled:bg-slate-900 disabled:text-slate-400 disabled:hover:bg-slate-900 md:transition-colors md:hover:bg-slate-600 
         ${className ?? ''}
       `}
+      {...attr}
     >
       {children}
     </button>

@@ -1,11 +1,12 @@
 export function Anchor({
   children,
-  ...props
+
+  ...attr
 }: {
   children?: React.ReactNode
 } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
-    <a target='_blank' {...props}>
+    <a target='_blank' {...attr}>
       {children}
     </a>
   )

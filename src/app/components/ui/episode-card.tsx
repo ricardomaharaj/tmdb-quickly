@@ -32,16 +32,20 @@ export function EpisodeCard({ x, href }: { x: Episode; href: string }) {
 
   return (
     <a href={href} title={`${pri} | ${x.overview} | ${sec}`}>
-      <div className='flex max-w-[200px] min-w-[200px] flex-col rounded-xl bg-slate-800 md:transition-colors md:hover:bg-slate-700'>
-        <Img
-          src={`${imgUrls.w500}${x.still_path}`}
-          className='rounded-t-xl'
-          width={500}
-        />
+      <div className='flex min-h-full min-w-[160px] flex-col justify-end rounded-xl bg-slate-800 md:min-w-[200px] md:transition-colors md:hover:bg-slate-700'>
+        {x.still_path ? (
+          <Img
+            src={`${imgUrls.w500}${x.still_path}`}
+            className='max-h-fit max-w-[160px] rounded-t-xl md:max-w-[200px]'
+            width={500}
+          />
+        ) : (
+          <div className='min-w-[160px] md:min-w-[200px]'></div>
+        )}
 
         <div className='flex flex-col gap-1 p-2 text-xs'>
           <div className='line-clamp-1'>{pri}</div>
-          <Div value={x.overview} className='line-clamp-1' />
+          <Div className='line-clamp-1' value={x.overview} />
           <div className='line-clamp-1 text-slate-400'>{sec}</div>
         </div>
       </div>

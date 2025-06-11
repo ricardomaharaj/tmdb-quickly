@@ -1,11 +1,11 @@
-import { Link } from '~/app/components/ui/link'
 import { imgUrls } from '~/app/util/consts'
 import { Div } from './div'
+import { Link } from './link'
 
 export function BackdropCard({
   bgImg,
 
-  href: href,
+  href,
 
   pri,
   sec,

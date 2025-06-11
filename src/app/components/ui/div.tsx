@@ -7,6 +7,7 @@ export function Div({
   ...attr
 }: {
   value?: string | number | boolean
+  children?: React.ReactNode
 } & React.HTMLAttributes<HTMLDivElement>) {
   if (!value) return <></>
   if (typeof value === 'number' && !numGt0(value)) return <></>
