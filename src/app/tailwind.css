@@ -21,3 +21,11 @@ html {
 input {
   outline: none;
 }
+
+button {
+  cursor: pointer;
+}
+
+button[disabled] {
+  cursor: default;
+}
