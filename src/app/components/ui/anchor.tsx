@@ -1,13 +1,16 @@
-export function Anchor({
-  children,
+import { AnchorHTMLAttributes } from "preact"
+import { ReactNode } from "preact/compat"
 
-  ...attr
+export function Anchor({
+	children,
+
+	...attr
 }: {
-  children?: React.ReactNode
-} & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  return (
-    <a target='_blank' {...attr}>
-      {children}
-    </a>
-  )
+	children?: ReactNode
+} & AnchorHTMLAttributes<HTMLAnchorElement>) {
+	return (
+		<a target="_blank" {...attr}>
+			{children}
+		</a>
+	)
 }

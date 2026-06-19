@@ -1,9 +1,12 @@
-export function Link({
-  children,
+import { AnchorHTMLAttributes } from "preact"
+import { ReactNode } from "preact/compat"
 
-  ...attr
+export function Link({
+	children,
+
+	...attr
 }: {
-  children?: React.ReactNode
-} & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  return <a {...attr}>{children}</a>
+	children?: ReactNode
+} & AnchorHTMLAttributes<HTMLAnchorElement>) {
+	return <a {...attr}>{children}</a>
 }

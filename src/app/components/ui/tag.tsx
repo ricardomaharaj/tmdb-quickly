@@ -1,19 +1,21 @@
+import { ReactNode } from "preact/compat"
+
 export function Tag({
-  className,
-  children,
+	className,
+	children,
 }: {
-  className?: string
-  children?: React.ReactNode
+	className?: string
+	children?: ReactNode
 }) {
-  return (
-    <div
-      // prettier-ignore
-      className={`
-        whitespace-nowrap rounded-xl bg-slate-800 px-3 py-1 
-        ${className ?? ''} 
+	return (
+		<div
+			// prettier-ignore
+			className={`
+        whitespace-nowrap rounded-xl bg-slate-800 px-3 py-1
+        ${className ?? ""}
       `}
-    >
-      {children}
-    </div>
-  )
+		>
+			{children}
+		</div>
+	)
 }

@@ -1,4 +1,4 @@
 export function toDateStr(date?: string) {
-  if (!date) return ''
-  return new Date(date).toDateString().substring(4)
+	if (!date) return ""
+	return date.substring(0, 10)
 }

@@ -1,9 +1,9 @@
 export function rmVoiceTag(str?: string) {
-  if (!str) return undefined
+	if (!str) return undefined
 
-  if (str.includes('(voice)')) {
-    str = str.replaceAll('(voice)', '')
-  }
+	if (str.includes("(voice)")) {
+		str = str.replaceAll("(voice)", "")
+	}
 
-  return str
+	return str
 }

@@ -1,4 +1,6 @@
-export const movieDoc: string = /* GraphQL */ `
+import { gql } from "urql"
+
+export const movieDoc = gql`
   query ($id: String!, $query: String, $page: Int) {
     movie(id: $id, query: $query, page: $page) {
       id

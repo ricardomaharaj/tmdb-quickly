@@ -1,22 +1,22 @@
-import { Bubble } from './bubble'
+import { Bubble } from "./bubble"
 
 export function IconChip({
-  icon,
-  label,
+	icon,
+	label,
 
-  className,
+	className,
 }: {
-  icon: string
-  label: string
+	icon: string
+	label: string
 
-  className?: string
+	className?: string
 }) {
-  return (
-    <Bubble
-      className={`flex max-w-fit flex-row items-center gap-2 px-3 py-2 ${className || ''}`}
-    >
-      <i className={`${icon} text-xl`} />
-      <span>{label}</span>
-    </Bubble>
-  )
+	return (
+		<Bubble
+			className={`flex max-w-fit flex-row items-center gap-2 px-3 py-2 ${className || ""}`}
+		>
+			<i className={`${icon} text-xl`} />
+			<span>{label}</span>
+		</Bubble>
+	)
 }

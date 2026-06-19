@@ -1,42 +1,42 @@
-import { imgUrls } from '~/app/util/consts'
-import { Div } from './div'
-import { Link } from './link'
+import { imgUrls } from "~/app/util/consts"
+import { Div } from "./div"
+import { Link } from "./link"
 
 export function BackdropCard({
-  bgImg,
+	bgImg,
 
-  href,
+	href,
 
-  pri,
-  sec,
-  ter,
+	pri,
+	sec,
+	ter,
 }: {
-  bgImg?: string
+	bgImg?: string
 
-  href?: string
+	href?: string
 
-  pri?: string
-  sec?: string
-  ter?: string
+	pri?: string
+	sec?: string
+	ter?: string
 }) {
-  if (!bgImg || bgImg === 'undefined') return <></>
+	if (!bgImg || bgImg === "undefined") return <></>
 
-  return (
-    <div
-      className='rounded-xl bg-cover bg-center'
-      style={{
-        backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
-      }}
-    >
-      <div className='rounded-xl p-10 backdrop-brightness-50 md:p-20 md:backdrop-blur-xs'>
-        <div className='flex flex-col gap-1 xl:text-lg'>
-          <Div value={pri} className='font-bold'>
-            {href ? <Link href={href ?? '#'}>{pri}</Link> : pri}
-          </Div>
-          <Div value={sec} />
-          <Div value={ter} />
-        </div>
-      </div>
-    </div>
-  )
+	return (
+		<div
+			className="rounded-xl bg-cover bg-center"
+			style={{
+				backgroundImage: `url("${imgUrls.w500}${bgImg}")`,
+			}}
+		>
+			<div className="rounded-xl p-10 backdrop-brightness-50 md:p-20 md:backdrop-blur-xs">
+				<div className="flex flex-col gap-1 xl:text-lg">
+					<Div value={pri} className="font-bold">
+						{href ? <Link href={href ?? "#"}>{pri}</Link> : pri}
+					</Div>
+					<Div value={sec} />
+					<Div value={ter} />
+				</div>
+			</div>
+		</div>
+	)
 }

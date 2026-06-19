@@ -1,3 +1,5 @@
-export function Img(props: React.ImgHTMLAttributes<HTMLImageElement>) {
-  return <img loading='lazy' {...props} />
+import { ImgHTMLAttributes } from "preact"
+
+export function Img(props: ImgHTMLAttributes<HTMLImageElement>) {
+	return <img loading="lazy" {...props} />
 }

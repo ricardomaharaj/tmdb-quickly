@@ -1,4 +1,6 @@
-export const personDoc: string = /* GraphQL */ `
+import { gql } from "urql"
+
+export const personDoc = gql`
   query ($id: String!, $query: String, $page: Int = 10, $filter: String) {
     person(id: $id, query: $query, page: $page, filter: $filter) {
       name

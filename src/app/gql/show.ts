@@ -1,4 +1,6 @@
-export const showDoc: string = /* GraphQL */ `
+import { gql } from "urql"
+
+export const showDoc = gql`
   query ($id: String!, $query: String, $page: Int) {
     tv(id: $id, query: $query, page: $page) {
       id

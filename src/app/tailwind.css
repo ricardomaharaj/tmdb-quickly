@@ -1,31 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @plugin "@iconify/tailwind4";
 
 ::-webkit-scrollbar {
-  scrollbar-width: none;
+	scrollbar-width: none;
 }
 
 html {
-  scrollbar-width: none;
+	scrollbar-width: none;
 
-  font-family: 'Ubuntu', sans-serif;
-  font-weight: 400;
-  font-style: normal;
+	font-family: "Ubuntu", sans-serif;
+	font-weight: 400;
+	font-style: normal;
 
-  @apply bg-slate-900 text-white;
+	@apply bg-slate-900 text-white;
 }
 
 input {
-  outline: none;
+	outline: none;
 }
 
 button {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 button[disabled] {
-  cursor: default;
+	cursor: default;
 }

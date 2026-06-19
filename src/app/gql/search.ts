@@ -1,4 +1,6 @@
-export const searchDoc: string = /* GraphQL */ `
+import { gql } from "urql"
+
+export const searchDoc = gql`
   query ($query: String, $page: Int) {
     search(query: $query, page: $page) {
       results {
