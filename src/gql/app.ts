@@ -1,4 +1,7 @@
+import { createServer } from "node:http"
 import { yoga } from "./yoga"
 
-Bun.serve({ fetch: yoga, port: 4000 })
+const server = createServer(yoga)
+server.listen(4000)
+
 console.log("http://localhost:4000/gql")

@@ -6,6 +6,7 @@ import { searchResolver } from "./resolvers/search"
 import { tvResolver } from "./resolvers/tv"
 import { tvEpisodeResolver } from "./resolvers/tv-episode"
 import { tvSeasonResolver } from "./resolvers/tv-season"
+
 import { typeDefs } from "./typeDefs"
 
 export const schema = createSchema({

@@ -1,3 +1,7 @@
+import * as dotenv from "dotenv"
+
+dotenv.config()
+
 // @ts-expect-error
 const netlifyEnv = globalThis?.Netlify?.env
 
